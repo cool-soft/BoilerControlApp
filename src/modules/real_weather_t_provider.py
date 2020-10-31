@@ -1,4 +1,4 @@
-
+import json
 import threading
 
 import config
@@ -73,13 +73,13 @@ class RealWeatherTProvider:
         url = f"{config.REMOTE_HOST}/JSON/"
         params = {
             "method": "getWeatherM",
-            "argument": {
+            "argument": json.dumps({
                 "db": min_request_date.isoformat(sep=" ", timespec="seconds"),
                 "de": max_request_date.isoformat(sep=" ", timespec="seconds")
-            }
+            })
         }
-        with requests.get(url, params=params, stream=True) as stream:
-            df = pd.read_json(stream)
+        response = requests.get(url, params=params)
+        df = pd.read_json(response.text)
 
         return df
 
