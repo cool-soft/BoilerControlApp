@@ -76,8 +76,8 @@ class RealWeatherTProvider:
         params = {
             "method": "getWeatherM",
             "argument": json.dumps({
-                "db": self._to_iso(min_request_date),
-                "de": self._to_iso(max_request_date)
+                "db": self._timestamp_to_iso(min_request_date),
+                "de": self._timestamp_to_iso(max_request_date)
             })
         }
         response = requests.get(url, params=params)
@@ -86,7 +86,7 @@ class RealWeatherTProvider:
         return df
 
     # noinspection PyMethodMayBeStatic
-    def _to_iso(self, datetime):
+    def _timestamp_to_iso(self, datetime):
         return f"{datetime.year}-{datetime.month:02}-{datetime.day:02} " \
                f"{datetime.hour:02}:{datetime.minute:02}"
 
