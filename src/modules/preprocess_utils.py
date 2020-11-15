@@ -6,6 +6,7 @@ import re
 import numpy as np
 import pandas as pd
 
+import config
 from config import TIME_STEP, TIMESTAMP_COLUMN_NAME
 
 
@@ -237,3 +238,12 @@ def prepare_data(data, min_date, max_date, disabled_t_threshold, t_column_name="
     df = interpolate_t(df, min_date, max_date, t_column_name=t_column_name)
     df = remove_duplicates_by_timestamp(df)
     return df
+
+
+def get_min_max_dates_from_dataframe(df):
+    if df.empty:
+        return None, None
+
+    min_date = df[config.TIMESTAMP_COLUMN_NAME].min()
+    max_date = df[config.TIMESTAMP_COLUMN_NAME].max()
+    return min_date, max_date
