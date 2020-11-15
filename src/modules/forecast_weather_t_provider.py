@@ -25,27 +25,20 @@ class ForecastWeatherTProvider:
 
     def get_forecast_weather_t(self, min_date, max_date):
         with self._cache_access_lock:
-            if self._is_need_request_server(max_date):
+            if self._is_requested_date_not_in_cache(max_date):
                 df = self._request_from_server()
                 df = self._preprocess_weather_t(df)
                 self._update_cache(df)
 
             return self._get_from_cache(min_date, max_date)
 
-    def _is_need_request_server(self, max_date):
-        max_cached_date = self._get_max_cached_date()
-
+    def _is_requested_date_not_in_cache(self, requested_date):
+        _, max_cached_date = get_min_max_dates_from_dataframe(self._forecast_weather_t_cache)
         if max_cached_date is None:
             return True
-
-        if max_cached_date < max_date:
+        if max_cached_date < requested_date:
             return True
-
         return False
-
-    def _get_max_cached_date(self):
-        min_cached_date, max_cached_date = get_min_max_dates_from_dataframe(self._forecast_weather_t_cache)
-        return max_cached_date
 
     # noinspection PyMethodMayBeStatic
     def _request_from_server(self):
@@ -70,10 +63,12 @@ class ForecastWeatherTProvider:
         return df
 
     def _update_cache(self, df):
-        self._forecast_weather_t_cache = pd.concat(
-            [self._forecast_weather_t_cache, df], ignore_index=True
+        new_df = pd.concat(
+            [self._forecast_weather_t_cache, df],
+            ignore_index=True
         )
-        self._forecast_weather_t_cache = remove_duplicates_by_timestamp(self._forecast_weather_t_cache)
+        new_df = remove_duplicates_by_timestamp(new_df)
+        self._forecast_weather_t_cache = new_df
 
     def _get_from_cache(self, min_date, max_date):
         return filter_by_timestamp(self._forecast_weather_t_cache, min_date, max_date).copy()

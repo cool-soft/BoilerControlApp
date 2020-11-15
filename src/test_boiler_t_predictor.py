@@ -14,7 +14,7 @@ if __name__ == '__main__':
     min_date = datetime.now()
     max_date = min_date + (60 * config.TIME_STEP)
 
-    prediction_step = 5
+    prediction_step = 3
 
     homes_time_deltas = load_homes_time_deltas()
     optimized_t_table = load_optimized_t_table()

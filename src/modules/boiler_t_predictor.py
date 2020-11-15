@@ -1,3 +1,4 @@
+
 import config
 
 
@@ -26,8 +27,6 @@ class BoilerTPredictor:
         self._home_t_dispersion_coefficient = coefficient
 
     def predict_on_weather_t_arr(self, weather_t_arr):
-        print("Predicting")
-
         predicted_boiler_t = []
         max_home_time_delta = self._homes_time_deltas[config.TIME_DELTA_COLUMN_NAME].max()
         t_count = len(weather_t_arr) - max_home_time_delta
@@ -36,7 +35,6 @@ class BoilerTPredictor:
             need_boiler_t = self._calc_need_boiler_t_by_homes_t(need_t_by_homes)
             for i in range(self._prediction_step):
                 predicted_boiler_t.append(need_boiler_t)
-            print(f"Predicted {t_idx}/{t_count}")
 
         return predicted_boiler_t
 
@@ -54,7 +52,7 @@ class BoilerTPredictor:
 
     def _get_need_t_by_temp_graph(self, weather_t):
         available_t = self._temp_graph[self._temp_graph[config.WEATHER_T_COLUMN_NAME] <= weather_t]
-        need_t_in_home_by_t_graph = available_t[config.T_GRAPH_HOME_T_COLUMN_NAME].min()
+        need_t_in_home_by_t_graph = available_t[config.HOME_T_COLUMN_NAME].min()
         need_t = need_t_in_home_by_t_graph * self._home_t_dispersion_coefficient
         return need_t
 

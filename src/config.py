@@ -6,7 +6,7 @@ TIME_STEP = datetime.timedelta(0, 0, 0, 0, 3)  # 3 minutes
 TIMESTAMP_COLUMN_NAME = "dTimeStamp"
 BOILER_COLUMN_NAME = "BOILER"
 WEATHER_T_COLUMN_NAME = "weather_t"
-T_GRAPH_HOME_T_COLUMN_NAME = "home_t"
+HOME_T_COLUMN_NAME = "home_t"
 TIME_DELTA_COLUMN_NAME = "time_delta"
 HOME_NAME_COLUMN_NAME = "home_name"
 
