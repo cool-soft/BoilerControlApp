@@ -4,7 +4,7 @@ import config
 class BoilerTPredictor:
 
     def __init__(self):
-        self._predict_step = 5
+        self._prediction_step = 5
         self._optimized_t_table = None
         self._homes_time_deltas = None
         self._temp_graph = None
@@ -13,8 +13,8 @@ class BoilerTPredictor:
     def set_homes_time_deltas(self, homes_time_deltas):
         self._homes_time_deltas = homes_time_deltas
 
-    def set_predict_step(self, predict_step):
-        self._predict_step = predict_step
+    def set_prediction_step(self, prediction_step):
+        self._prediction_step = prediction_step
 
     def set_optimized_t_table(self, t_table):
         self._optimized_t_table = t_table
@@ -31,10 +31,10 @@ class BoilerTPredictor:
         predicted_boiler_t = []
         max_home_time_delta = self._homes_time_deltas[config.TIME_DELTA_COLUMN_NAME].max()
         t_count = len(weather_t_arr) - max_home_time_delta
-        for t_idx in range(0, t_count, self._predict_step):
+        for t_idx in range(0, t_count, self._prediction_step):
             need_t_by_homes = self._get_need_t_in_homes(t_idx, weather_t_arr)
             need_boiler_t = self._calc_need_boiler_t_by_homes_t(need_t_by_homes)
-            for i in range(self._predict_step):
+            for i in range(self._prediction_step):
                 predicted_boiler_t.append(need_boiler_t)
             print(f"Predicted {t_idx}/{t_count}")
 
