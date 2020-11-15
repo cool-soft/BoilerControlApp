@@ -20,9 +20,9 @@ if __name__ == '__main__':
     optimized_t_table = load_optimized_t_table()
     temp_graph = load_t_graph()
 
-    weather_t_provider = ForecastWeatherTProvider()
-    weather_t_df = weather_t_provider.get_forecast_weather_t(min_date, max_date)
-    weather_t = weather_t_df[config.WEATHER_T_COLUMN_NAME].to_numpy()
+    forecast_weather_t_provider = ForecastWeatherTProvider()
+    forecast_weather_t_df = forecast_weather_t_provider.get_forecast_weather_t(min_date, max_date)
+    forecast_weather_t = forecast_weather_t_df[config.WEATHER_T_COLUMN_NAME].to_numpy()
 
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_prediction_step(prediction_step)
@@ -30,12 +30,12 @@ if __name__ == '__main__':
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
     boiler_t_predictor.set_temp_graph(temp_graph)
 
-    predicted_boiler_t = boiler_t_predictor.predict_on_weather_t_arr(weather_t)
-    dates = weather_t_df[config.TIMESTAMP_COLUMN_NAME].to_list()
+    predicted_boiler_t = boiler_t_predictor.predict_on_weather_t_arr(forecast_weather_t)
+    dates = forecast_weather_t_df[config.TIMESTAMP_COLUMN_NAME].to_list()
     dates = dates[:len(predicted_boiler_t)]
 
     plt.plot(dates, predicted_boiler_t, label="Predicted boiler t")
-    plt.plot(dates, weather_t[:len(predicted_boiler_t)], label="Weather t")
+    plt.plot(dates, forecast_weather_t[:len(predicted_boiler_t)], label="Weather t")
 
     plt.legend()
     plt.show()
