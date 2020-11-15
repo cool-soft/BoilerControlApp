@@ -6,9 +6,7 @@ import config
 from modules.forecast_weather_t_provider import ForecastWeatherTProvider
 from modules.boiler_t_predictor import BoilerTPredictor
 from modules.home_deltas_utils import load_homes_time_deltas
-from modules.io_utils import (
-    load_optimized_t_table
-)
+from modules.io_utils import load_optimized_t_table
 from modules.t_graph_utils import load_t_graph
 
 
