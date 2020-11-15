@@ -10,7 +10,7 @@ from modules.preprocess_utils import (
     convert_date_and_time_to_timestamp,
     filter_by_timestamp,
     get_min_max_dates_from_dataframe,
-
+    rename_column
 )
 
 import pandas as pd
@@ -61,10 +61,11 @@ class ForecastWeatherTProvider:
 
     # noinspection PyMethodMayBeStatic
     def _preprocess_weather_t(self, df):
+        df = rename_column(df, config.SOFT_M_WEATHER_T_COLUMN_NAME, config.WEATHER_T_COLUMN_NAME)
         df = convert_date_and_time_to_timestamp(df)
         df = round_timestamp(df)
         min_date, max_date = get_min_max_dates_from_dataframe(df)
-        df = interpolate_t(df, min_date, max_date, t_column_name="temp")
+        df = interpolate_t(df, min_date, max_date, t_column_name=config.WEATHER_T_COLUMN_NAME)
         df = remove_duplicates_by_timestamp(df)
         return df
 
