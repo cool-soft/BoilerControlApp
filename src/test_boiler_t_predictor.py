@@ -14,7 +14,7 @@ from modules.t_graph_utils import load_t_graph
 
 if __name__ == '__main__':
     min_date = datetime.now()
-    max_date = min_date + (20 * config.TIME_STEP)
+    max_date = min_date + (60 * config.TIME_STEP)
 
     window_size = 5
     smooth_size = 2
@@ -36,6 +36,10 @@ if __name__ == '__main__':
 
     predicted_boiler_t = boiler_t_predictor.predict_on_weather_t_arr(weather_t)
     dates = weather_t_df[config.TIMESTAMP_COLUMN_NAME].to_list()
+    dates = dates[:len(predicted_boiler_t)]
 
-    plt.plot(dates[:len(predicted_boiler_t)], predicted_boiler_t)
+    plt.plot(dates, predicted_boiler_t, label="Predicted boiler t")
+    plt.plot(dates, weather_t[:len(predicted_boiler_t)], label="Weather t")
+
+    plt.legend()
     plt.show()
