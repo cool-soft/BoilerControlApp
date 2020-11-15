@@ -4,8 +4,7 @@ import config
 class BoilerTPredictor:
 
     def __init__(self):
-        self._window_size = 5
-        self._smooth_size = 2
+        self._predict_step = 5
         self._optimized_t_table = None
         self._homes_time_deltas = None
         self._temp_graph = None
@@ -14,11 +13,8 @@ class BoilerTPredictor:
     def set_homes_time_deltas(self, homes_time_deltas):
         self._homes_time_deltas = homes_time_deltas
 
-    def set_window_size(self, window_size):
-        self._window_size = window_size
-
-    def set_smooth_size(self, smooth_size):
-        self._smooth_size = smooth_size
+    def set_predict_step(self, predict_step):
+        self._predict_step = predict_step
 
     def set_optimized_t_table(self, t_table):
         self._optimized_t_table = t_table
@@ -33,15 +29,14 @@ class BoilerTPredictor:
         print("Predicting")
 
         predicted_boiler_t = []
-        start_t_idx = self._window_size - self._smooth_size - 1
-        max_home_time_delta = self._homes_time_deltas["time_delta"].max()
-        end_t_idx = len(weather_t_arr) - max_home_time_delta + self._smooth_size
-        for t_idx in range(start_t_idx, end_t_idx, self._window_size):
+        max_home_time_delta = self._homes_time_deltas[config.TIME_DELTA_COLUMN_NAME].max()
+        t_count = len(weather_t_arr) - max_home_time_delta
+        for t_idx in range(0, t_count, self._predict_step):
             need_t_by_homes = self._get_need_t_in_homes(t_idx, weather_t_arr)
             need_boiler_t = self._calc_need_boiler_t_by_homes_t(need_t_by_homes)
-            for i in range(self._window_size):
+            for i in range(self._predict_step):
                 predicted_boiler_t.append(need_boiler_t)
-            print(f"Predicted {t_idx}/{end_t_idx}")
+            print(f"Predicted {t_idx}/{t_count}")
 
         return predicted_boiler_t
 

@@ -16,8 +16,7 @@ if __name__ == '__main__':
     min_date = datetime.now()
     max_date = min_date + (60 * config.TIME_STEP)
 
-    window_size = 5
-    smooth_size = 2
+    predict_step = 5
 
     homes_time_deltas = load_homes_time_deltas()
     optimized_t_table = load_optimized_t_table()
@@ -28,8 +27,7 @@ if __name__ == '__main__':
     weather_t = weather_t_df[config.WEATHER_T_COLUMN_NAME].to_numpy()
 
     boiler_t_predictor = BoilerTPredictor()
-    boiler_t_predictor.set_smooth_size(smooth_size)
-    boiler_t_predictor.set_window_size(window_size)
+    boiler_t_predictor.set_predict_step(predict_step)
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
     boiler_t_predictor.set_temp_graph(temp_graph)
