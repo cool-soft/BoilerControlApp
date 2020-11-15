@@ -1,6 +1,6 @@
 
 import threading
-
+from datetime import datetime
 
 import config
 from modules.preprocess_utils import (
@@ -75,5 +75,7 @@ class ForecastWeatherTProvider:
 
     def compact_cache(self):
         with self._cache_access_lock:
-            pass
-        # TODO: this
+            time_now = datetime.now()
+            old_values_condition = self._forecast_weather_t_cache[config.TIMESTAMP_COLUMN_NAME] < time_now
+            old_values_idx = self._forecast_weather_t_cache[old_values_condition].index
+            self._forecast_weather_t_cache.drop(old_values_idx, inplace=True)
