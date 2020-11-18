@@ -34,14 +34,14 @@ def round_datetime(date_time):
     return date_time
 
 
-def interpolate_t(df, min_datetime, max_datetime, t_column_name=consts.BOILER_T_COLUMN_NAME):
+def interpolate_t(df, min_datetime, max_datetime, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     df = interpolate_first_t(df, min_datetime, t_column_name)
     df = interpolate_last_t(df, max_datetime, t_column_name)
     df = interpolate_passes_of_t(df, t_column_name)
     return df
 
 
-def interpolate_passes_of_t(df, t_column_name=consts.BOILER_T_COLUMN_NAME):
+def interpolate_passes_of_t(df, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     df.sort_values(by=consts.TIMESTAMP_COLUMN_NAME, ignore_index=True, inplace=True)
 
     interpolated_values = []
@@ -79,7 +79,7 @@ def interpolate_passes_of_t(df, t_column_name=consts.BOILER_T_COLUMN_NAME):
     return df
 
 
-def interpolate_first_t(df, min_datetime, t_column_name=consts.BOILER_T_COLUMN_NAME):
+def interpolate_first_t(df, min_datetime, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     min_datetime = round_datetime(min_datetime)
 
     first_datetime_idx = df[consts.TIMESTAMP_COLUMN_NAME].idxmin()
@@ -94,7 +94,7 @@ def interpolate_first_t(df, min_datetime, t_column_name=consts.BOILER_T_COLUMN_N
     return df
 
 
-def interpolate_last_t(df, max_datetime, t_column_name=consts.BOILER_T_COLUMN_NAME):
+def interpolate_last_t(df, max_datetime, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     max_datetime = round_datetime(max_datetime)
 
     last_datetime_idx = df[consts.TIMESTAMP_COLUMN_NAME].idxmax()
@@ -153,12 +153,12 @@ def reset_index(df):
     return df
 
 
-def exclude_rows_without_value(df, column_name=consts.BOILER_T_COLUMN_NAME):
+def exclude_rows_without_value(df, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     df = df[df[column_name].notnull()]
     return df
 
 
-def convert_to_float(df, column_name=consts.BOILER_T_COLUMN_NAME):
+def convert_to_float(df, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     df[column_name] = df[column_name].apply(float_converter)
     return df
 
@@ -170,12 +170,12 @@ def float_converter(value):
     return value
 
 
-def remove_t_bad_zeros(df, column_name=consts.BOILER_T_COLUMN_NAME):
+def remove_t_bad_zeros(df, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     df[column_name] = df[column_name].apply(lambda t: t > 100 and t / 100 or t)
     return df
 
 
-def remove_disabled_t(df, disabled_t_threshold, column_name=consts.BOILER_T_COLUMN_NAME):
+def remove_disabled_t(df, disabled_t_threshold, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     if disabled_t_threshold:
         df = df[df[column_name] > disabled_t_threshold]
     return df
@@ -203,7 +203,7 @@ def rename_column(df, src_name, dst_name):
     return df
 
 
-def round_down(df, column_name=consts.BOILER_T_COLUMN_NAME):
+def round_down(df, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
     df[column_name] = df[column_name].apply(math.floor)
     return df
 

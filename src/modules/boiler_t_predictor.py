@@ -4,7 +4,6 @@ from modules import consts
 class BoilerTPredictor:
 
     def __init__(self):
-        self._prediction_step = 5
         self._optimized_t_table = None
         self._homes_time_deltas = None
         self._temp_graph = None
@@ -12,9 +11,6 @@ class BoilerTPredictor:
 
     def set_homes_time_deltas(self, homes_time_deltas):
         self._homes_time_deltas = homes_time_deltas
-
-    def set_prediction_step(self, prediction_step):
-        self._prediction_step = prediction_step
 
     def set_optimized_t_table(self, t_table):
         self._optimized_t_table = t_table
@@ -29,11 +25,10 @@ class BoilerTPredictor:
         predicted_boiler_t = []
         max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
         t_count = len(weather_t_arr) - max_home_time_delta
-        for t_idx in range(0, t_count, self._prediction_step):
+        for t_idx in range(t_count):
             need_t_by_homes = self._get_need_t_in_homes(t_idx, weather_t_arr)
             need_boiler_t = self._calc_need_boiler_t_by_homes_t(need_t_by_homes)
-            for i in range(self._prediction_step):
-                predicted_boiler_t.append(need_boiler_t)
+            predicted_boiler_t.append(need_boiler_t)
 
         return predicted_boiler_t
 
@@ -50,11 +45,11 @@ class BoilerTPredictor:
         return need_temps
 
     def _get_need_t_by_temp_graph(self, weather_t):
-        available_t = self._temp_graph[self._temp_graph[
-                                           consts.WEATHER_T_COLUMN_NAME] <= weather_t]
+        available_t_condition = self._temp_graph[consts.WEATHER_T_COLUMN_NAME] <= weather_t
+        available_t = self._temp_graph[available_t_condition]
         need_t_in_home_by_t_graph = available_t[consts.HOME_T_COLUMN_NAME].min()
-        need_t = need_t_in_home_by_t_graph * self._home_t_dispersion_coefficient
-        return need_t
+        need_t_in_home = need_t_in_home_by_t_graph * self._home_t_dispersion_coefficient
+        return need_t_in_home
 
     def _calc_need_boiler_t_by_homes_t(self, need_t_by_homes):
         iterator = iter(need_t_by_homes.items())
@@ -64,5 +59,5 @@ class BoilerTPredictor:
             need_t_condition = need_t_condition & (self._optimized_t_table[home_name] >= home_need_t)
 
         need_boiler_t = self._optimized_t_table[need_t_condition]
-        need_boiler_t = need_boiler_t[consts.BOILER_COLUMN_NAME].min()
+        need_boiler_t = need_boiler_t[consts.BOILER_NAME_COLUMN_NAME].min()
         return need_boiler_t
