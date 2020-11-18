@@ -27,17 +27,17 @@ class ForecastWeatherTProvider:
 
     def get_forecast_weather_t(self, min_date, max_date):
         with self._cache_access_lock:
-            if self._is_requested_date_not_in_cache(max_date):
+            if self._is_requested_datetime_not_in_cache(max_date):
                 self._update_cache_from_server()
 
             return self._get_from_cache(min_date, max_date)
 
-    def _is_requested_date_not_in_cache(self, requested_date):
+    def _is_requested_datetime_not_in_cache(self, requested_datetime):
         with self._cache_access_lock:
             _, max_cached_date = get_min_max_timestamp(self._forecast_weather_t_cache)
             if max_cached_date is None:
                 return True
-            if max_cached_date < requested_date:
+            if max_cached_date < requested_datetime:
                 return True
             return False
 
