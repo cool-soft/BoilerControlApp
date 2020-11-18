@@ -236,7 +236,7 @@ def parse_timestamp(time_str):
     return date_time
 
 
-def get_min_max_datetime(df):
+def get_min_max_timestamp(df):
     if df.empty:
         return None, None
 

@@ -5,13 +5,13 @@ from datetime import datetime
 import config
 from modules import consts
 from modules.preprocess_utils import (
+    rename_column,
     interpolate_t,
     remove_duplicates_by_timestamp,
-    round_timestamp,
     convert_date_and_time_to_timestamp,
     filter_by_timestamp,
-    get_min_max_datetime,
-    rename_column,
+    get_min_max_timestamp,
+    round_timestamp,
     round_datetime
 )
 
@@ -33,12 +33,13 @@ class ForecastWeatherTProvider:
             return self._get_from_cache(min_date, max_date)
 
     def _is_requested_date_not_in_cache(self, requested_date):
-        _, max_cached_date = get_min_max_datetime(self._forecast_weather_t_cache)
-        if max_cached_date is None:
-            return True
-        if max_cached_date < requested_date:
-            return True
-        return False
+        with self._cache_access_lock:
+            _, max_cached_date = get_min_max_timestamp(self._forecast_weather_t_cache)
+            if max_cached_date is None:
+                return True
+            if max_cached_date < requested_date:
+                return True
+            return False
 
     def _update_cache_from_server(self):
         df = self._request_from_server()
@@ -59,11 +60,10 @@ class ForecastWeatherTProvider:
 
     # noinspection PyMethodMayBeStatic
     def _preprocess_weather_t(self, df):
-        df = rename_column(df, consts.SOFT_M_WEATHER_T_COLUMN_NAME,
-                           consts.WEATHER_T_COLUMN_NAME)
+        df = rename_column(df, consts.SOFT_M_WEATHER_T_COLUMN_NAME, consts.WEATHER_T_COLUMN_NAME)
         df = convert_date_and_time_to_timestamp(df)
         df = round_timestamp(df)
-        min_date, max_date = get_min_max_datetime(df)
+        min_date, max_date = get_min_max_timestamp(df)
         df = interpolate_t(df, min_date, max_date, t_column_name=consts.WEATHER_T_COLUMN_NAME)
         df = remove_duplicates_by_timestamp(df)
         return df
