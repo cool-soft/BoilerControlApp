@@ -53,10 +53,10 @@ class BoilerTPredictor:
 
     def _calc_need_boiler_t_by_homes_t(self, need_t_by_homes):
         iterator = iter(need_t_by_homes.items())
-        home_name, home_need_t = next(iterator)
-        need_t_condition = self._optimized_t_table[home_name] >= home_need_t
-        for home_name, home_need_t in iterator:
-            need_t_condition = need_t_condition & (self._optimized_t_table[home_name] >= home_need_t)
+        home_name, need_home_t = next(iterator)
+        need_t_condition = self._optimized_t_table[home_name] >= need_home_t
+        for home_name, need_home_t in iterator:
+            need_t_condition = need_t_condition & (self._optimized_t_table[home_name] >= need_home_t)
 
         need_boiler_t = self._optimized_t_table[need_t_condition][consts.BOILER_NAME_COLUMN_NAME].min()
         return need_boiler_t
