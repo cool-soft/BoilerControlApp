@@ -3,23 +3,22 @@ from matplotlib import pyplot as plt
 from datetime import datetime
 
 import config
-import consts
-from modules.boiler_t_predictor import ForecastWeatherTProvider
+from modules import consts
+from modules.forecast_weather_t_provider import ForecastWeatherTProvider
 from modules.boiler_t_predictor import BoilerTPredictor
-from modules.boiler_t_predictor import load_homes_time_deltas
-from modules.boiler_t_predictor import load_optimized_t_table
-from modules.boiler_t_predictor import load_t_graph
+import pandas as pd
 
+from modules.io_utils import load_dataframe
 
 if __name__ == '__main__':
     min_date = datetime.now()
-    max_date = min_date + (60 * config.TIME_STEP)
+    max_date = min_date + (60 * consts.TIME_STEP)
 
     prediction_step = 3
 
-    homes_time_deltas = load_homes_time_deltas()
-    optimized_t_table = load_optimized_t_table()
-    temp_graph = load_t_graph()
+    homes_time_deltas = pd.read_csv(config.HOMES_DELTAS_PATH)
+    optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
+    temp_graph = pd.read_csv(config.T_GRAPH_PATH)
 
     forecast_weather_t_provider = ForecastWeatherTProvider()
     forecast_weather_t_df = forecast_weather_t_provider.get_forecast_weather_t(min_date, max_date)

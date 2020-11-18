@@ -6,8 +6,7 @@ import re
 import numpy as np
 import pandas as pd
 
-import config
-import consts
+from modules import consts
 
 
 def round_timestamp(df):
@@ -60,11 +59,11 @@ def interpolate_passes_of_t(df, t_column_name=consts.BOILER_T_COLUMN_NAME):
         next_t = row[t_column_name]
 
         datetime_delta = next_datetime - previous_datetime
-        if datetime_delta > config.TIME_STEP:
-            number_of_passes = int(datetime_delta.total_seconds() // config.TIME_STEP.seconds) - 1
+        if datetime_delta > consts.TIME_STEP:
+            number_of_passes = int(datetime_delta.total_seconds() // consts.TIME_STEP.seconds) - 1
             t_step = (next_t - previous_t) / number_of_passes
             for pass_n in range(1, number_of_passes + 1):
-                interpolated_datetime = previous_datetime + (config.TIME_STEP * pass_n)
+                interpolated_datetime = previous_datetime + (consts.TIME_STEP * pass_n)
                 interpolated_t = previous_t + (t_step * pass_n)
                 interpolated_values.append({
                     consts.TIMESTAMP_COLUMN_NAME: interpolated_datetime,

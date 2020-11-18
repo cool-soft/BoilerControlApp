@@ -3,7 +3,7 @@ import threading
 from datetime import datetime
 
 import config
-import consts
+from modules import consts
 from modules.preprocess_utils import (
     interpolate_t,
     remove_duplicates_by_timestamp,

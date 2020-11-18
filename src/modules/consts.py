@@ -1,3 +1,6 @@
+import datetime
+
+TIME_STEP = datetime.timedelta(0, 0, 0, 0, 3)  # 3 minutes
 
 TIMESTAMP_COLUMN_NAME = "dTimeStamp"
 BOILER_COLUMN_NAME = "BOILER"

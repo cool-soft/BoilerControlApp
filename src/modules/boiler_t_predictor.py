@@ -1,5 +1,4 @@
-
-import consts
+from modules import consts
 
 
 class BoilerTPredictor:
