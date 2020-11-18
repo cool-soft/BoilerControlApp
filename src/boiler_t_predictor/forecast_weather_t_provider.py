@@ -3,13 +3,14 @@ import threading
 from datetime import datetime
 
 import config
-from modules.preprocess_utils import (
+import consts
+from .utils.preprocess_utils import (
     interpolate_t,
     remove_duplicates_by_timestamp,
     round_timestamp,
     convert_date_and_time_to_timestamp,
     filter_by_timestamp,
-    get_min_max_dates_from_dataframe,
+    get_min_max_datetime,
     rename_column
 )
 
@@ -33,7 +34,7 @@ class ForecastWeatherTProvider:
             return self._get_from_cache(min_date, max_date)
 
     def _is_requested_date_not_in_cache(self, requested_date):
-        _, max_cached_date = get_min_max_dates_from_dataframe(self._forecast_weather_t_cache)
+        _, max_cached_date = get_min_max_datetime(self._forecast_weather_t_cache)
         if max_cached_date is None:
             return True
         if max_cached_date < requested_date:
@@ -54,11 +55,12 @@ class ForecastWeatherTProvider:
 
     # noinspection PyMethodMayBeStatic
     def _preprocess_weather_t(self, df):
-        df = rename_column(df, config.SOFT_M_WEATHER_T_COLUMN_NAME, config.WEATHER_T_COLUMN_NAME)
+        df = rename_column(df, consts.SOFT_M_WEATHER_T_COLUMN_NAME,
+                           consts.WEATHER_T_COLUMN_NAME)
         df = convert_date_and_time_to_timestamp(df)
         df = round_timestamp(df)
-        min_date, max_date = get_min_max_dates_from_dataframe(df)
-        df = interpolate_t(df, min_date, max_date, t_column_name=config.WEATHER_T_COLUMN_NAME)
+        min_date, max_date = get_min_max_datetime(df)
+        df = interpolate_t(df, min_date, max_date, t_column_name=consts.WEATHER_T_COLUMN_NAME)
         df = remove_duplicates_by_timestamp(df)
         return df
 
@@ -76,6 +78,7 @@ class ForecastWeatherTProvider:
     def compact_cache(self):
         with self._cache_access_lock:
             time_now = datetime.now()
-            old_values_condition = self._forecast_weather_t_cache[config.TIMESTAMP_COLUMN_NAME] < time_now
+            old_values_condition = self._forecast_weather_t_cache[
+                                       consts.TIMESTAMP_COLUMN_NAME] < time_now
             old_values_idx = self._forecast_weather_t_cache[old_values_condition].index
             self._forecast_weather_t_cache.drop(old_values_idx, inplace=True)

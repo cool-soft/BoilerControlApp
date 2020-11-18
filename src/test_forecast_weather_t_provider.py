@@ -2,7 +2,7 @@
 from datetime import datetime
 
 import config
-from modules.forecast_weather_t_provider import ForecastWeatherTProvider
+from boiler_t_predictor import ForecastWeatherTProvider
 
 
 if __name__ == '__main__':

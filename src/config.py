@@ -3,15 +3,6 @@ import datetime
 
 TIME_STEP = datetime.timedelta(0, 0, 0, 0, 3)  # 3 minutes
 
-TIMESTAMP_COLUMN_NAME = "dTimeStamp"
-BOILER_COLUMN_NAME = "BOILER"
-WEATHER_T_COLUMN_NAME = "weather_t"
-HOME_T_COLUMN_NAME = "home_t"
-TIME_DELTA_COLUMN_NAME = "time_delta"
-HOME_NAME_COLUMN_NAME = "home_name"
-
-SOFT_M_WEATHER_T_COLUMN_NAME = "temp"
-
 HOME_T_DISPERSION_COEFFICIENT = 0.97
 
 REMOTE_HOST = "https://lysva.agt.town/"
