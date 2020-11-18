@@ -1,5 +1,4 @@
 
-import config
 import consts
 
 
@@ -10,7 +9,7 @@ class BoilerTPredictor:
         self._optimized_t_table = None
         self._homes_time_deltas = None
         self._temp_graph = None
-        self._home_t_dispersion_coefficient = config.HOME_T_DISPERSION_COEFFICIENT
+        self._home_t_dispersion_coefficient = 1
 
     def set_homes_time_deltas(self, homes_time_deltas):
         self._homes_time_deltas = homes_time_deltas

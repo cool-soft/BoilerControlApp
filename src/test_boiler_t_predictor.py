@@ -4,11 +4,11 @@ from datetime import datetime
 
 import config
 import consts
-from boiler_t_predictor import ForecastWeatherTProvider
-from boiler_t_predictor.boiler_t_predictor import BoilerTPredictor
-from boiler_t_predictor import load_homes_time_deltas
-from boiler_t_predictor import load_optimized_t_table
-from boiler_t_predictor import load_t_graph
+from modules.boiler_t_predictor import ForecastWeatherTProvider
+from modules.boiler_t_predictor import BoilerTPredictor
+from modules.boiler_t_predictor import load_homes_time_deltas
+from modules.boiler_t_predictor import load_optimized_t_table
+from modules.boiler_t_predictor import load_t_graph
 
 
 if __name__ == '__main__':

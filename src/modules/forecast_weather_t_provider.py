@@ -4,7 +4,7 @@ from datetime import datetime
 
 import config
 import consts
-from .utils.preprocess_utils import (
+from modules.preprocess_utils import (
     interpolate_t,
     remove_duplicates_by_timestamp,
     round_timestamp,

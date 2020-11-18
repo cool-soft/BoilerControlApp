@@ -237,21 +237,6 @@ def parse_timestamp(time_str):
     return date_time
 
 
-def prepare_t_data(data, min_date, max_date, disabled_t_threshold=0, t_column_name=consts.BOILER_T_COLUMN_NAME, ntc=1):
-    df = data[data[consts.NTC_COLUMN_NAME] == ntc].copy()
-    df = df[[t_column_name, consts.TIMESTAMP_COLUMN_NAME]]
-    df = exclude_rows_without_value(df, t_column_name)
-    df = convert_str_to_timestamp(df)
-    df = filter_by_timestamp(df, min_date, max_date)
-    df = convert_to_float(df, t_column_name)
-    df = round_timestamp(df)
-    df = remove_t_bad_zeros(df, t_column_name)
-    df = remove_disabled_t(df, disabled_t_threshold, t_column_name)
-    df = interpolate_t(df, min_date, max_date, t_column_name=t_column_name)
-    df = remove_duplicates_by_timestamp(df)
-    return df
-
-
 def get_min_max_datetime(df):
     if df.empty:
         return None, None
