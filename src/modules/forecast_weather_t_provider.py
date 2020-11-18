@@ -11,7 +11,8 @@ from modules.preprocess_utils import (
     convert_date_and_time_to_timestamp,
     filter_by_timestamp,
     get_min_max_datetime,
-    rename_column
+    rename_column,
+    round_datetime
 )
 
 import pandas as pd
@@ -27,9 +28,7 @@ class ForecastWeatherTProvider:
     def get_forecast_weather_t(self, min_date, max_date):
         with self._cache_access_lock:
             if self._is_requested_date_not_in_cache(max_date):
-                df = self._request_from_server()
-                df = self._preprocess_weather_t(df)
-                self._update_cache(df)
+                self._update_cache_from_server()
 
             return self._get_from_cache(min_date, max_date)
 
@@ -40,6 +39,11 @@ class ForecastWeatherTProvider:
         if max_cached_date < requested_date:
             return True
         return False
+
+    def _update_cache_from_server(self):
+        df = self._request_from_server()
+        df = self._preprocess_weather_t(df)
+        self._update_cache(df)
 
     # noinspection PyMethodMayBeStatic
     def _request_from_server(self):
@@ -65,20 +69,21 @@ class ForecastWeatherTProvider:
         return df
 
     def _update_cache(self, df):
-        new_df = pd.concat(
-            [self._forecast_weather_t_cache, df],
-            ignore_index=True
-        )
-        new_df = remove_duplicates_by_timestamp(new_df)
-        self._forecast_weather_t_cache = new_df
+        with self._cache_access_lock:
+            new_df = pd.concat(
+                [self._forecast_weather_t_cache, df],
+                ignore_index=True
+            )
+            new_df = remove_duplicates_by_timestamp(new_df)
+            self._forecast_weather_t_cache = new_df
 
     def _get_from_cache(self, min_date, max_date):
-        return filter_by_timestamp(self._forecast_weather_t_cache, min_date, max_date).copy()
+        with self._cache_access_lock:
+            return filter_by_timestamp(self._forecast_weather_t_cache, min_date, max_date).copy()
 
     def compact_cache(self):
         with self._cache_access_lock:
-            time_now = datetime.now()
-            old_values_condition = self._forecast_weather_t_cache[
-                                       consts.TIMESTAMP_COLUMN_NAME] < time_now
+            time_now = round_datetime(datetime.now())
+            old_values_condition = self._forecast_weather_t_cache[consts.TIMESTAMP_COLUMN_NAME] < time_now
             old_values_idx = self._forecast_weather_t_cache[old_values_condition].index
             self._forecast_weather_t_cache.drop(old_values_idx, inplace=True)
