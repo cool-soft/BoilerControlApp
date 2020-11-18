@@ -1,6 +1,5 @@
 
 HOME_T_DISPERSION_COEFFICIENT = 0.97
-PREDICTION_STEP = 5
 
 REMOTE_HOST = "https://lysva.agt.town/"
 BOILER_ID = 1

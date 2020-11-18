@@ -25,7 +25,6 @@ if __name__ == '__main__':
     forecast_weather_t = forecast_weather_t_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
 
     boiler_t_predictor = BoilerTPredictor()
-    boiler_t_predictor.set_prediction_step(prediction_step)
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
     boiler_t_predictor.set_temp_graph(temp_graph)

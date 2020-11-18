@@ -58,6 +58,5 @@ class BoilerTPredictor:
         for home_name, home_need_t in iterator:
             need_t_condition = need_t_condition & (self._optimized_t_table[home_name] >= home_need_t)
 
-        need_boiler_t = self._optimized_t_table[need_t_condition]
-        need_boiler_t = need_boiler_t[consts.BOILER_NAME_COLUMN_NAME].min()
+        need_boiler_t = self._optimized_t_table[need_t_condition][consts.BOILER_NAME_COLUMN_NAME].min()
         return need_boiler_t
