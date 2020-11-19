@@ -26,6 +26,8 @@ def round_datetime(date_time):
     time_step = consts.TIME_STEP.total_seconds() // 60
     if minute % time_step != 0:
         minute = math.ceil(minute / time_step) * time_step
+        minute = int(minute)
+        minute = minute % 60
 
     date_time = datetime.datetime(year, month, day, hour, minute, second, millisecond)
     return date_time
