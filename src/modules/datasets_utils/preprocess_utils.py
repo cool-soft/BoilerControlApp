@@ -14,12 +14,12 @@ def round_timestamp(df):
     return df
 
 
-def round_datetime(date_time):
-    year = date_time.year
-    month = date_time.month
-    day = date_time.day
-    hour = date_time.hour
-    minute = date_time.minute
+def round_datetime(datetime_):
+    year = datetime_.year
+    month = datetime_.month
+    day = datetime_.day
+    hour = datetime_.hour
+    minute = datetime_.minute
     second = 0
     millisecond = 0
 
@@ -29,8 +29,8 @@ def round_datetime(date_time):
         minute = int(minute)
         minute = minute % 60
 
-    date_time = datetime.datetime(year, month, day, hour, minute, second, millisecond)
-    return date_time
+    datetime_ = datetime.datetime(year, month, day, hour, minute, second, millisecond)
+    return datetime_
 
 
 def interpolate_t(df, min_datetime, max_datetime, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
