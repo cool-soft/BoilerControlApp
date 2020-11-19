@@ -1,6 +1,6 @@
 import datetime
 
-TIME_STEP = datetime.timedelta(0, 0, 0, 0, 3)  # 3 minutes
+TIME_STEP = datetime.timedelta(minutes=3)
 
 TIMESTAMP_COLUMN_NAME = "dTimeStamp"
 WEATHER_T_COLUMN_NAME = "weather_t"

@@ -23,12 +23,9 @@ def round_datetime(date_time):
     second = 0
     millisecond = 0
 
-    if minute % 3 != 0:
-        if (minute - 1) % 3 == 0:
-            minute -= 1
-        elif (minute + 1) % 3 == 0:
-            minute += 1
-        minute = minute % 60
+    time_step = consts.TIME_STEP.total_seconds() // 60
+    if minute % time_step != 0:
+        minute = math.ceil(minute / time_step) * time_step
 
     date_time = datetime.datetime(year, month, day, hour, minute, second, millisecond)
     return date_time
@@ -112,7 +109,7 @@ def interpolate_last_t(df, max_datetime, t_column_name=consts.BOILER_OUT_PIPE_T_
 def filter_by_timestamp(df, min_date, max_date):
     df = df[
         (df[consts.TIMESTAMP_COLUMN_NAME] >= min_date) &
-        (df[consts.TIMESTAMP_COLUMN_NAME] <= max_date)
+        (df[consts.TIMESTAMP_COLUMN_NAME] < max_date)
         ]
     return df
 

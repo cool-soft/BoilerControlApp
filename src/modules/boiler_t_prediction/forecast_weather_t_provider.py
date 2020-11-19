@@ -4,7 +4,7 @@ from datetime import datetime
 
 import config
 from modules import consts
-from modules.preprocess_utils import (
+from modules.datasets_utils.preprocess_utils import (
     rename_column,
     interpolate_t,
     remove_duplicates_by_timestamp,
@@ -26,6 +26,9 @@ class ForecastWeatherTProvider:
         self._cache_access_lock = threading.RLock()
 
     def get_forecast_weather_t(self, min_date, max_date):
+        min_date = round_datetime(min_date)
+        max_date = round_datetime(max_date)
+
         with self._cache_access_lock:
             if self._is_requested_datetime_not_in_cache(max_date):
                 self._update_cache_from_server()
@@ -37,7 +40,7 @@ class ForecastWeatherTProvider:
             _, max_cached_date = get_min_max_timestamp(self._forecast_weather_t_cache)
             if max_cached_date is None:
                 return True
-            if max_cached_date < requested_datetime:
+            if max_cached_date <= requested_datetime:
                 return True
             return False
 
