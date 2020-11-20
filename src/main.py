@@ -38,4 +38,4 @@ if __name__ == '__main__':
     boiler_t_prediction_controller = BoilerTPredictionController()
     boiler_t_prediction_controller.connect_methods_to_app(app)
 
-    app.run(debug=True)
+    app.run(port=config.HTTP_PORT, debug=config.FLASK_DEBUG)
