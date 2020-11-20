@@ -224,11 +224,7 @@ def convert_str_to_timestamp(df):
     return df
 
 
-def parse_datetime(datetime_as_str):
-    datetime_patterns = [
-        r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})\s(?P<hours>\d{2}):(?P<minutes>\d{2}).{7}",
-        r"(?P<day>\d{2})\.(?P<month>\d{2})\.(?P<year>\d{4})\s(?P<hours>\d{1,2}):(?P<minutes>\d{2})"
-    ]
+def parse_datetime(datetime_as_str, datetime_patterns=consts.DATETIME_PATTERNS):
 
     for pattern in datetime_patterns:
         parsed = re.match(pattern, datetime_as_str)
