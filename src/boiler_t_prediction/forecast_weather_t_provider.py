@@ -3,8 +3,8 @@ import threading
 from datetime import datetime
 
 import config
-from modules import consts
-from modules.datasets_utils.preprocess_utils import (
+import consts
+from datasets_utils.preprocess_utils import (
     rename_column,
     interpolate_t,
     remove_duplicates_by_timestamp,

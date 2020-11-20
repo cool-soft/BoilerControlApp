@@ -3,8 +3,8 @@ from datetime import datetime
 
 import pandas as pd
 
-from modules import consts
-from modules.datasets_utils.preprocess_utils import round_datetime
+import consts
+from datasets_utils.preprocess_utils import round_datetime
 
 
 class AutomatedBoilerTPredictor:
@@ -43,7 +43,7 @@ class AutomatedBoilerTPredictor:
         predicted_boiler_t_dates = predicted_boiler_t_dates[:len(predicted_boiler_t_arr)]
 
         predicted_boiler_t_df = pd.DataFrame({
-            consts.BOILER_OUT_PIPE_T_COLUMN_NAME: predicted_boiler_t_arr,
+            consts.FORWARD_PIPE_COLUMN_NAME: predicted_boiler_t_arr,
             consts.TIMESTAMP_COLUMN_NAME: predicted_boiler_t_dates
         })
 

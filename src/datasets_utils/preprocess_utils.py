@@ -4,9 +4,8 @@ import math
 import re
 
 import numpy as np
-import pandas as pd
 
-from modules import consts
+import consts
 
 
 def round_timestamp(df):
@@ -21,26 +20,28 @@ def round_datetime(datetime_):
     hour = datetime_.hour
     minute = datetime_.minute
     second = 0
-    millisecond = 0
+    microsecond = 0
 
-    time_step = consts.TIME_STEP.total_seconds() // 60
-    if minute % time_step != 0:
-        minute = math.ceil(minute / time_step) * time_step
+    time_step_in_seconds = consts.TIME_STEP.total_seconds() // 60
+    if minute % time_step_in_seconds != 0:
+        minute = math.ceil(minute / time_step_in_seconds) * time_step_in_seconds
         minute = int(minute)
         minute = minute % 60
 
-    datetime_ = datetime.datetime(year, month, day, hour, minute, second, millisecond)
+    datetime_ = datetime.datetime(year, month, day, hour, minute, second, microsecond)
     return datetime_
 
 
-def interpolate_t(df, min_datetime, max_datetime, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
-    df = interpolate_first_t(df, min_datetime, t_column_name)
-    df = interpolate_last_t(df, max_datetime, t_column_name)
+def interpolate_t(df, min_datetime=None, max_datetime=None, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
+    if min_datetime is not None:
+        df = interpolate_first_t(df, min_datetime, t_column_name)
+    if max_datetime is not None:
+        df = interpolate_last_t(df, max_datetime, t_column_name)
     df = interpolate_passes_of_t(df, t_column_name)
     return df
 
 
-def interpolate_passes_of_t(df, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
+def interpolate_passes_of_t(df, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
     df.sort_values(by=consts.TIMESTAMP_COLUMN_NAME, ignore_index=True, inplace=True)
 
     interpolated_values = []
@@ -78,7 +79,7 @@ def interpolate_passes_of_t(df, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NA
     return df
 
 
-def interpolate_first_t(df, min_datetime, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
+def interpolate_first_t(df, min_datetime, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
     min_datetime = round_datetime(min_datetime)
 
     first_datetime_idx = df[consts.TIMESTAMP_COLUMN_NAME].idxmin()
@@ -93,7 +94,7 @@ def interpolate_first_t(df, min_datetime, t_column_name=consts.BOILER_OUT_PIPE_T
     return df
 
 
-def interpolate_last_t(df, max_datetime, t_column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
+def interpolate_last_t(df, max_datetime, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
     max_datetime = round_datetime(max_datetime)
 
     last_datetime_idx = df[consts.TIMESTAMP_COLUMN_NAME].idxmax()
@@ -152,41 +153,43 @@ def reset_index(df):
     return df
 
 
-def exclude_rows_without_value(df, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
+def exclude_rows_without_value(df, column_name=consts.FORWARD_PIPE_COLUMN_NAME):
     df = df[df[column_name].notnull()]
     return df
 
 
-def convert_to_float(df, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
-    df[column_name] = df[column_name].apply(float_converter)
+def convert_to_float(df, column_name=consts.FORWARD_PIPE_COLUMN_NAME):
+    df[column_name] = df[column_name].apply(convert_str_to_float)
     return df
 
 
-def float_converter(value):
+def convert_str_to_float(value):
     if isinstance(value, str):
         value = value.replace(",", ".")
     value = float(value)
     return value
 
 
-def remove_t_bad_zeros(df, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
+def remove_bad_zeros_in_water_t(df, column_name=consts.FORWARD_PIPE_COLUMN_NAME):
     df[column_name] = df[column_name].apply(lambda t: t > 100 and t / 100 or t)
     return df
 
 
-def remove_disabled_t(df, disabled_t_threshold, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
-    if disabled_t_threshold:
-        df = df[df[column_name] > disabled_t_threshold]
+def remove_disabled_t(df, disabled_t_threshold, column_name=consts.FORWARD_PIPE_COLUMN_NAME):
+    if disabled_t_threshold != 0:
+        df = df[df[column_name] >= disabled_t_threshold]
     return df
 
 
 def convert_date_and_time_to_timestamp(df):
     timestamps = []
-    for index, row in df.iterrows():
-        parsed = re.match(r"(?P<hour>\d\d):(?P<min>\d\d):(?P<sec>\d\d)", row[consts.SOFT_M_TIME_COLUMN_NAME])
-        h, m, s = int(parsed.group("hour")), int(parsed.group("min")), int(parsed.group("sec"))
-        time = pd.Timedelta(hours=h, minutes=m, seconds=s)
-        timestamp = row[consts.SOFT_M_DATE_COLUMN_NAME] + time
+    for _, row in df.iterrows():
+        time_as_str = row[consts.SOFT_M_TIME_COLUMN_NAME]
+        time = parse_time(time_as_str)
+
+        date = row[consts.SOFT_M_DATE_COLUMN_NAME]
+
+        timestamp = date + time
         timestamps.append(timestamp)
 
     df[consts.TIMESTAMP_COLUMN_NAME] = timestamps
@@ -196,43 +199,54 @@ def convert_date_and_time_to_timestamp(df):
     return df
 
 
+def parse_time(time_as_str):
+    parsed = re.match(r"(?P<hour>\d\d):(?P<min>\d\d):(?P<sec>\d\d)", time_as_str)
+    hours = int(parsed.group("hour"))
+    minutes = int(parsed.group("min"))
+    seconds = int(parsed.group("sec"))
+    time = datetime.timedelta(hours=hours, minutes=minutes, seconds=seconds)
+    return time
+
+
 def rename_column(df, src_name, dst_name):
     df[dst_name] = df[src_name]
     del df[src_name]
     return df
 
 
-def round_down(df, column_name=consts.BOILER_OUT_PIPE_T_COLUMN_NAME):
+def round_down(df, column_name=consts.FORWARD_PIPE_COLUMN_NAME):
     df[column_name] = df[column_name].apply(math.floor)
     return df
 
 
 def convert_str_to_timestamp(df):
-    df[consts.TIMESTAMP_COLUMN_NAME] = df[consts.TIMESTAMP_COLUMN_NAME].apply(parse_timestamp)
+    df[consts.TIMESTAMP_COLUMN_NAME] = df[consts.TIMESTAMP_COLUMN_NAME].apply(parse_datetime)
     return df
 
 
-def parse_timestamp(time_str):
-    parsed = re.match(
-        r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})\s(?P<hour>\d{2}):(?P<min>\d{2}).{7}",
-        time_str
-    )
-    if parsed is None:
-        parsed = re.match(
-            r"(?P<day>\d{2})\.(?P<month>\d{2})\.(?P<year>\d{4})\s(?P<hour>\d{1,2}):(?P<min>\d{2})",
-            time_str
-        )
+def parse_datetime(datetime_as_str):
+    datetime_patterns = [
+        r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})\s(?P<hours>\d{2}):(?P<minutes>\d{2}).{7}",
+        r"(?P<day>\d{2})\.(?P<month>\d{2})\.(?P<year>\d{4})\s(?P<hours>\d{1,2}):(?P<minutes>\d{2})"
+    ]
+
+    for pattern in datetime_patterns:
+        parsed = re.match(pattern, datetime_as_str)
+        if parsed is not None:
+            break
+    else:
+        raise ValueError("Date and time are not matched using existing patterns")
 
     year = int(parsed.group("year"))
     month = int(parsed.group("month"))
     day = int(parsed.group("day"))
-    hour = int(parsed.group("hour"))
-    minute = int(parsed.group("min"))
+    hour = int(parsed.group("hours"))
+    minute = int(parsed.group("minutes"))
     second = 0
     millisecond = 0
 
-    date_time = datetime.datetime(year, month, day, hour, minute, second, millisecond)
-    return date_time
+    datetime_ = datetime.datetime(year, month, day, hour, minute, second, millisecond)
+    return datetime_
 
 
 def get_min_max_timestamp(df):
