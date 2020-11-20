@@ -4,12 +4,13 @@ from datetime import datetime
 
 import config
 import consts
-from boiler_t_prediction import ForecastWeatherTProvider
+from boiler_t_prediction.forecast_weather_t_provider import ForecastWeatherTProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
-from boiler_t_prediction import AutomatedBoilerTPredictor
+from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 import pandas as pd
 
-from datasets_utils import load_dataframe
+from datasets_utils.io_utils import load_dataframe
+
 
 if __name__ == '__main__':
     min_date = datetime.now()
