@@ -2,7 +2,7 @@
 import pandas as pd
 import flask
 
-from datasets_utils import config
+import config
 import consts
 from boiler_t_prediction.forecast_weather_t_provider import ForecastWeatherTProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor

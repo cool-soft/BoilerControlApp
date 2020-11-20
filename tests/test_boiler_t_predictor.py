@@ -2,12 +2,13 @@
 from matplotlib import pyplot as plt
 from datetime import datetime
 
-import consts
 from boiler_t_prediction import ForecastWeatherTProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 import pandas as pd
 
-from datasets_utils import load_dataframe, config
+from datasets_utils import load_dataframe
+import consts
+import config
 
 if __name__ == '__main__':
     min_date = datetime.now()

@@ -1,7 +1,7 @@
 
 from datetime import datetime
 
-from datasets_utils import config
+import config
 import consts
 from datasets_utils.preprocess_utils import (
     rename_column,

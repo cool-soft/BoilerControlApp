@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import jsonify, request
 from flask.views import View
 
-from datasets_utils import config
+import config
 import consts
 from dependency_injection import get_dependency
 from datasets_utils.preprocess_utils import parse_datetime
