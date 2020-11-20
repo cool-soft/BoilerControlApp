@@ -39,11 +39,11 @@ class AutomatedBoilerTPredictor:
 
         predicted_boiler_t_arr = self._boiler_t_predictor.predict_on_weather_t_arr(forecast_weather_t)
 
-        predicted_boiler_t_dates = forecast_weather_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
-        predicted_boiler_t_dates = predicted_boiler_t_dates[:len(predicted_boiler_t_arr)]
+        forecast_weather_t_dates = forecast_weather_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
+        predicted_boiler_t_dates = forecast_weather_t_dates[:len(predicted_boiler_t_arr)]
 
         predicted_boiler_t_df = pd.DataFrame({
-            consts.FORWARD_PIPE_COLUMN_NAME: predicted_boiler_t_arr,
+            consts.BOILER_NAME_COLUMN_NAME: predicted_boiler_t_arr,
             consts.TIMESTAMP_COLUMN_NAME: predicted_boiler_t_dates
         })
 
