@@ -34,7 +34,6 @@ class BoilerTPredictionController:
         if end_date is None:
             end_date = start_date + consts.TIME_STEP
         else:
-            print(repr(end_date))
             end_date = parse_datetime(end_date, config.DATETIME_PATTERNS)
 
         predicted_boiler_t_df = self._automated_boiler_t_predictor.get_boiler_t(start_date, end_date)
