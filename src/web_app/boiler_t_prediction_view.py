@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from flask import jsonify, request
+from flask.views import View
 
 import config
 import consts
@@ -11,19 +12,13 @@ from datasets_utils.preprocess_utils import parse_datetime
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 
 
-class BoilerTPredictionController:
+class BoilerTPredictionView(View):
+    methods = ['GET']
 
     def __init__(self):
-        self._automated_boiler_t_predictor: AutomatedBoilerTPredictor = get_dependency(AutomatedBoilerTPredictor)
-        self._url_routes = [
-            (self._get_predicted_boiler_t, "/api/v1/getPredictedBoilerT")
-        ]
+        self._automated_boiler_t_predictor = get_dependency(AutomatedBoilerTPredictor)
 
-    def connect_methods_to_app(self, app):
-        for method, rule in self._url_routes:
-            app.add_url_rule(rule, view_func=method)
-
-    def _get_predicted_boiler_t(self):
+    def dispatch_request(self):
         start_date = request.args.get("start_date")
         if start_date is None:
             start_date = datetime.now()

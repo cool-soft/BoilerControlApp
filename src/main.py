@@ -9,7 +9,7 @@ from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 from datasets_utils.io_utils import load_dataframe
 from dependency_injection import add_dependency
-from web_app.boiler_t_prediction_controller import BoilerTPredictionController
+from web_app.api_rules import API_RULES
 
 
 if __name__ == '__main__':
@@ -34,8 +34,7 @@ if __name__ == '__main__':
     add_dependency(automated_boiler_t_predictor)
 
     app = flask.Flask(__name__)
-
-    boiler_t_prediction_controller = BoilerTPredictionController()
-    boiler_t_prediction_controller.connect_methods_to_app(app)
+    for rule, kwargs in API_RULES:
+        app.add_url_rule(rule, **kwargs)
 
     app.run(port=config.HTTP_PORT, debug=config.FLASK_DEBUG)
