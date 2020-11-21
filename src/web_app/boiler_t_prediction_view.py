@@ -10,14 +10,14 @@ import consts
 from dependency_injection import get_dependency
 from dataset_utils.preprocess_utils import parse_datetime
 
-from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
+from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 
 
 class BoilerTPredictionView(View):
     methods = ['GET']
 
     def __init__(self):
-        self._automated_boiler_t_predictor = get_dependency(AutomatedBoilerTPredictor)
+        self.boiler_t_predictor = get_dependency(BoilerTPredictor)
         self._boiler_control_timezone = dateutil.tz.gettz(config.BOILER_CONTROL_TIMEZONE)
 
     def dispatch_request(self):
@@ -41,12 +41,12 @@ class BoilerTPredictionView(View):
                 timezone=self._boiler_control_timezone
             )
 
-        predicted_boiler_t_df = self._automated_boiler_t_predictor.get_boiler_t(start_date, end_date)
-        predicted_boiler_t_arr = predicted_boiler_t_df[consts.BOILER_NAME_COLUMN_NAME].to_list()
-        predicted_boiler_t_dates_arr = predicted_boiler_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
+        predicted_boiler_t_df = self.boiler_t_predictor.get_boiler_t(start_date, end_date)
+        predicted_boiler_t_list = predicted_boiler_t_df[consts.BOILER_NAME_COLUMN_NAME].to_list()
+        predicted_boiler_t_datetime_list = predicted_boiler_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
 
         predicted_boiler_t_ds = []
-        for datetime_, boiler_t in zip(predicted_boiler_t_dates_arr, predicted_boiler_t_arr):
+        for datetime_, boiler_t in zip(predicted_boiler_t_datetime_list, predicted_boiler_t_list):
             datetime_as_str = datetime_.strftime(config.BOILER_CONTROL_RESPONSE_DATETIME_PATTERN)
             boiler_t = round(boiler_t, 1)
             predicted_boiler_t_ds.append((datetime_as_str, boiler_t))

@@ -9,7 +9,6 @@ import config
 import consts
 from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
-from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 from dataset_utils.io_utils import load_dataframe
 from dependency_injection import add_dependency
 from web_app.api_rules import API_RULES
@@ -21,21 +20,17 @@ if __name__ == '__main__':
     homes_time_deltas = pd.read_csv(config.HOMES_DELTAS_PATH)
     max_home_time_delta = homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
 
-    boiler_t_predictor = BoilerTPredictor()
-    boiler_t_predictor.set_optimized_t_table(optimized_t_table)
-    boiler_t_predictor.set_temp_graph(temp_graph)
-    boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
-
     weather_forecast_provider = WeatherForecastProvider()
     weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.FORECAST_WEATHER_SERVER_TIMEZONE))
     weather_forecast_provider.set_weather_forecast_server_address(config.FORECAST_WEATHER_SERVER_ADDRESS)
 
-    automated_boiler_t_predictor = AutomatedBoilerTPredictor()
-    automated_boiler_t_predictor.set_max_home_time_delta(max_home_time_delta)
-    automated_boiler_t_predictor.set_boiler_t_predictor(boiler_t_predictor)
-    automated_boiler_t_predictor.set_weather_forecast_provider(weather_forecast_provider)
+    boiler_t_predictor = BoilerTPredictor()
+    boiler_t_predictor.set_optimized_t_table(optimized_t_table)
+    boiler_t_predictor.set_temp_graph(temp_graph)
+    boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
+    boiler_t_predictor.set_weather_forecast_provider(weather_forecast_provider)
 
-    add_dependency(automated_boiler_t_predictor)
+    add_dependency(boiler_t_predictor)
 
     app = flask.Flask(__name__)
     for rule, kwargs in API_RULES:

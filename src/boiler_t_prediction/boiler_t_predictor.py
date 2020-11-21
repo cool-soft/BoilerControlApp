@@ -1,7 +1,14 @@
 
+from datetime import datetime
+
 import numpy as np
+import pandas as pd
 
 import consts
+from dataset_utils.preprocess_utils import (
+    round_datetime,
+    sort_by_timestamp
+)
 
 
 class BoilerTPredictor:
@@ -11,6 +18,7 @@ class BoilerTPredictor:
         self._homes_time_deltas = None
         self._temp_graph = None
         self._home_t_dispersion_coefficient = 1
+        self._weather_forecast_provider = None
 
     def set_homes_time_deltas(self, homes_time_deltas):
         self._homes_time_deltas = homes_time_deltas
@@ -24,17 +32,48 @@ class BoilerTPredictor:
     def set_dispersion_coefficient(self, coefficient):
         self._home_t_dispersion_coefficient = coefficient
 
-    def predict_on_weather_forecast(self, sorted_weather_forecast_df):
-        weather_t_forecast_arr = sorted_weather_forecast_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
-        max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
-        t_count = len(weather_t_forecast_arr) - max_home_time_delta
-        predicted_boiler_t_arr = np.empty(shape=(t_count,), dtype=np.float)
-        for t_idx in range(t_count):
-            need_t_by_homes = self._get_need_t_in_homes(t_idx, weather_t_forecast_arr)
-            need_boiler_t = self._calc_need_boiler_t_by_homes_t(need_t_by_homes)
-            predicted_boiler_t_arr[t_idx] = need_boiler_t
+    def set_weather_forecast_provider(self, weather_forecast_provider):
+        self._weather_forecast_provider = weather_forecast_provider
 
-        return predicted_boiler_t_arr
+    def get_boiler_t(self, start_date=None, end_date=None):
+        if start_date is None:
+            start_date = datetime.now()
+        start_date = round_datetime(start_date)
+
+        if end_date is None:
+            end_date = start_date + consts.TIME_STEP
+        end_date = round_datetime(end_date)
+
+        max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
+        end_date = end_date + (max_home_time_delta * consts.TIME_STEP)
+
+        weather_forecast_df = self._weather_forecast_provider.get_weather_forecast(start_date, end_date)
+        predicted_boiler_t_df = self._predict_on_weather_forecast(weather_forecast_df)
+
+        return predicted_boiler_t_df
+
+    def _predict_on_weather_forecast(self, weather_forecast_df):
+        max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
+        t_count = len(weather_forecast_df) - max_home_time_delta
+
+        sorted_weather_forecast_df = sort_by_timestamp(weather_forecast_df)
+        weather_t_forecast_arr = sorted_weather_forecast_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
+
+        predicted_boiler_t_arr = np.empty(shape=(t_count,), dtype=np.float)
+        for idx in range(t_count):
+            need_t_by_homes = self._get_need_t_in_homes(idx, weather_t_forecast_arr)
+            need_boiler_t = self._calc_need_boiler_t_by_homes_t(need_t_by_homes)
+            predicted_boiler_t_arr[idx] = need_boiler_t
+
+        weather_forecast_datetime_list = sorted_weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
+        predicted_boiler_t_dates = weather_forecast_datetime_list[:t_count]
+
+        predicted_boiler_t_df = pd.DataFrame({
+            consts.BOILER_NAME_COLUMN_NAME: predicted_boiler_t_arr,
+            consts.TIMESTAMP_COLUMN_NAME: predicted_boiler_t_dates
+        })
+
+        return predicted_boiler_t_df
 
     def _get_need_t_in_homes(self, t_idx, weather_t_arr):
         need_temps = {}

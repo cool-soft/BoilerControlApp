@@ -29,7 +29,7 @@ if __name__ == '__main__':
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
     boiler_t_predictor.set_temp_graph(temp_graph)
 
-    predicted_boiler_t = boiler_t_predictor.predict_on_weather_forecast(forecast_weather_t)
+    predicted_boiler_t = boiler_t_predictor._predict_on_weather_forecast(forecast_weather_t)
     dates = forecast_weather_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
     dates = dates[:len(predicted_boiler_t)]
 
