@@ -1,3 +1,4 @@
+import os
 
 import pandas as pd
 import flask
@@ -15,7 +16,7 @@ from web_app.api_rules import API_RULES
 if __name__ == '__main__':
     homes_time_deltas = pd.read_csv(config.HOMES_DELTAS_PATH)
     optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
-    temp_graph = pd.read_csv(config.T_GRAPH_PATH)
+    temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
 
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
