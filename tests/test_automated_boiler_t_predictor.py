@@ -14,7 +14,7 @@ from dataset_utils.io_utils import load_dataframe
 
 if __name__ == '__main__':
     min_date = datetime.now()
-    max_date = min_date + (20 * consts.TIME_STEP)
+    max_date = min_date + (20 * consts.TIME_TICK)
 
     homes_time_deltas = pd.read_csv(config.HOMES_DELTAS_PATH)
     max_home_time_delta = homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()

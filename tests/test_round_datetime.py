@@ -6,4 +6,4 @@ if __name__ == '__main__':
     datetime_ = datetime.now()
     rounded_datetime = round_datetime(datetime_)
 
-    print(datetime_, rounded_datetime, consts.TIME_STEP.total_seconds())
+    print(datetime_, rounded_datetime, consts.TIME_TICK.total_seconds())

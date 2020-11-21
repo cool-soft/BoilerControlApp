@@ -1,7 +1,7 @@
 
 from datetime import datetime
-import dateutil.tz
 
+from dateutil.tz import gettz
 from flask import jsonify, request
 from flask.views import View
 
@@ -18,30 +18,18 @@ class BoilerTPredictionView(View):
 
     def __init__(self):
         self.boiler_t_predictor = get_dependency(BoilerTPredictor)
-        self._boiler_control_timezone = dateutil.tz.gettz(config.BOILER_CONTROL_TIMEZONE)
+        self._boiler_control_timezone = gettz(config.BOILER_CONTROL_TIMEZONE)
 
     def dispatch_request(self):
-        start_date = request.args.get("start_date")
-        if start_date is None:
-            start_date = datetime.now(tz=self._boiler_control_timezone)
-        else:
-            start_date = parse_datetime(
-                start_date,
-                config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS,
-                timezone=self._boiler_control_timezone
-            )
+        start_datetime_as_str = request.args.get("start_date")
+        default_start_datetime = datetime.now(tz=self._boiler_control_timezone)
+        start_datetime = self._preprocess_datetime(start_datetime_as_str, default_value=default_start_datetime)
 
-        end_date = request.args.get("end_date")
-        if end_date is None:
-            end_date = start_date + consts.TIME_STEP
-        else:
-            end_date = parse_datetime(
-                end_date,
-                config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS,
-                timezone=self._boiler_control_timezone
-            )
+        default_end_datetime = start_datetime + consts.TIME_TICK
+        end_datetime_as_str = request.args.get("end_date")
+        end_datetime = self._preprocess_datetime(end_datetime_as_str, default_value=default_end_datetime)
 
-        predicted_boiler_t_df = self.boiler_t_predictor.get_boiler_t(start_date, end_date)
+        predicted_boiler_t_df = self.boiler_t_predictor.get_boiler_t(start_datetime, end_datetime)
         predicted_boiler_t_list = predicted_boiler_t_df[consts.BOILER_NAME_COLUMN_NAME].to_list()
         predicted_boiler_t_datetime_list = predicted_boiler_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
 
@@ -53,3 +41,14 @@ class BoilerTPredictionView(View):
 
         boiler_t_ds_json = jsonify(predicted_boiler_t_ds)
         return boiler_t_ds_json
+
+    def _preprocess_datetime(self, datetime_as_str, default_value):
+        if datetime_as_str is None:
+            datetime_ = default_value
+        else:
+            datetime_ = parse_datetime(
+                datetime_as_str,
+                config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS,
+                timezone=self._boiler_control_timezone
+            )
+        return datetime_

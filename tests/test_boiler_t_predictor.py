@@ -12,7 +12,7 @@ import config
 
 if __name__ == '__main__':
     min_date = datetime.now()
-    max_date = min_date + (60 * consts.TIME_STEP)
+    max_date = min_date + (60 * consts.TIME_TICK)
 
     prediction_step = 3
 

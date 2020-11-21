@@ -14,7 +14,7 @@ def round_timestamp(df):
 
 def round_datetime(src_datetime):
     src_timestamp = src_datetime.timestamp()
-    time_step_in_seconds = consts.TIME_STEP.total_seconds()
+    time_step_in_seconds = consts.TIME_TICK.total_seconds()
     rounded_timestamp = math.ceil(src_timestamp / time_step_in_seconds) * time_step_in_seconds
     rounded_datetime = datetime.datetime.fromtimestamp(rounded_timestamp, tz=src_datetime.tzinfo)
     return rounded_datetime
@@ -77,11 +77,11 @@ def interpolate_passes_of_t(df, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
         next_t = row[t_column_name]
 
         datetime_delta = next_datetime - previous_datetime
-        if datetime_delta > consts.TIME_STEP:
-            number_of_passes = int(datetime_delta // consts.TIME_STEP) - 1
+        if datetime_delta > consts.TIME_TICK:
+            number_of_passes = int(datetime_delta // consts.TIME_TICK) - 1
             t_step = (next_t - previous_t) / number_of_passes
             for pass_n in range(1, number_of_passes + 1):
-                interpolated_datetime = previous_datetime + (consts.TIME_STEP * pass_n)
+                interpolated_datetime = previous_datetime + (consts.TIME_TICK * pass_n)
                 interpolated_t = previous_t + (t_step * pass_n)
                 interpolated_values.append({
                     consts.TIMESTAMP_COLUMN_NAME: interpolated_datetime,

@@ -1,7 +1,7 @@
 
 import datetime
 
-TIME_STEP = datetime.timedelta(minutes=3)
+TIME_TICK = datetime.timedelta(minutes=3)
 
 TIMESTAMP_COLUMN_NAME = "dTimeStamp"
 WEATHER_T_COLUMN_NAME = "weather_t"

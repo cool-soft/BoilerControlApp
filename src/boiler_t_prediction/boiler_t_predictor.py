@@ -1,6 +1,4 @@
 
-from datetime import datetime
-
 import numpy as np
 import pandas as pd
 
@@ -35,19 +33,14 @@ class BoilerTPredictor:
     def set_weather_forecast_provider(self, weather_forecast_provider):
         self._weather_forecast_provider = weather_forecast_provider
 
-    def get_boiler_t(self, start_date=None, end_date=None):
-        if start_date is None:
-            start_date = datetime.now()
-        start_date = round_datetime(start_date)
-
-        if end_date is None:
-            end_date = start_date + consts.TIME_STEP
-        end_date = round_datetime(end_date)
+    def get_boiler_t(self, start_datetime=None, end_datetime=None):
+        start_datetime = round_datetime(start_datetime)
+        end_datetime = round_datetime(end_datetime)
 
         max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
-        end_date = end_date + (max_home_time_delta * consts.TIME_STEP)
+        end_datetime = end_datetime + (max_home_time_delta * consts.TIME_TICK)
 
-        weather_forecast_df = self._weather_forecast_provider.get_weather_forecast(start_date, end_date)
+        weather_forecast_df = self._weather_forecast_provider.get_weather_forecast(start_datetime, end_datetime)
         predicted_boiler_t_df = self._predict_on_weather_forecast(weather_forecast_df)
 
         return predicted_boiler_t_df
