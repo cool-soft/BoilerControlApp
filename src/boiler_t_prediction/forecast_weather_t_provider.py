@@ -78,6 +78,7 @@ class ForecastWeatherTProvider:
         return filter_by_timestamp(self._forecast_weather_t_cache, min_date, max_date).copy()
 
     def compact_cache(self):
+        # TODO: timezone
         datetime_now = round_datetime(datetime.now())
         old_values_condition = self._forecast_weather_t_cache[consts.TIMESTAMP_COLUMN_NAME] < datetime_now
         old_values_idx = self._forecast_weather_t_cache[old_values_condition].index
