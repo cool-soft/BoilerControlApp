@@ -9,7 +9,7 @@ from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 import pandas as pd
 
-from datasets_utils.io_utils import load_dataframe
+from dataset_utils.io_utils import load_dataframe
 
 
 if __name__ == '__main__':

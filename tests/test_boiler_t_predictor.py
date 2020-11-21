@@ -6,7 +6,7 @@ from boiler_t_prediction import ForecastWeatherTProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 import pandas as pd
 
-from datasets_utils import load_dataframe
+from dataset_utils import load_dataframe
 import consts
 import config
 

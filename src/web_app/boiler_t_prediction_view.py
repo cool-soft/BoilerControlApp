@@ -7,7 +7,7 @@ from flask.views import View
 import config
 import consts
 from dependency_injection import get_dependency
-from datasets_utils.preprocess_utils import parse_datetime
+from dataset_utils.preprocess_utils import parse_datetime
 
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 

@@ -14,21 +14,10 @@ def round_timestamp(df):
 
 
 def round_datetime(datetime_):
-    year = datetime_.year
-    month = datetime_.month
-    day = datetime_.day
-    hour = datetime_.hour
-    minute = datetime_.minute
-    second = 0
-    microsecond = 0
-
-    time_step_in_seconds = consts.TIME_STEP.total_seconds() // 60
-    if minute % time_step_in_seconds != 0:
-        minute = math.ceil(minute / time_step_in_seconds) * time_step_in_seconds
-        minute = int(minute)
-        minute = minute % 60
-
-    datetime_ = datetime.datetime(year, month, day, hour, minute, second, microsecond)
+    timestamp = datetime_.timestamp()
+    time_step_in_seconds = consts.TIME_STEP.total_seconds()
+    timestamp = math.ceil(timestamp / time_step_in_seconds) * time_step_in_seconds
+    datetime_ = datetime.datetime.fromtimestamp(timestamp)
     return datetime_
 
 

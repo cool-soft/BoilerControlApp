@@ -7,7 +7,7 @@ import consts
 from boiler_t_prediction.forecast_weather_t_provider import ForecastWeatherTProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
-from datasets_utils.io_utils import load_dataframe
+from dataset_utils.io_utils import load_dataframe
 from dependency_injection import add_dependency
 from web_app.api_rules import API_RULES
 

@@ -4,7 +4,7 @@ from datetime import datetime
 import pandas as pd
 
 import consts
-from datasets_utils.preprocess_utils import round_datetime
+from dataset_utils.preprocess_utils import round_datetime
 
 
 class AutomatedBoilerTPredictor:
