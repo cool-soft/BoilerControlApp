@@ -170,7 +170,7 @@ def remove_disabled_t(df, disabled_t_threshold, column_name=consts.FORWARD_PIPE_
 
 
 # noinspection SpellCheckingInspection
-def convert_date_and_time_to_datetime(df, tzinfo=None):
+def convert_date_and_time_to_timestamp(df, tzinfo=None):
     datetime_list = []
     for _, row in df.iterrows():
         time_as_str = row[consts.SOFT_M_TIME_COLUMN_NAME]
