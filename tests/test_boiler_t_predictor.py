@@ -15,7 +15,7 @@ from dataset_utils.io_utils import load_dataframe
 
 if __name__ == '__main__':
     min_date = datetime.now(tz=gettz(config.BOILER_CONTROL_TIMEZONE))
-    max_date = min_date + (20 * consts.TIME_TICK)
+    max_date = min_date + (40 * consts.TIME_TICK)
 
     optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
     temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
