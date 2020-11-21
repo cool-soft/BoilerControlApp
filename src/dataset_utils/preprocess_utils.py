@@ -60,7 +60,7 @@ def interpolate_last_t(df, max_datetime, t_column_name=consts.FORWARD_PIPE_COLUM
 
 
 def interpolate_passes_of_t(df, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
-    df.sort_values(by=consts.TIMESTAMP_COLUMN_NAME, ignore_index=True, inplace=True)
+    df = sort_by_timestamp(df)
 
     interpolated_values = []
 
@@ -92,8 +92,13 @@ def interpolate_passes_of_t(df, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
         previous_datetime = next_datetime
 
     df = df.append(interpolated_values)
-    df.sort_values(by=consts.TIMESTAMP_COLUMN_NAME, ignore_index=True, inplace=True)
+    df = sort_by_timestamp(df)
 
+    return df
+
+
+def sort_by_timestamp(df):
+    df.sort_values(by=consts.TIMESTAMP_COLUMN_NAME, ignore_index=True, inplace=True)
     return df
 
 

@@ -4,7 +4,7 @@ from datetime import datetime
 import pandas as pd
 
 import consts
-from dataset_utils.preprocess_utils import round_datetime
+from dataset_utils.preprocess_utils import round_datetime, sort_by_timestamp
 
 
 class AutomatedBoilerTPredictor:
@@ -35,9 +35,8 @@ class AutomatedBoilerTPredictor:
         end_date = end_date + (self._max_home_time_delta * consts.TIME_STEP)
 
         weather_forecast_df = self._weather_forecast_provider.get_weather_forecast(start_date, end_date)
-        weather_t_forecast_arr = weather_forecast_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
-
-        predicted_boiler_t_arr = self._boiler_t_predictor.predict_on_weather_t_arr(weather_t_forecast_arr)
+        sorted_weather_forecast_df = sort_by_timestamp(weather_forecast_df)
+        predicted_boiler_t_arr = self._boiler_t_predictor.predict_on_weather_forecast(sorted_weather_forecast_df)
 
         forecast_weather_t_dates = weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
         predicted_boiler_t_dates = forecast_weather_t_dates[:len(predicted_boiler_t_arr)]

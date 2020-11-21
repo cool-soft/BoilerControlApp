@@ -1,4 +1,6 @@
 
+import numpy as np
+
 import consts
 
 
@@ -22,16 +24,17 @@ class BoilerTPredictor:
     def set_dispersion_coefficient(self, coefficient):
         self._home_t_dispersion_coefficient = coefficient
 
-    def predict_on_weather_t_arr(self, weather_t_arr):
-        predicted_boiler_t = []
+    def predict_on_weather_forecast(self, sorted_weather_forecast_df):
+        weather_t_forecast_arr = sorted_weather_forecast_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
         max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
-        t_count = len(weather_t_arr) - max_home_time_delta
+        t_count = len(weather_t_forecast_arr) - max_home_time_delta
+        predicted_boiler_t_arr = np.empty(shape=(t_count,), dtype=np.float)
         for t_idx in range(t_count):
-            need_t_by_homes = self._get_need_t_in_homes(t_idx, weather_t_arr)
+            need_t_by_homes = self._get_need_t_in_homes(t_idx, weather_t_forecast_arr)
             need_boiler_t = self._calc_need_boiler_t_by_homes_t(need_t_by_homes)
-            predicted_boiler_t.append(need_boiler_t)
+            predicted_boiler_t_arr[t_idx] = need_boiler_t
 
-        return predicted_boiler_t
+        return predicted_boiler_t_arr
 
     def _get_need_t_in_homes(self, t_idx, weather_t_arr):
         need_temps = {}
