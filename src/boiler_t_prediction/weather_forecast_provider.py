@@ -1,6 +1,10 @@
 
 from datetime import datetime
 
+from dateutil.tz import tzlocal
+import pandas as pd
+import requests
+
 import consts
 from dataset_utils.preprocess_utils import (
     rename_column,
@@ -9,12 +13,8 @@ from dataset_utils.preprocess_utils import (
     filter_by_timestamp,
     get_min_max_timestamp,
     round_timestamp,
-    round_datetime,
     interpolate_passes_of_t
 )
-
-import pandas as pd
-import requests
 
 
 class WeatherForecastProvider:
@@ -31,9 +31,6 @@ class WeatherForecastProvider:
         self._forecast_weather_server_address = server_address
 
     def get_weather_forecast(self, min_date, max_date):
-        min_date = round_datetime(min_date)
-        max_date = round_datetime(max_date)
-
         if self._is_requested_datetime_not_in_cache(max_date):
             self._update_cache_from_server()
 
@@ -84,8 +81,7 @@ class WeatherForecastProvider:
         return filter_by_timestamp(self._cached_weather_forecast_df, start_date, end_date).copy()
 
     def compact_cache(self):
-        # TODO: timezone
-        datetime_now = round_datetime(datetime.now())
+        datetime_now = datetime.now(tz=tzlocal())
         old_values_condition = self._cached_weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME] < datetime_now
         old_values_idx = self._cached_weather_forecast_df[old_values_condition].index
         self._cached_weather_forecast_df.drop(old_values_idx, inplace=True)
