@@ -1,7 +1,7 @@
 
-import datetime
+from datetime import timedelta as _timedelta
 
-TIME_TICK = datetime.timedelta(minutes=3)
+TIME_TICK = _timedelta(minutes=3)
 
 TIMESTAMP_COLUMN_NAME = "dTimeStamp"
 WEATHER_T_COLUMN_NAME = "weather_t"
