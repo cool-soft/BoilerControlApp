@@ -25,22 +25,22 @@ class BoilerTPredictionView(View):
         default_start_datetime = datetime.now(tz=self._boiler_control_timezone)
         start_datetime = self._preprocess_datetime(start_datetime_as_str, default_value=default_start_datetime)
 
-        default_end_datetime = start_datetime + consts.TIME_TICK
         end_datetime_as_str = request.args.get("end_date")
+        default_end_datetime = start_datetime + consts.TIME_TICK
         end_datetime = self._preprocess_datetime(end_datetime_as_str, default_value=default_end_datetime)
 
         predicted_boiler_t_df = self.boiler_t_predictor.get_need_boiler_t(start_datetime, end_datetime)
-        predicted_boiler_t_list = predicted_boiler_t_df[consts.BOILER_NAME_COLUMN_NAME].to_list()
-        predicted_boiler_t_datetime_list = predicted_boiler_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
 
         predicted_boiler_t_ds = []
-        for datetime_, boiler_t in zip(predicted_boiler_t_datetime_list, predicted_boiler_t_list):
+        for _, row in predicted_boiler_t_df.iterrows():
+            boiler_t = row[consts.BOILER_NAME_COLUMN_NAME]
+            datetime_ = row[consts.TIMESTAMP_COLUMN_NAME]
             datetime_as_str = datetime_.strftime(config.BOILER_CONTROL_RESPONSE_DATETIME_PATTERN)
             boiler_t = round(boiler_t, 1)
             predicted_boiler_t_ds.append((datetime_as_str, boiler_t))
+        boiler_t_json = jsonify(predicted_boiler_t_ds)
 
-        boiler_t_ds_json = jsonify(predicted_boiler_t_ds)
-        return boiler_t_ds_json
+        return boiler_t_json
 
     def _preprocess_datetime(self, datetime_as_str, default_value):
         if datetime_as_str is None:
