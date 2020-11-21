@@ -43,7 +43,7 @@ if __name__ == '__main__':
     print(min_date, max_date)
     print(len(predicted_boiler_t_df))
     for idx, row in predicted_boiler_t_df.iterrows():
-        print(row[consts.TIMESTAMP_COLUMN_NAME], row[consts.BOILER_NAME_COLUMN_NAME])
+        print(row[consts.TIMESTAMP_COLUMN_NAME], round(row[consts.BOILER_NAME_COLUMN_NAME], 1))
 
     plt.plot(dates_arr, predicted_boiler_t_arr, label="Predicted boiler t")
     plt.plot(dates_arr, weather_t_arr, label="Weather t")
