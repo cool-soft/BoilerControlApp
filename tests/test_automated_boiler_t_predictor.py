@@ -4,7 +4,7 @@ from datetime import datetime
 
 import config
 import consts
-from boiler_t_prediction.forecast_weather_t_provider import ForecastWeatherTProvider
+from boiler_t_prediction.forecast_weather_t_provider import WeatherForecastProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 import pandas as pd
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
     temp_graph = pd.read_csv(config.T_GRAPH_PATH)
 
-    forecast_weather_t_provider = ForecastWeatherTProvider()
+    forecast_weather_t_provider = WeatherForecastProvider()
 
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     automated_boiler_t_predictor = AutomatedBoilerTPredictor()
     automated_boiler_t_predictor.set_max_home_time_delta(max_home_time_delta)
     automated_boiler_t_predictor.set_boiler_t_predictor(boiler_t_predictor)
-    automated_boiler_t_predictor.set_forecast_weather_t_provider(forecast_weather_t_provider)
+    automated_boiler_t_predictor.set_weather_forecast_provider(forecast_weather_t_provider)
 
     predicted_boiler_t_df = automated_boiler_t_predictor.get_boiler_t(min_date, max_date)
     predicted_boiler_t_arr = predicted_boiler_t_df[consts.BOILER_NAME_COLUMN_NAME].to_numpy()

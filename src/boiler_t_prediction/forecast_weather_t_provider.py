@@ -17,7 +17,7 @@ import pandas as pd
 import requests
 
 
-class ForecastWeatherTProvider:
+class WeatherForecastProvider:
 
     def __init__(self):
         self._cached_weather_forecast_df = pd.DataFrame()

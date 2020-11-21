@@ -7,7 +7,7 @@ import flask
 
 import config
 import consts
-from boiler_t_prediction.forecast_weather_t_provider import ForecastWeatherTProvider
+from boiler_t_prediction.forecast_weather_t_provider import WeatherForecastProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 from dataset_utils.io_utils import load_dataframe
@@ -26,14 +26,14 @@ if __name__ == '__main__':
     boiler_t_predictor.set_temp_graph(temp_graph)
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
 
-    forecast_weather_t_provider = ForecastWeatherTProvider()
-    forecast_weather_t_provider.set_weather_forecast_server_timezone(gettz(config.FORECAST_WEATHER_SERVER_TIMEZONE))
-    forecast_weather_t_provider.set_weather_forecast_server_address(config.FORECAST_WEATHER_SERVER_ADDRESS)
+    weather_forecast_provider = WeatherForecastProvider()
+    weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.FORECAST_WEATHER_SERVER_TIMEZONE))
+    weather_forecast_provider.set_weather_forecast_server_address(config.FORECAST_WEATHER_SERVER_ADDRESS)
 
     automated_boiler_t_predictor = AutomatedBoilerTPredictor()
     automated_boiler_t_predictor.set_max_home_time_delta(max_home_time_delta)
     automated_boiler_t_predictor.set_boiler_t_predictor(boiler_t_predictor)
-    automated_boiler_t_predictor.set_forecast_weather_t_provider(forecast_weather_t_provider)
+    automated_boiler_t_predictor.set_weather_forecast_provider(weather_forecast_provider)
 
     add_dependency(automated_boiler_t_predictor)
 
