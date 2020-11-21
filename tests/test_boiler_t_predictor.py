@@ -15,7 +15,7 @@ from dataset_utils.io_utils import load_dataframe
 
 if __name__ == '__main__':
     min_date = datetime.now(tz=gettz(config.BOILER_CONTROL_TIMEZONE))
-    max_date = min_date + (40 * consts.TIME_TICK)
+    max_date = min_date + (100 * consts.TIME_TICK)
 
     optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
     temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
@@ -39,9 +39,8 @@ if __name__ == '__main__':
 
     weather_t_df = weather_forecast_provider.get_weather_forecast(min_date, max_date)
     weather_t_arr = weather_t_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
+    weather_t_arr = weather_t_arr[:len(predicted_boiler_t_arr)]
 
-    print(min_date, max_date)
-    print(len(predicted_boiler_t_df))
     for idx, row in predicted_boiler_t_df.iterrows():
         print(row[consts.TIMESTAMP_COLUMN_NAME], round(row[consts.BOILER_NAME_COLUMN_NAME], 1))
 
