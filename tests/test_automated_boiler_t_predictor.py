@@ -4,7 +4,7 @@ from datetime import datetime
 
 import config
 import consts
-from boiler_t_prediction.forecast_weather_t_provider import WeatherForecastProvider
+from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 import pandas as pd

@@ -7,7 +7,7 @@ import flask
 
 import config
 import consts
-from boiler_t_prediction.forecast_weather_t_provider import WeatherForecastProvider
+from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.automated_boiler_t_predictor import AutomatedBoilerTPredictor
 from dataset_utils.io_utils import load_dataframe

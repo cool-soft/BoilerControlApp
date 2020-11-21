@@ -2,7 +2,7 @@
 from datetime import datetime
 
 import consts
-from boiler_t_prediction.forecast_weather_t_provider import WeatherForecastProvider
+from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 
 
 if __name__ == '__main__':
