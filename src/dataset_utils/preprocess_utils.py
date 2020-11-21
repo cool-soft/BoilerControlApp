@@ -1,4 +1,3 @@
-
 import datetime
 import math
 import re
@@ -27,6 +26,36 @@ def interpolate_t(df, min_datetime=None, max_datetime=None, t_column_name=consts
     if max_datetime is not None:
         df = interpolate_last_t(df, max_datetime, t_column_name)
     df = interpolate_passes_of_t(df, t_column_name)
+    return df
+
+
+def interpolate_first_t(df, min_datetime, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
+    min_datetime = round_datetime(min_datetime)
+
+    first_datetime_idx = df[consts.TIMESTAMP_COLUMN_NAME].idxmin()
+    first_row = df.loc[first_datetime_idx]
+    first_t = first_row[t_column_name]
+    first_datetime = first_row[consts.TIMESTAMP_COLUMN_NAME]
+    if first_datetime > min_datetime:
+        df = df.append(
+            {consts.TIMESTAMP_COLUMN_NAME: min_datetime, t_column_name: first_t},
+            ignore_index=True
+        )
+    return df
+
+
+def interpolate_last_t(df, max_datetime, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
+    max_datetime = round_datetime(max_datetime)
+
+    last_datetime_idx = df[consts.TIMESTAMP_COLUMN_NAME].idxmax()
+    last_row = df.loc[last_datetime_idx]
+    last_t = last_row[t_column_name]
+    last_datetime = last_row[consts.TIMESTAMP_COLUMN_NAME]
+    if last_datetime < max_datetime:
+        df = df.append(
+            {consts.TIMESTAMP_COLUMN_NAME: max_datetime, t_column_name: last_t},
+            ignore_index=True
+        )
     return df
 
 
@@ -65,36 +94,6 @@ def interpolate_passes_of_t(df, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
     df = df.append(interpolated_values)
     df.sort_values(by=consts.TIMESTAMP_COLUMN_NAME, ignore_index=True, inplace=True)
 
-    return df
-
-
-def interpolate_first_t(df, min_datetime, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
-    min_datetime = round_datetime(min_datetime)
-
-    first_datetime_idx = df[consts.TIMESTAMP_COLUMN_NAME].idxmin()
-    first_row = df.loc[first_datetime_idx]
-    first_t = first_row[t_column_name]
-    first_datetime = first_row[consts.TIMESTAMP_COLUMN_NAME]
-    if first_datetime > min_datetime:
-        df = df.append(
-            {consts.TIMESTAMP_COLUMN_NAME: min_datetime, t_column_name: first_t},
-            ignore_index=True
-        )
-    return df
-
-
-def interpolate_last_t(df, max_datetime, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
-    max_datetime = round_datetime(max_datetime)
-
-    last_datetime_idx = df[consts.TIMESTAMP_COLUMN_NAME].idxmax()
-    last_row = df.loc[last_datetime_idx]
-    last_t = last_row[t_column_name]
-    last_datetime = last_row[consts.TIMESTAMP_COLUMN_NAME]
-    if last_datetime < max_datetime:
-        df = df.append(
-            {consts.TIMESTAMP_COLUMN_NAME: max_datetime, t_column_name: last_t},
-            ignore_index=True
-        )
     return df
 
 
@@ -214,8 +213,7 @@ def convert_str_to_timestamp(df):
     return df
 
 
-def parse_datetime(datetime_as_str, datetime_patterns=consts.DATETIME_PATTERNS):
-
+def parse_datetime(datetime_as_str, datetime_patterns=consts.DATETIME_PATTERNS, timezone=None):
     for pattern in datetime_patterns:
         parsed = re.match(pattern, datetime_as_str)
         if parsed is not None:
@@ -231,7 +229,7 @@ def parse_datetime(datetime_as_str, datetime_patterns=consts.DATETIME_PATTERNS):
     second = 0
     millisecond = 0
 
-    datetime_ = datetime.datetime(year, month, day, hour, minute, second, millisecond)
+    datetime_ = datetime.datetime(year, month, day, hour, minute, second, millisecond, tzinfo=timezone)
     return datetime_
 
 

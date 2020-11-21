@@ -1,5 +1,6 @@
 
 from datetime import datetime
+import dateutil.tz
 
 from flask import jsonify, request
 from flask.views import View
@@ -17,19 +18,28 @@ class BoilerTPredictionView(View):
 
     def __init__(self):
         self._automated_boiler_t_predictor = get_dependency(AutomatedBoilerTPredictor)
+        self._boiler_control_timezone = dateutil.tz.gettz(config.BOILER_CONTROL_TIMEZONE)
 
     def dispatch_request(self):
         start_date = request.args.get("start_date")
         if start_date is None:
-            start_date = datetime.now()
+            start_date = datetime.now(tz=self._boiler_control_timezone)
         else:
-            start_date = parse_datetime(start_date, config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS)
+            start_date = parse_datetime(
+                start_date,
+                config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS,
+                timezone=self._boiler_control_timezone
+            )
 
         end_date = request.args.get("end_date")
         if end_date is None:
             end_date = start_date + consts.TIME_STEP
         else:
-            end_date = parse_datetime(end_date, config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS)
+            end_date = parse_datetime(
+                end_date,
+                config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS,
+                timezone=self._boiler_control_timezone
+            )
 
         predicted_boiler_t_df = self._automated_boiler_t_predictor.get_boiler_t(start_date, end_date)
         predicted_boiler_t_arr = predicted_boiler_t_df[consts.BOILER_NAME_COLUMN_NAME].to_list()
