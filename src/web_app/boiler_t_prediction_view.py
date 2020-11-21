@@ -33,8 +33,8 @@ class BoilerTPredictionView(View):
 
         predicted_boiler_t_ds = []
         for _, row in predicted_boiler_t_df.iterrows():
-            boiler_t = row[consts.BOILER_NAME_COLUMN_NAME]
             datetime_ = row[consts.TIMESTAMP_COLUMN_NAME]
+            boiler_t = row[consts.BOILER_NAME_COLUMN_NAME]
             datetime_as_str = datetime_.strftime(config.BOILER_CONTROL_RESPONSE_DATETIME_PATTERN)
             boiler_t = round(boiler_t, 1)
             predicted_boiler_t_ds.append((datetime_as_str, boiler_t))
