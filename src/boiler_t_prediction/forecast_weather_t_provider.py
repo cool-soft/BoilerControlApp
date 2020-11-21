@@ -1,5 +1,6 @@
 
 from datetime import datetime
+import dateutil.tz
 
 import config
 import consts
@@ -7,7 +8,7 @@ from dataset_utils.preprocess_utils import (
     rename_column,
     interpolate_t,
     remove_duplicates_by_timestamp,
-    convert_date_and_time_to_timestamp,
+    convert_date_and_time_to_datetime,
     filter_by_timestamp,
     get_min_max_timestamp,
     round_timestamp,
@@ -22,6 +23,7 @@ class ForecastWeatherTProvider:
 
     def __init__(self):
         self._forecast_weather_t_cache = pd.DataFrame()
+        self._forecast_weather_server_timezone = dateutil.tz.gettz(config.FORECAST_WEATHER_SERVER_TIMEZONE)
 
     def get_forecast_weather_t(self, min_date, max_date):
         min_date = round_datetime(min_date)
@@ -47,7 +49,7 @@ class ForecastWeatherTProvider:
 
     # noinspection PyMethodMayBeStatic
     def _request_from_server(self):
-        url = f"{config.REMOTE_HOST}/JSON/"
+        url = f"{config.FORECAST_WEATHER_SERVER}/JSON/"
         # noinspection SpellCheckingInspection
         params = {
             "method": "getPrognozT"
@@ -60,7 +62,7 @@ class ForecastWeatherTProvider:
     # noinspection PyMethodMayBeStatic
     def _preprocess_weather_t(self, df):
         df = rename_column(df, consts.SOFT_M_WEATHER_T_COLUMN_NAME, consts.WEATHER_T_COLUMN_NAME)
-        df = convert_date_and_time_to_timestamp(df)
+        df = convert_date_and_time_to_datetime(df, tzinfo=self._forecast_weather_server_timezone)
         df = round_timestamp(df)
         min_datetime, max_datetime = get_min_max_timestamp(df)
         df = interpolate_t(df, min_datetime, max_datetime, t_column_name=consts.WEATHER_T_COLUMN_NAME)

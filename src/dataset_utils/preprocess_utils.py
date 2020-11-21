@@ -13,12 +13,12 @@ def round_timestamp(df):
     return df
 
 
-def round_datetime(datetime_):
-    timestamp = datetime_.timestamp()
+def round_datetime(src_datetime):
+    src_timestamp = src_datetime.timestamp()
     time_step_in_seconds = consts.TIME_STEP.total_seconds()
-    timestamp = math.ceil(timestamp / time_step_in_seconds) * time_step_in_seconds
-    datetime_ = datetime.datetime.fromtimestamp(timestamp)
-    return datetime_
+    rounded_timestamp = math.ceil(src_timestamp / time_step_in_seconds) * time_step_in_seconds
+    rounded_datetime = datetime.datetime.fromtimestamp(rounded_timestamp, tz=src_datetime.tzinfo)
+    return rounded_datetime
 
 
 def interpolate_t(df, min_datetime=None, max_datetime=None, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
@@ -49,7 +49,7 @@ def interpolate_passes_of_t(df, t_column_name=consts.FORWARD_PIPE_COLUMN_NAME):
 
         datetime_delta = next_datetime - previous_datetime
         if datetime_delta > consts.TIME_STEP:
-            number_of_passes = int(datetime_delta.total_seconds() // consts.TIME_STEP.seconds) - 1
+            number_of_passes = int(datetime_delta // consts.TIME_STEP) - 1
             t_step = (next_t - previous_t) / number_of_passes
             for pass_n in range(1, number_of_passes + 1):
                 interpolated_datetime = previous_datetime + (consts.TIME_STEP * pass_n)
@@ -170,18 +170,19 @@ def remove_disabled_t(df, disabled_t_threshold, column_name=consts.FORWARD_PIPE_
     return df
 
 
-def convert_date_and_time_to_timestamp(df):
-    timestamps = []
+# noinspection SpellCheckingInspection
+def convert_date_and_time_to_datetime(df, tzinfo=None):
+    datetime_list = []
     for _, row in df.iterrows():
         time_as_str = row[consts.SOFT_M_TIME_COLUMN_NAME]
         time = parse_time(time_as_str)
 
-        date = row[consts.SOFT_M_DATE_COLUMN_NAME]
+        date = row[consts.SOFT_M_DATE_COLUMN_NAME].date()
 
-        timestamp = date + time
-        timestamps.append(timestamp)
+        datetime_ = datetime.datetime.combine(date, time, tzinfo=tzinfo)
+        datetime_list.append(datetime_)
 
-    df[consts.TIMESTAMP_COLUMN_NAME] = timestamps
+    df[consts.TIMESTAMP_COLUMN_NAME] = datetime_list
     del df[consts.SOFT_M_DATE_COLUMN_NAME]
     del df[consts.SOFT_M_TIME_COLUMN_NAME]
 
@@ -190,10 +191,10 @@ def convert_date_and_time_to_timestamp(df):
 
 def parse_time(time_as_str):
     parsed = re.match(r"(?P<hour>\d\d):(?P<min>\d\d):(?P<sec>\d\d)", time_as_str)
-    hours = int(parsed.group("hour"))
-    minutes = int(parsed.group("min"))
-    seconds = int(parsed.group("sec"))
-    time = datetime.timedelta(hours=hours, minutes=minutes, seconds=seconds)
+    hour = int(parsed.group("hour"))
+    minute = int(parsed.group("min"))
+    second = int(parsed.group("sec"))
+    time = datetime.time(hour=hour, minute=minute, second=second)
     return time
 
 
