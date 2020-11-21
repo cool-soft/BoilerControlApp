@@ -29,7 +29,7 @@ class BoilerTPredictor:
     def set_weather_forecast_provider(self, weather_forecast_provider):
         self._weather_forecast_provider = weather_forecast_provider
 
-    def get_boiler_t(self, start_datetime, end_datetime):
+    def get_need_boiler_t(self, start_datetime, end_datetime):
         max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
 
         weather_forecast_end_datetime = end_datetime + (max_home_time_delta * consts.TIME_TICK)

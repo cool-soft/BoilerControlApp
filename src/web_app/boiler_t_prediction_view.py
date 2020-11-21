@@ -29,7 +29,7 @@ class BoilerTPredictionView(View):
         end_datetime_as_str = request.args.get("end_date")
         end_datetime = self._preprocess_datetime(end_datetime_as_str, default_value=default_end_datetime)
 
-        predicted_boiler_t_df = self.boiler_t_predictor.get_boiler_t(start_datetime, end_datetime)
+        predicted_boiler_t_df = self.boiler_t_predictor.get_need_boiler_t(start_datetime, end_datetime)
         predicted_boiler_t_list = predicted_boiler_t_df[consts.BOILER_NAME_COLUMN_NAME].to_list()
         predicted_boiler_t_datetime_list = predicted_boiler_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
 

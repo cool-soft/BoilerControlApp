@@ -33,7 +33,7 @@ if __name__ == '__main__':
     automated_boiler_t_predictor.set_boiler_t_predictor(boiler_t_predictor)
     automated_boiler_t_predictor.set_weather_forecast_provider(forecast_weather_t_provider)
 
-    predicted_boiler_t_df = automated_boiler_t_predictor.get_boiler_t(min_date, max_date)
+    predicted_boiler_t_df = automated_boiler_t_predictor.get_need_boiler_t(min_date, max_date)
     predicted_boiler_t_arr = predicted_boiler_t_df[consts.BOILER_NAME_COLUMN_NAME].to_numpy()
 
     dates_arr = predicted_boiler_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
