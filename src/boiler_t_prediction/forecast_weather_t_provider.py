@@ -42,9 +42,9 @@ class ForecastWeatherTProvider:
         return False
 
     def _update_cache_from_server(self):
-        df = self._request_from_server()
-        df = self._preprocess_weather_t(df)
-        self._update_cache(df)
+        data = self._request_from_server()
+        dataframe = self._preprocess_weather_t(data)
+        self._update_cache(dataframe)
 
     # noinspection PyMethodMayBeStatic
     def _request_from_server(self):
