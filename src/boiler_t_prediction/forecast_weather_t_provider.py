@@ -1,8 +1,6 @@
 
 from datetime import datetime
-import dateutil.tz
 
-import config
 import consts
 from dataset_utils.preprocess_utils import (
     rename_column,
@@ -11,7 +9,8 @@ from dataset_utils.preprocess_utils import (
     filter_by_timestamp,
     get_min_max_timestamp,
     round_timestamp,
-    round_datetime, interpolate_passes_of_t
+    round_datetime,
+    interpolate_passes_of_t
 )
 
 import pandas as pd
@@ -21,10 +20,17 @@ import requests
 class ForecastWeatherTProvider:
 
     def __init__(self):
-        self._forecast_weather_t_cache = pd.DataFrame()
-        self._forecast_weather_server_timezone = dateutil.tz.gettz(config.FORECAST_WEATHER_SERVER_TIMEZONE)
+        self._cached_weather_forecast_df = pd.DataFrame()
+        self._forecast_weather_server_timezone = None
+        self._forecast_weather_server_address = None
 
-    def get_forecast_weather_t(self, min_date, max_date):
+    def set_weather_forecast_server_timezone(self, timezone):
+        self._forecast_weather_server_timezone = timezone
+
+    def set_weather_forecast_server_address(self, server_address):
+        self._forecast_weather_server_address = server_address
+
+    def get_weather_forecast(self, min_date, max_date):
         min_date = round_datetime(min_date)
         max_date = round_datetime(max_date)
 
@@ -34,7 +40,7 @@ class ForecastWeatherTProvider:
         return self._get_from_cache(min_date, max_date)
 
     def _is_requested_datetime_not_in_cache(self, requested_datetime):
-        _, max_cached_datetime = get_min_max_timestamp(self._forecast_weather_t_cache)
+        _, max_cached_datetime = get_min_max_timestamp(self._cached_weather_forecast_df)
         if max_cached_datetime is None:
             return True
         if max_cached_datetime <= requested_datetime:
@@ -42,13 +48,13 @@ class ForecastWeatherTProvider:
         return False
 
     def _update_cache_from_server(self):
-        data = self._request_from_server()
-        dataframe = self._preprocess_weather_t(data)
+        data = self._get_weather_forecast_from_server()
+        dataframe = self._preprocess_weather_forecast(data)
         self._update_cache(dataframe)
 
     # noinspection PyMethodMayBeStatic
-    def _request_from_server(self):
-        url = f"{config.FORECAST_WEATHER_SERVER}/JSON/"
+    def _get_weather_forecast_from_server(self):
+        url = f"{self._forecast_weather_server_address}/JSON/"
         # noinspection SpellCheckingInspection
         params = {
             "method": "getPrognozT"
@@ -57,7 +63,7 @@ class ForecastWeatherTProvider:
         return response.text
 
     # noinspection PyMethodMayBeStatic
-    def _preprocess_weather_t(self, response_text):
+    def _preprocess_weather_forecast(self, response_text):
         df = pd.read_json(response_text)
         df = rename_column(df, consts.SOFT_M_WEATHER_T_COLUMN_NAME, consts.WEATHER_T_COLUMN_NAME)
         df = convert_date_and_time_to_timestamp(df, tzinfo=self._forecast_weather_server_timezone)
@@ -66,20 +72,20 @@ class ForecastWeatherTProvider:
         df = remove_duplicates_by_timestamp(df)
         return df
 
-    def _update_cache(self, df):
-        new_df = pd.concat(
-            (self._forecast_weather_t_cache, df),
+    def _update_cache(self, new_weather_forecast_df):
+        new_weather_forecast_cache = pd.concat(
+            (self._cached_weather_forecast_df, new_weather_forecast_df),
             ignore_index=True
         )
-        new_df = remove_duplicates_by_timestamp(new_df)
-        self._forecast_weather_t_cache = new_df
+        new_weather_forecast_cache = remove_duplicates_by_timestamp(new_weather_forecast_cache)
+        self._cached_weather_forecast_df = new_weather_forecast_cache
 
-    def _get_from_cache(self, min_date, max_date):
-        return filter_by_timestamp(self._forecast_weather_t_cache, min_date, max_date).copy()
+    def _get_from_cache(self, start_date, end_date):
+        return filter_by_timestamp(self._cached_weather_forecast_df, start_date, end_date).copy()
 
     def compact_cache(self):
         # TODO: timezone
         datetime_now = round_datetime(datetime.now())
-        old_values_condition = self._forecast_weather_t_cache[consts.TIMESTAMP_COLUMN_NAME] < datetime_now
-        old_values_idx = self._forecast_weather_t_cache[old_values_condition].index
-        self._forecast_weather_t_cache.drop(old_values_idx, inplace=True)
+        old_values_condition = self._cached_weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME] < datetime_now
+        old_values_idx = self._cached_weather_forecast_df[old_values_condition].index
+        self._cached_weather_forecast_df.drop(old_values_idx, inplace=True)

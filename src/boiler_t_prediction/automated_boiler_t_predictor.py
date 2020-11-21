@@ -34,7 +34,7 @@ class AutomatedBoilerTPredictor:
 
         max_date = max_date + (self._max_home_time_delta * consts.TIME_STEP)
 
-        forecast_weather_t_df = self._forecast_weather_t_provider.get_forecast_weather_t(min_date, max_date)
+        forecast_weather_t_df = self._forecast_weather_t_provider.get_weather_forecast(min_date, max_date)
         forecast_weather_t = forecast_weather_t_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
 
         predicted_boiler_t_arr = self._boiler_t_predictor.predict_on_weather_t_arr(forecast_weather_t)

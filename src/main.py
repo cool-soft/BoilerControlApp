@@ -1,5 +1,7 @@
+
 import os
 
+from dateutil.tz import gettz
 import pandas as pd
 import flask
 
@@ -14,9 +16,10 @@ from web_app.api_rules import API_RULES
 
 
 if __name__ == '__main__':
-    homes_time_deltas = pd.read_csv(config.HOMES_DELTAS_PATH)
     optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
     temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
+    homes_time_deltas = pd.read_csv(config.HOMES_DELTAS_PATH)
+    max_home_time_delta = homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
 
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
@@ -24,8 +27,8 @@ if __name__ == '__main__':
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
 
     forecast_weather_t_provider = ForecastWeatherTProvider()
-
-    max_home_time_delta = homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
+    forecast_weather_t_provider.set_weather_forecast_server_timezone(gettz(config.FORECAST_WEATHER_SERVER_TIMEZONE))
+    forecast_weather_t_provider.set_weather_forecast_server_address(config.FORECAST_WEATHER_SERVER_ADDRESS)
 
     automated_boiler_t_predictor = AutomatedBoilerTPredictor()
     automated_boiler_t_predictor.set_max_home_time_delta(max_home_time_delta)

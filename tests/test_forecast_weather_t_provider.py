@@ -11,5 +11,5 @@ if __name__ == '__main__':
 
     min_date = datetime.now()
     max_date = min_date + (consts.TIME_STEP * 10)
-    a = t_provider.get_forecast_weather_t(min_date, max_date)
+    a = t_provider.get_weather_forecast(min_date, max_date)
     print(a)

@@ -21,7 +21,7 @@ if __name__ == '__main__':
     temp_graph = pd.read_csv(config.T_GRAPH_PATH)
 
     forecast_weather_t_provider = ForecastWeatherTProvider()
-    forecast_weather_t_df = forecast_weather_t_provider.get_forecast_weather_t(min_date, max_date)
+    forecast_weather_t_df = forecast_weather_t_provider.get_weather_forecast(min_date, max_date)
     forecast_weather_t = forecast_weather_t_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
 
     boiler_t_predictor = BoilerTPredictor()

@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     dates_arr = predicted_boiler_t_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
 
-    weather_t_df = forecast_weather_t_provider.get_forecast_weather_t(min_date, max_date)
+    weather_t_df = forecast_weather_t_provider.get_weather_forecast(min_date, max_date)
     weather_t_arr = weather_t_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
 
     print(min_date, max_date)

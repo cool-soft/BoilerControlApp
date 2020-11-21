@@ -1,7 +1,7 @@
 
 HOME_T_DISPERSION_COEFFICIENT = 0.97
 
-FORECAST_WEATHER_SERVER = "https://lysva.agt.town/"
+FORECAST_WEATHER_SERVER_ADDRESS = "https://lysva.agt.town/"
 FORECAST_WEATHER_SERVER_TIMEZONE = "Asia/Yekaterinburg"
 
 T_GRAPH_PATH = "../storage/t_graph.csv"
