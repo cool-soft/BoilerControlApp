@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 
@@ -85,16 +84,12 @@ class BoilerTPredictor:
 
     def _calc_need_boiler_t_for_time_moment(self, time_moment, t_graph_requirements_arr):
         need_boiler_t = float("-inf")
-        for index, row in self._homes_time_deltas.iterrows():
+        for _, row in self._homes_time_deltas.iterrows():
             home_name = row[consts.HOME_NAME_COLUMN_NAME]
-            need_boiler_t_for_home = self._calc_need_boiler_t_for_home(home_name, time_moment, t_graph_requirements_arr)
+            home_time_delta = row[consts.TIME_DELTA_COLUMN_NAME]
+            need_home_t = float(t_graph_requirements_arr[time_moment + home_time_delta])
+            need_home_t *= self._home_t_dispersion_coefficient
+            need_t_condition = self._optimized_t_table[home_name] >= need_home_t
+            need_boiler_t_for_home = self._optimized_t_table[need_t_condition][consts.BOILER_NAME_COLUMN_NAME].min()
             need_boiler_t = max(need_boiler_t, need_boiler_t_for_home)
-        return need_boiler_t
-
-    def _calc_need_boiler_t_for_home(self, home_name, time_moment, t_graph_requirements_arr):
-        home_condition = self._homes_time_deltas[consts.HOME_NAME_COLUMN_NAME] == home_name
-        home_time_delta = self._homes_time_deltas[home_condition][consts.TIME_DELTA_COLUMN_NAME]
-        need_home_t = float(t_graph_requirements_arr[time_moment + home_time_delta])
-        need_t_condition = self._optimized_t_table[home_name] >= need_home_t
-        need_boiler_t = self._optimized_t_table[need_t_condition][consts.BOILER_NAME_COLUMN_NAME].min()
         return need_boiler_t
