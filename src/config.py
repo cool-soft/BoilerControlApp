@@ -12,7 +12,7 @@ BOILER_CONTROL_REQUEST_DATETIME_PATTERNS = (
     r"(?P<year>\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})\s(?P<hours>\d{1,2}):(?P<minutes>\d{2})",
     r"(?P<day>\d{1,2})\.(?P<month>\d{1,2})\.(?P<year>\d{4})\s(?P<hours>\d{1,2}):(?P<minutes>\d{2})"
 )
-BOILER_CONTROL_RESPONSE_DATETIME_PATTERN = "%Y-%m-%d %H:%M:%S"
+BOILER_CONTROL_RESPONSE_DATETIME_PATTERN = "%Y-%m-%d %H:%M"
 BOILER_CONTROL_TIMEZONE = "Asia/Yekaterinburg"
 
 SERVICE_PORT = 270
