@@ -41,4 +41,8 @@ if __name__ == '__main__':
     for rule, kwargs in API_RULES:
         app.add_url_rule(rule, **kwargs)
 
-    app.run(port=config.SERVICE_PORT, debug=config.FLASK_DEBUG)
+    app.run(
+        host=config.SERVICE_HOST,
+        port=config.SERVICE_PORT,
+        debug=config.FLASK_DEBUG
+    )
