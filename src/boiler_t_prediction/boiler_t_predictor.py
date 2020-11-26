@@ -36,6 +36,12 @@ class BoilerTPredictor:
             start_datetime, weather_forecast_end_datetime
         )
 
+        # if len(weather_forecast_df) < max_home_time_delta + 1:
+        #     return pd.DataFrame({
+        #         consts.TIMESTAMP_COLUMN_NAME: [],
+        #         consts.BOILER_NAME_COLUMN_NAME: []
+        #     })
+
         t_graph_requirements_df = self._get_t_graph_requirements(weather_forecast_df)
         need_boiler_t_df = self._get_need_boiler_t(t_graph_requirements_df)
 
@@ -68,10 +74,10 @@ class BoilerTPredictor:
         max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
         need_boiler_t_df_len = len(t_graph_requirements_df) - max_home_time_delta
 
-        t_graph_requirements_series = t_graph_requirements_df[consts.REQUIRED_T_IN_HOME_COLUMN_NAME]
+        t_graph_requirements_arr = t_graph_requirements_df[consts.REQUIRED_T_IN_HOME_COLUMN_NAME].to_numpy()
         need_boiler_t_arr = np.empty(shape=(need_boiler_t_df_len,), dtype=np.float)
         for time_moment in range(need_boiler_t_df_len):
-            need_boiler_t = self._calc_need_boiler_t_for_time_moment(time_moment, t_graph_requirements_series)
+            need_boiler_t = self._calc_need_boiler_t_for_time_moment(time_moment, t_graph_requirements_arr)
             need_boiler_t_arr[time_moment] = need_boiler_t
 
         t_graph_requirements_dates_series = t_graph_requirements_df[consts.TIMESTAMP_COLUMN_NAME]
@@ -82,14 +88,16 @@ class BoilerTPredictor:
         })
         return need_boiler_t_df
 
-    def _calc_need_boiler_t_for_time_moment(self, time_moment, t_graph_requirements_series):
+    def _calc_need_boiler_t_for_time_moment(self, time_moment, t_graph_requirements_arr):
         need_boiler_t = float("-inf")
-        for _, row in self._homes_time_deltas.iterrows():
-            home_name = row[consts.HOME_NAME_COLUMN_NAME]
-            home_time_delta = row[consts.TIME_DELTA_COLUMN_NAME]
-            need_home_t = float(t_graph_requirements_series[time_moment + home_time_delta])
+
+        home_names = self._homes_time_deltas[consts.HOME_NAME_COLUMN_NAME]
+        time_deltas = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME]
+        for home_name, home_time_delta in zip(home_names, time_deltas):
+            need_home_t = t_graph_requirements_arr[time_moment + home_time_delta]
             need_home_t *= self._home_t_dispersion_coefficient
             need_t_condition = self._optimized_t_table[home_name] >= need_home_t
             need_boiler_t_for_home = self._optimized_t_table[need_t_condition][consts.BOILER_NAME_COLUMN_NAME].min()
             need_boiler_t = max(need_boiler_t, need_boiler_t_for_home)
+
         return need_boiler_t
