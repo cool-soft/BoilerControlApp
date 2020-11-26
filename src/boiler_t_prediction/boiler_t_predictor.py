@@ -36,11 +36,11 @@ class BoilerTPredictor:
             start_datetime, weather_forecast_end_datetime
         )
 
-        # if len(weather_forecast_df) < max_home_time_delta + 1:
-        #     return pd.DataFrame({
-        #         consts.TIMESTAMP_COLUMN_NAME: [],
-        #         consts.BOILER_NAME_COLUMN_NAME: []
-        #     })
+        if len(weather_forecast_df) < max_home_time_delta + 1:
+            return pd.DataFrame({
+                consts.TIMESTAMP_COLUMN_NAME: [],
+                consts.BOILER_NAME_COLUMN_NAME: []
+            })
 
         t_graph_requirements_df = self._get_t_graph_requirements(weather_forecast_df)
         need_boiler_t_df = self._get_need_boiler_t(t_graph_requirements_df)
@@ -51,14 +51,14 @@ class BoilerTPredictor:
         forecast_weather_df_len = len(weather_forecast_df)
         t_graph_requirements_arr = np.empty(shape=(forecast_weather_df_len,), dtype=np.float)
 
-        weather_t_forecast_series = weather_forecast_df[consts.WEATHER_T_COLUMN_NAME]
-        for i, weather_t in enumerate(weather_t_forecast_series):
+        weather_t_forecast_arr = weather_forecast_df[consts.WEATHER_T_COLUMN_NAME].to_numpy()
+        for i, weather_t in enumerate(weather_t_forecast_arr):
             required_t_by_t_graph = self._get_required_t_by_t_graph_for_weather_t(weather_t)
             t_graph_requirements_arr[i] = required_t_by_t_graph
 
-        t_graph_requirements_dates_series = weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME]
+        t_graph_requirements_dates_list = weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
         t_graph_requirements_df = pd.DataFrame({
-            consts.TIMESTAMP_COLUMN_NAME: t_graph_requirements_dates_series,
+            consts.TIMESTAMP_COLUMN_NAME: t_graph_requirements_dates_list,
             consts.REQUIRED_T_IN_HOME_COLUMN_NAME: t_graph_requirements_arr
         })
 
@@ -80,10 +80,10 @@ class BoilerTPredictor:
             need_boiler_t = self._calc_need_boiler_t_for_time_moment(time_moment, t_graph_requirements_arr)
             need_boiler_t_arr[time_moment] = need_boiler_t
 
-        t_graph_requirements_dates_series = t_graph_requirements_df[consts.TIMESTAMP_COLUMN_NAME]
-        need_boiler_t_dates_series = t_graph_requirements_dates_series[:need_boiler_t_df_len]
+        t_graph_requirements_dates_list = t_graph_requirements_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
+        need_boiler_t_dates_list = t_graph_requirements_dates_list[:need_boiler_t_df_len]
         need_boiler_t_df = pd.DataFrame({
-            consts.TIMESTAMP_COLUMN_NAME: need_boiler_t_dates_series,
+            consts.TIMESTAMP_COLUMN_NAME: need_boiler_t_dates_list,
             consts.BOILER_NAME_COLUMN_NAME: need_boiler_t_arr
         })
         return need_boiler_t_df
