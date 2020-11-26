@@ -34,12 +34,15 @@ class BoilerTPredictionView(View):
         predicted_boiler_t_ds = []
         for _, row in predicted_boiler_t_df.iterrows():
             datetime_ = row[consts.TIMESTAMP_COLUMN_NAME]
-            boiler_t = row[consts.BOILER_NAME_COLUMN_NAME]
+            datetime_ = datetime_.astimezone(self._boiler_control_timezone)
             datetime_as_str = datetime_.strftime(config.BOILER_CONTROL_RESPONSE_DATETIME_PATTERN)
-            boiler_t = round(boiler_t, 1)
-            predicted_boiler_t_ds.append((datetime_as_str, boiler_t))
-        boiler_t_json = jsonify(predicted_boiler_t_ds)
 
+            boiler_t = row[consts.BOILER_NAME_COLUMN_NAME]
+            boiler_t = round(boiler_t, 1)
+
+            predicted_boiler_t_ds.append((datetime_as_str, boiler_t))
+
+        boiler_t_json = jsonify(predicted_boiler_t_ds)
         return boiler_t_json
 
     def _preprocess_datetime(self, datetime_as_str, default_value):
