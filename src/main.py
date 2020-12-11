@@ -23,6 +23,7 @@ if __name__ == '__main__':
     weather_forecast_provider = WeatherForecastProvider()
     weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.WEATHER_FORECAST_SERVER_TIMEZONE))
     weather_forecast_provider.set_weather_forecast_server_address(config.WEATHER_FORECAST_SERVER_ADDRESS)
+    weather_forecast_provider.set_weather_forecast_update_interval(config.WEATHER_FORECAST_UPDATE_INTERVAL)
 
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
