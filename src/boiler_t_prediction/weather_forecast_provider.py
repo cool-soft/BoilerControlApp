@@ -1,9 +1,8 @@
-
 from datetime import datetime
 
-from dateutil.tz import tzlocal
 import pandas as pd
 import requests
+from dateutil.tz import tzlocal
 
 import consts
 from dataset_utils.preprocess_utils import (
@@ -23,15 +22,21 @@ class WeatherForecastProvider:
         self._cached_weather_forecast_df = pd.DataFrame()
         self._forecast_weather_server_timezone = None
         self._forecast_weather_server_address = None
+        self._weather_forecast_update_interval = 1800
+        self._cached_weather_forecast_last_update = None
 
-    def set_weather_forecast_server_timezone(self, timezone):
-        self._forecast_weather_server_timezone = timezone
+    def set_weather_forecast_server_timezone(self, server_timezone):
+        self._forecast_weather_server_timezone = server_timezone
 
     def set_weather_forecast_server_address(self, server_address):
         self._forecast_weather_server_address = server_address
 
+    def set_weather_forecast_update_interval(self, lifetime):
+        self._weather_forecast_update_interval = lifetime
+
     def get_weather_forecast(self, min_date, max_date):
-        if self._is_requested_datetime_not_in_cache(max_date):
+        if self._is_requested_datetime_not_in_cache(max_date) or \
+                self._is_cached_weather_forecast_expired():
             self._update_cache_from_server()
 
         return self._get_from_cache(min_date, max_date)
@@ -44,10 +49,22 @@ class WeatherForecastProvider:
             return True
         return False
 
+    def _is_cached_weather_forecast_expired(self):
+        if self._cached_weather_forecast_last_update is None:
+            return True
+
+        datetime_now = datetime.now(tzlocal())
+        weather_forecast_lifetime = (datetime_now - self._cached_weather_forecast_last_update)
+        if weather_forecast_lifetime.total_seconds() > self._weather_forecast_update_interval:
+            return True
+
+        return False
+
     def _update_cache_from_server(self):
         data = self._get_weather_forecast_from_server()
-        dataframe = self._preprocess_weather_forecast(data)
-        self._update_cache(dataframe)
+        new_weather_forecast_df = self._preprocess_weather_forecast(data)
+        self._cached_weather_forecast_df = new_weather_forecast_df
+        self._cached_weather_forecast_last_update = datetime.now(tzlocal())
 
     # noinspection PyMethodMayBeStatic
     def _get_weather_forecast_from_server(self):
@@ -69,18 +86,10 @@ class WeatherForecastProvider:
         df = remove_duplicates_by_timestamp(df)
         return df
 
-    def _update_cache(self, new_weather_forecast_df):
-        new_weather_forecast_cache = pd.concat(
-            (self._cached_weather_forecast_df, new_weather_forecast_df),
-            ignore_index=True
-        )
-        new_weather_forecast_cache = remove_duplicates_by_timestamp(new_weather_forecast_cache)
-        self._cached_weather_forecast_df = new_weather_forecast_cache
-
     def _get_from_cache(self, start_date, end_date):
         return filter_by_timestamp(self._cached_weather_forecast_df, start_date, end_date).copy()
 
-    def compact_cache(self):
+    def clean_old_cached_weather_forecast(self):
         datetime_now = datetime.now(tz=tzlocal())
         old_values_condition = self._cached_weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME] < datetime_now
         old_values_idx = self._cached_weather_forecast_df[old_values_condition].index

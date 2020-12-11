@@ -21,8 +21,8 @@ if __name__ == '__main__':
     max_home_time_delta = homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
 
     weather_forecast_provider = WeatherForecastProvider()
-    weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.FORECAST_WEATHER_SERVER_TIMEZONE))
-    weather_forecast_provider.set_weather_forecast_server_address(config.FORECAST_WEATHER_SERVER_ADDRESS)
+    weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.WEATHER_FORECAST_SERVER_TIMEZONE))
+    weather_forecast_provider.set_weather_forecast_server_address(config.WEATHER_FORECAST_SERVER_ADDRESS)
 
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
