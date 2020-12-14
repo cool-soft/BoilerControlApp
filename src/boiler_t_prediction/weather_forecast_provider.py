@@ -88,9 +88,3 @@ class WeatherForecastProvider:
 
     def _get_from_cache(self, start_date, end_date):
         return filter_by_timestamp(self._cached_weather_forecast_df, start_date, end_date).copy()
-
-    def clean_old_cached_weather_forecast(self):
-        datetime_now = datetime.now(tz=tzlocal())
-        old_values_condition = self._cached_weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME] < datetime_now
-        old_values_idx = self._cached_weather_forecast_df[old_values_condition].index
-        self._cached_weather_forecast_df.drop(old_values_idx, inplace=True)
