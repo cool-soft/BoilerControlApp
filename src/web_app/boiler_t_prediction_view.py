@@ -1,4 +1,3 @@
-
 from datetime import datetime
 
 from dateutil.tz import gettz
@@ -7,10 +6,9 @@ from flask.views import View
 
 import config
 import consts
-from dependency_injection import get_dependency
-from dataset_utils.preprocess_utils import parse_datetime
-
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
+from dataset_utils.preprocess_utils import parse_datetime
+from dependency_injection import get_dependency
 
 
 class BoilerTPredictionView(View):

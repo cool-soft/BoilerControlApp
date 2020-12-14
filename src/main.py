@@ -1,24 +1,20 @@
-
 import os
 
-from dateutil.tz import gettz
-import pandas as pd
 import flask
+import pandas as pd
+from dateutil.tz import gettz
 
 import config
-import consts
-from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
+from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from dataset_utils.io_utils import load_dataframe
 from dependency_injection import add_dependency
 from web_app.api_rules import API_RULES
-
 
 if __name__ == '__main__':
     optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
     temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
     homes_time_deltas = pd.read_csv(os.path.abspath(config.HOMES_DELTAS_PATH))
-    max_home_time_delta = homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
 
     weather_forecast_provider = WeatherForecastProvider()
     weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.WEATHER_FORECAST_SERVER_TIMEZONE))
