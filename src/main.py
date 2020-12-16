@@ -14,7 +14,12 @@ from dependency_injection import add_dependency
 from web_app.api import app as api_v1
 
 if __name__ == '__main__':
-    logging.basicConfig(filename=config.LOG_PATH, level=config.LOG_LEVEL)
+    logging.basicConfig(
+        filename=config.LOG_PATH,
+        level=config.LOG_LEVEL,
+        datefmt=config.LOG_DATETIME_FORMAT,
+        format=config.LOG_FORMAT
+    )
 
     optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
     temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
