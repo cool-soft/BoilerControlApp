@@ -20,7 +20,7 @@ def get_predicted_boiler_t(start_date: Optional[str] = None, end_date: Optional[
     """
     Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
     """
-    
+
     boiler_t_predictor = get_dependency(BoilerTPredictor)
     boiler_control_timezone = gettz(config.BOILER_CONTROL_TIMEZONE)
 
