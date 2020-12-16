@@ -1,17 +1,21 @@
+import logging
 import os
 
-import flask
 import pandas as pd
+import uvicorn
 from dateutil.tz import gettz
+from fastapi import FastAPI
 
 import config
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from dataset_utils.io_utils import load_dataframe
 from dependency_injection import add_dependency
-from web_app.api_rules import API_RULES
+from web_app.api import app as api_v1
 
 if __name__ == '__main__':
+    logging.basicConfig(filename=config.LOG_PATH, level=config.LOG_LEVEL)
+
     optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
     temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
     homes_time_deltas = pd.read_csv(os.path.abspath(config.HOMES_DELTAS_PATH))
@@ -29,12 +33,10 @@ if __name__ == '__main__':
 
     add_dependency(boiler_t_predictor)
 
-    app = flask.Flask(__name__)
-    for rule, kwargs in API_RULES:
-        app.add_url_rule(rule, **kwargs)
-
-    app.run(
+    app = FastAPI()
+    app.mount("/api/v1", api_v1)
+    uvicorn.run(
+        app,
         host=config.SERVICE_HOST,
-        port=config.SERVICE_PORT,
-        debug=config.FLASK_DEBUG
+        port=config.SERVICE_PORT
     )
