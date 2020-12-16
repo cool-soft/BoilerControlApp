@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from dateutil.tz import gettz
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 import config
@@ -15,21 +15,16 @@ app = FastAPI()
 
 @app.get("/getPredictedBoilerT", response_class=JSONResponse)
 def get_predicted_boiler_t(
-        start_datetime: Optional[datetime] = Query(
-            None,
-            description="Дата время начала управляющего воздействия в формате ISO8601 (2020-01-30T00:36:05+05:00)."
-        ),
-        end_datetime: Optional[datetime] = Query(
-            None,
-            description="Дата время окончания управляющего воздействия в формате ISO8601 (2020-01-30T01:00:59+05:00)."
-        ),
-        response_timezone: Optional[str] = Query(
-            config.BOILER_CONTROL_TIMEZONE,
-            description="Имя временной зоны для генерации ответа. По-умолчанию берется из конфигов."
-        )
+        start_datetime: Optional[datetime] = None,
+        end_datetime: Optional[datetime] = None,
+        response_timezone: Optional[str] = config.BOILER_CONTROL_TIMEZONE
 ):
     """
     Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
+    Принимает 3 ОПЦИОНАЛЬНЫХ параметра.
+    - **start_datetime**: Дата время начала управляющего воздействия в формате ISO8601 (2020-01-30T00:36:05+05:00).
+    - **end_datetime**: Дата время окончания управляющего воздействия в формате ISO8601 (2020-01-30T01:59:59+05:00).
+    - **response_timezone**: Имя временной зоны для генерации ответа. По-умолчанию берется из конфигов.
     """
 
     response_timezone = gettz(response_timezone)
