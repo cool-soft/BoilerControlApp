@@ -11,7 +11,8 @@ from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from dataset_utils.io_utils import load_dataframe
 from dependency_injection import add_dependency
-from web_app.api import app as api_v1
+from web_app.api_v1 import app as api_v1
+from web_app.api_v2 import app as api_v2
 
 if __name__ == '__main__':
     logging.basicConfig(
@@ -40,6 +41,7 @@ if __name__ == '__main__':
 
     app = FastAPI()
     app.mount("/api/v1", api_v1)
+    app.mount("/api/v2", api_v2)
     uvicorn.run(
         app,
         host=config.SERVICE_HOST,
