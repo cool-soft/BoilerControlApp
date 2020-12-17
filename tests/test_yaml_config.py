@@ -1,4 +1,4 @@
-from config_utils import GlobalAppConfig
+from configs import GlobalAppConfig
 
 if __name__ == '__main__':
     cfg1 = GlobalAppConfig()

@@ -8,7 +8,7 @@ from fastapi import FastAPI
 
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
-from config_utils import GlobalAppConfig
+from configs import GlobalAppConfig
 from dataset_utils.io_utils import load_dataframe
 from dependency_injection import add_dependency
 from web_app.api_v1 import api_router as api_v1
