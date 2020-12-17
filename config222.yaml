@@ -1,0 +1,27 @@
+BOILER_T_PREDICTOR:
+  HOME_T_DISPERSION_COEFFICIENT: 0.97
+  T_GRAPH_PATH: "../storage/t_graph.csv"
+  HOMES_DELTAS_PATH: "../storage/homes_time_delta.csv"
+  OPTIMIZED_T_TABLE_PATH: "../storage/optimized_t_table.pickle"
+
+WEATHER_FORECAST_PROVIDER:
+  SERVER_ADDRESS: "https://lysva.agt.town/"
+  SERVER_TIMEZONE: "Asia/Yekaterinburg"
+  UPDATE_INTERVAL: 600
+
+LOGGING:
+  PATH: "../logs/log.log"
+  LEVEL: "DEBUG"
+  DATETIME_FORMAT: "%Y-%m-%d %H:%M:%S"
+  FORMAT: "[%(asctime)s] %(levelname)s - %(message)s"
+
+REQUEST_RESPONSE_ROCESSING:
+  REQUEST_DATETIME_PATTERNS:
+    - "(?P<year>\\d{4})-(?P<month>\\d{1,2})-(?P<day>\\d{1,2})\\s(?P<hours>\\d{1,2}):(?P<minutes>\\d{2})"
+    - "(?P<day>\\d{1,2})\\.(?P<month>\\d{1,2})\\.(?P<year>\\d{4})\\s(?P<hours>\\d{1,2}):(?P<minutes>\\d{2})"
+  RESPONSE_DATETIME_PATTERN: "%Y-%m-%d %H:%M"
+  BOILER_CONTROL_TIMEZONE: "Asia/Yekaterinburg"
+
+SERVICE:
+  PORT: 270
+  HOST: "0.0.0.0"

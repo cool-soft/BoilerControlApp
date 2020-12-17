@@ -4,7 +4,7 @@ from dateutil.tz import gettz
 from matplotlib import pyplot as plt
 from datetime import datetime
 
-import config
+from config_utils import GlobalAppConfig
 from dataset_utils import data_consts
 from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
@@ -14,17 +14,20 @@ from dataset_utils.io_utils import load_dataframe
 
 
 if __name__ == '__main__':
-    min_date = datetime.now(tz=gettz(config.BOILER_CONTROL_TIMEZONE))
+    app_config = GlobalAppConfig.load_app_config()
+
+    min_date = datetime.now(tz=gettz(app_config.datetime_processing.boiler_control_timezone))
     max_date = min_date + (100 * data_consts.TIME_TICK)
 
-    optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
-    temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
-    homes_time_deltas = pd.read_csv(config.HOMES_DELTAS_PATH)
+    optimized_t_table = load_dataframe(app_config.boiler_t_prediction.optimized_t_table_path)
+    temp_graph = pd.read_csv(os.path.abspath(app_config.boiler_t_prediction.t_graph_path))
+    homes_time_deltas = pd.read_csv(app_config.boiler_t_prediction.homes_deltas_path)
     max_home_time_delta = homes_time_deltas[data_consts.TIME_DELTA_COLUMN_NAME].max()
 
     weather_forecast_provider = WeatherForecastProvider()
-    weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.WEATHER_FORECAST_SERVER_TIMEZONE))
-    weather_forecast_provider.set_weather_forecast_server_address(config.WEATHER_FORECAST_SERVER_ADDRESS)
+    weather_forecast_provider.set_weather_forecast_server_timezone(
+        gettz(app_config.weather_forecast_providing.server_timezone))
+    weather_forecast_provider.set_weather_forecast_server_address(app_config.weather_forecast_providing.server_address)
 
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
