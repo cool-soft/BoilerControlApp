@@ -45,7 +45,7 @@ def get_predicted_boiler_t(
         ---
         Формат времени в ответе:
         - 2020-01-30T00:17:07+05:00 - Парсится при помощи DateTimeStyle.RoundtripKind в C#.
-        Временна зона при формировании ответа берётся из парметра timezone_name.
+        Временна зона при формировании ответа берётся из парметра timezone_name. По-умолчанию берется из конфигов.
         """
 
     logging.debug(f"(API V2) Requested predicted boiler t for dates range "
