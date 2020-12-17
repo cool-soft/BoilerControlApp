@@ -6,7 +6,7 @@ from dateutil.tz import gettz
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from config_utils import GlobalAppConfig
+from configs import GlobalAppConfig
 from dataset_utils import data_consts
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from dependency_injection import get_dependency

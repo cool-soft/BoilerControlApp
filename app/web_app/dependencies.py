@@ -3,7 +3,7 @@ from typing import Optional
 
 from dateutil.tz import gettz
 
-from config_utils import GlobalAppConfig
+from configs import GlobalAppConfig
 from dataset_utils import data_consts
 from dataset_utils.preprocess_utils import parse_datetime
 
