@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from dateutil.tz import gettz
@@ -5,7 +6,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 import config
-import consts
+from dataset_utils import data_consts
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from dependency_injection import get_dependency
 from web_app.dependencies import InputDatesRange
@@ -26,6 +27,8 @@ def get_predicted_boiler_t(
     - **timezone_name**: Имя временной зоны для обработки запроса и генерации ответа.
     По-умолчанию берется из конфигов.
     """
+    logging.debug(f"(API V1) Requested predicted boiler t for dates range "
+                  f"from {dates_range.start_date} to {dates_range.end_date}")
 
     boiler_t_predictor = get_dependency(BoilerTPredictor)
 
@@ -34,11 +37,11 @@ def get_predicted_boiler_t(
     boiler_control_timezone = gettz(timezone_name)
     predicted_boiler_t_ds = []
     for _, row in predicted_boiler_t_df.iterrows():
-        datetime_ = row[consts.TIMESTAMP_COLUMN_NAME]
+        datetime_ = row[data_consts.TIMESTAMP_COLUMN_NAME]
         datetime_ = datetime_.astimezone(boiler_control_timezone)
         datetime_as_str = datetime_.strftime(config.BOILER_CONTROL_RESPONSE_DATETIME_PATTERN)
 
-        boiler_t = row[consts.BOILER_NAME_COLUMN_NAME]
+        boiler_t = row[data_consts.BOILER_NAME_COLUMN_NAME]
         boiler_t = round(boiler_t, 1)
 
         predicted_boiler_t_ds.append((datetime_as_str, boiler_t))
