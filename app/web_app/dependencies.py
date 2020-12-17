@@ -4,7 +4,7 @@ from typing import Optional
 from dateutil.tz import gettz
 
 import config
-import consts
+from dataset_utils import data_consts
 from dataset_utils.preprocess_utils import parse_datetime
 
 
@@ -23,7 +23,7 @@ class InputDatesRange:
             )
 
         if end_date is None:
-            self.end_date = self.start_date + consts.TIME_TICK
+            self.end_date = self.start_date + data_consts.TIME_TICK
         else:
             self.end_date = parse_datetime(
                 end_date,

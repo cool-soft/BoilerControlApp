@@ -22,15 +22,20 @@ if __name__ == '__main__':
         format=config.LOG_FORMAT
     )
 
-    optimized_t_table = load_dataframe(config.OPTIMIZED_T_TABLE_PATH)
+    logging.debug(f"Loading optimized t table from {os.path.abspath(config.OPTIMIZED_T_TABLE_PATH)}")
+    optimized_t_table = load_dataframe(os.path.abspath(config.OPTIMIZED_T_TABLE_PATH))
+    logging.debug(f"Loading optimized t graph from {os.path.abspath(config.T_GRAPH_PATH)}")
     temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
+    logging.debug(f"Home time deltas from {os.path.abspath(config.HOMES_DELTAS_PATH)}")
     homes_time_deltas = pd.read_csv(os.path.abspath(config.HOMES_DELTAS_PATH))
 
+    logging.debug("Initialization of WeatherForecastProvider")
     weather_forecast_provider = WeatherForecastProvider()
     weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.WEATHER_FORECAST_SERVER_TIMEZONE))
     weather_forecast_provider.set_weather_forecast_server_address(config.WEATHER_FORECAST_SERVER_ADDRESS)
     weather_forecast_provider.set_weather_forecast_update_interval(config.WEATHER_FORECAST_UPDATE_INTERVAL)
 
+    logging.debug("Initialization of BoilerTPredictor")
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
     boiler_t_predictor.set_temp_graph(temp_graph)
