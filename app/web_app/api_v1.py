@@ -18,7 +18,7 @@ api_router = APIRouter(prefix="/api/v1")
 @api_router.get("/getPredictedBoilerT", response_class=JSONResponse, deprecated=True)
 def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
-        timezone_name: Optional[str] = app_config.datetime_processing.boiler_control_timezone
+        timezone_name: Optional[str] = app_config.datetime_processing.boiler_controller_timezone
 ):
     """
     Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
@@ -41,7 +41,7 @@ def get_predicted_boiler_t(
     for _, row in predicted_boiler_t_df.iterrows():
         datetime_ = row[data_consts.TIMESTAMP_COLUMN_NAME]
         datetime_ = datetime_.astimezone(boiler_control_timezone)
-        datetime_as_str = datetime_.strftime(app_config.datetime_processing.response_datetime_patterns)
+        datetime_as_str = datetime_.strftime(app_config.datetime_processing.response_pattern)
 
         boiler_t = row[data_consts.BOILER_NAME_COLUMN_NAME]
         boiler_t = round(boiler_t, 1)

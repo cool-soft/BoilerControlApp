@@ -14,14 +14,14 @@ app_config = GlobalAppConfig()
 class InputDatesRange:
 
     def __init__(self, start_date: Optional[str] = None, end_date: Optional[str] = None):
-        boiler_control_timezone = gettz(app_config.datetime_processing.boiler_control_timezone)
+        boiler_control_timezone = gettz(app_config.datetime_processing.boiler_controller_timezone)
 
         if start_date is None:
             self.start_date = datetime.now(tz=boiler_control_timezone)
         else:
             self.start_date = parse_datetime(
                 start_date,
-                app_config.datetime_processing.request_datetime_patterns,
+                app_config.datetime_processing.request_patterns,
                 timezone=boiler_control_timezone
             )
 
@@ -30,6 +30,6 @@ class InputDatesRange:
         else:
             self.end_date = parse_datetime(
                 end_date,
-                app_config.datetime_processing.request_datetime_patterns,
+                app_config.datetime_processing.request_patterns,
                 timezone=boiler_control_timezone
             )
