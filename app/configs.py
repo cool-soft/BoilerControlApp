@@ -25,7 +25,7 @@ class LoggingConfig(BaseModel):
     format: str = "[%(asctime)s] %(levelname)s - %(message)s"
 
 
-class RequestResponseProcessingConfig(BaseModel):
+class DatetimeProcessingConfig(BaseModel):
     request_datetime_patterns = [
         "(?P<year>\\d{4})-(?P<month>\\d{1,2})-(?P<day>\\d{1,2})\\s(?P<hours>\\d{1,2}):(?P<minutes>\\d{2})",
         "(?P<day>\\d{1,2})\\.(?P<month>\\d{1,2})\\.(?P<year>\\d{4})\\s(?P<hours>\\d{1,2}):(?P<minutes>\\d{2})"
@@ -45,7 +45,7 @@ class AppConfig(BaseModel):
     boiler_t_prediction: BoilerTPredictorConfig = BoilerTPredictorConfig()
     weather_forecast_providing: WeatherForecastProviderConfig = WeatherForecastProviderConfig()
     logging: LoggingConfig = LoggingConfig()
-    datetime_processing: RequestResponseProcessingConfig = RequestResponseProcessingConfig()
+    datetime_processing: DatetimeProcessingConfig = DatetimeProcessingConfig()
     service: ServiceConfig = ServiceConfig()
 
     @classmethod
