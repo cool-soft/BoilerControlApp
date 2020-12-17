@@ -23,14 +23,16 @@ def get_predicted_boiler_t(
     """
         Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
         Принимает 3 **опциональных** параметра.
-        - **start_datetime**: Дата время начала управляющего воздействия.
-        - **end_datetime**: Дата время окончания управляющего воздействия.
+        - **start_datetime**: Дата время начала управляющего воздействия в формате ISO 8601
+        См. https://en.wikipedia.org/wiki/ISO_8601.
+        - **end_datetime**: Дата время окончания управляющего воздействия в формате ISO 8601.
         - **timezone_name**: Имя временной зоны для обработки запроса и генерации ответа.
         По-умолчанию берется из конфигов.
+        См. столбец «TZ database name» https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
 
         ---
         Формат времени в запросе:
-        - YYYY-MM-DD*HH:MM[:SS[.fffffff]][+HH:MM] где * - 1 любой символ
+        - YYYY-MM-DD?HH:MM[:SS[.fffffff]][+HH:MM] где ? это T или символ пробела.
 
         Примеры:
         - 2020-01-30 00:17+05:00 - Временная зона для парсинга берется из самой строки, предпочтительный вариант.
@@ -41,11 +43,6 @@ def get_predicted_boiler_t(
         Формат времени в ответе:
         - 2020-01-30T00:17:07+05:00 - Парсится при помощи DateTimeStyle.RoundtripKind в C#.
         Временна зона при формировании ответа берётся из парметра timezone_name.
-
-        ---
-        Формат timezone_name:
-        См. столбец «TZ database name»
-        https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
         """
 
     boiler_control_timezone = gettz(timezone_name)
