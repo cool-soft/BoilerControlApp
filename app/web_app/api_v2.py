@@ -19,7 +19,7 @@ app_config = GlobalAppConfig()
 def get_predicted_boiler_t(
         start_datetime: Optional[datetime] = None,
         end_datetime: Optional[datetime] = None,
-        timezone_name: Optional[str] = app_config.datetime_processing.boiler_control_timezone
+        timezone_name: Optional[str] = app_config.datetime_processing.boiler_controller_timezone
 ):
     # noinspection SpellCheckingInspection
     """

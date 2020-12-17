@@ -16,7 +16,7 @@ from dataset_utils.io_utils import load_dataframe
 if __name__ == '__main__':
     app_config = GlobalAppConfig.load_app_config()
 
-    min_date = datetime.now(tz=gettz(app_config.datetime_processing.boiler_control_timezone))
+    min_date = datetime.now(tz=gettz(app_config.datetime_processing.boiler_controller_timezone))
     max_date = min_date + (100 * data_consts.TIME_TICK)
 
     optimized_t_table = load_dataframe(app_config.boiler_t_prediction.optimized_t_table_path)
