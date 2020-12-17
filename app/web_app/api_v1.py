@@ -1,5 +1,5 @@
 from dateutil.tz import gettz
-from fastapi import FastAPI, Depends
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 import config
@@ -8,10 +8,10 @@ from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from dependency_injection import get_dependency
 from web_app.dependencies import InputDatesRange
 
-app = FastAPI()
+api_router = APIRouter(prefix="/api/v1")
 
 
-@app.get("/getPredictedBoilerT", response_class=JSONResponse)
+@api_router.get("/getPredictedBoilerT", response_class=JSONResponse, deprecated=True)
 def get_predicted_boiler_t(dates_range: InputDatesRange = Depends()):
     """
     Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.

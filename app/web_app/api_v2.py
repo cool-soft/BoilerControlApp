@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from dateutil.tz import gettz
-from fastapi import FastAPI
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
 import config
@@ -10,10 +10,10 @@ import consts
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from dependency_injection import get_dependency
 
-app = FastAPI()
+api_router = APIRouter(prefix="/api/v2")
 
 
-@app.get("/getPredictedBoilerT", response_class=JSONResponse)
+@api_router.get("/getPredictedBoilerT", response_class=JSONResponse)
 def get_predicted_boiler_t(
         start_datetime: Optional[datetime] = None,
         end_datetime: Optional[datetime] = None,
