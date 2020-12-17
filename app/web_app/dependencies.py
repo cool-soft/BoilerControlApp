@@ -3,22 +3,25 @@ from typing import Optional
 
 from dateutil.tz import gettz
 
-import config
+from config_utils import GlobalAppConfig
 from dataset_utils import data_consts
 from dataset_utils.preprocess_utils import parse_datetime
+
+
+app_config = GlobalAppConfig()
 
 
 class InputDatesRange:
 
     def __init__(self, start_date: Optional[str] = None, end_date: Optional[str] = None):
-        boiler_control_timezone = gettz(config.BOILER_CONTROL_TIMEZONE)
+        boiler_control_timezone = gettz(app_config.datetime_processing.boiler_control_timezone)
 
         if start_date is None:
             self.start_date = datetime.now(tz=boiler_control_timezone)
         else:
             self.start_date = parse_datetime(
                 start_date,
-                config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS,
+                app_config.datetime_processing.request_datetime_patterns,
                 timezone=boiler_control_timezone
             )
 
@@ -27,6 +30,6 @@ class InputDatesRange:
         else:
             self.end_date = parse_datetime(
                 end_date,
-                config.BOILER_CONTROL_REQUEST_DATETIME_PATTERNS,
+                app_config.datetime_processing.request_datetime_patterns,
                 timezone=boiler_control_timezone
             )

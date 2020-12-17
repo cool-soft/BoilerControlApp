@@ -6,19 +6,20 @@ from dateutil.tz import gettz
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-import config
+from config_utils import GlobalAppConfig
 from dataset_utils import data_consts
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from dependency_injection import get_dependency
 
 api_router = APIRouter(prefix="/api/v2")
+app_config = GlobalAppConfig()
 
 
 @api_router.get("/getPredictedBoilerT", response_class=JSONResponse)
 def get_predicted_boiler_t(
         start_datetime: Optional[datetime] = None,
         end_datetime: Optional[datetime] = None,
-        timezone_name: Optional[str] = config.BOILER_CONTROL_TIMEZONE
+        timezone_name: Optional[str] = app_config.datetime_processing.boiler_control_timezone
 ):
     # noinspection SpellCheckingInspection
     """

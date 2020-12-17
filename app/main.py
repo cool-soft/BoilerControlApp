@@ -6,34 +6,46 @@ import uvicorn
 from dateutil.tz import gettz
 from fastapi import FastAPI
 
-import config
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
 from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
+from config_utils import GlobalAppConfig
 from dataset_utils.io_utils import load_dataframe
 from dependency_injection import add_dependency
 from web_app.api_v1 import api_router as api_v1
 from web_app.api_v2 import api_router as api_v2
 
 if __name__ == '__main__':
+    config = GlobalAppConfig.load_app_config()
+
     logging.basicConfig(
-        filename=config.LOG_PATH,
-        level=config.LOG_LEVEL,
-        datefmt=config.LOG_DATETIME_FORMAT,
-        format=config.LOG_FORMAT
+        filename=config.logging.path,
+        level=config.logging.level,
+        datefmt=config.logging.datetime_format,
+        format=config.logging.format
     )
 
-    logging.debug(f"Loading optimized t table from {os.path.abspath(config.OPTIMIZED_T_TABLE_PATH)}")
-    optimized_t_table = load_dataframe(os.path.abspath(config.OPTIMIZED_T_TABLE_PATH))
-    logging.debug(f"Loading optimized t graph from {os.path.abspath(config.T_GRAPH_PATH)}")
-    temp_graph = pd.read_csv(os.path.abspath(config.T_GRAPH_PATH))
-    logging.debug(f"Home time deltas from {os.path.abspath(config.HOMES_DELTAS_PATH)}")
-    homes_time_deltas = pd.read_csv(os.path.abspath(config.HOMES_DELTAS_PATH))
+    OPTIMIZED_T_TABLE_PATH = os.path.abspath(config.boiler_t_prediction.optimized_t_table_path)
+    logging.debug(f"Loading optimized t table from {OPTIMIZED_T_TABLE_PATH}")
+    optimized_t_table = load_dataframe(OPTIMIZED_T_TABLE_PATH)
+
+    T_GRAPH_PATH = os.path.abspath(config.boiler_t_prediction.t_graph_path)
+    logging.debug(f"Loading optimized t graph from {T_GRAPH_PATH}")
+    temp_graph = pd.read_csv(T_GRAPH_PATH)
+
+    HOMES_DELTAS_PATH = os.path.abspath(config.boiler_t_prediction.homes_deltas_path)
+    logging.debug(f"Home time deltas from {HOMES_DELTAS_PATH}")
+    homes_time_deltas = pd.read_csv(HOMES_DELTAS_PATH)
 
     logging.debug("Initialization of WeatherForecastProvider")
     weather_forecast_provider = WeatherForecastProvider()
-    weather_forecast_provider.set_weather_forecast_server_timezone(gettz(config.WEATHER_FORECAST_SERVER_TIMEZONE))
-    weather_forecast_provider.set_weather_forecast_server_address(config.WEATHER_FORECAST_SERVER_ADDRESS)
-    weather_forecast_provider.set_weather_forecast_update_interval(config.WEATHER_FORECAST_UPDATE_INTERVAL)
+    weather_forecast_server_timezone = gettz(config.weather_forecast_providing.server_timezone)
+    weather_forecast_provider.set_weather_forecast_server_timezone(weather_forecast_server_timezone)
+    weather_forecast_provider.set_weather_forecast_server_address(
+        config.weather_forecast_providing.server_address
+    )
+    weather_forecast_provider.set_weather_forecast_update_interval(
+        config.weather_forecast_providing.update_interval
+    )
 
     logging.debug("Initialization of BoilerTPredictor")
     boiler_t_predictor = BoilerTPredictor()
@@ -41,6 +53,9 @@ if __name__ == '__main__':
     boiler_t_predictor.set_temp_graph(temp_graph)
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
     boiler_t_predictor.set_weather_forecast_provider(weather_forecast_provider)
+    boiler_t_predictor.set_dispersion_coefficient(
+        config.boiler_t_prediction.home_t_dispersion_coefficient
+    )
 
     add_dependency(boiler_t_predictor)
 
@@ -49,6 +64,6 @@ if __name__ == '__main__':
     app.include_router(api_v2)
     uvicorn.run(
         app,
-        host=config.SERVICE_HOST,
-        port=config.SERVICE_PORT
+        host=config.service.host,
+        port=config.service.port
     )
