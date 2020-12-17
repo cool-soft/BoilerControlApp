@@ -1,3 +1,5 @@
+from typing import Optional
+
 from dateutil.tz import gettz
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
@@ -12,16 +14,24 @@ api_router = APIRouter(prefix="/api/v1")
 
 
 @api_router.get("/getPredictedBoilerT", response_class=JSONResponse, deprecated=True)
-def get_predicted_boiler_t(dates_range: InputDatesRange = Depends()):
+def get_predicted_boiler_t(
+        dates_range: InputDatesRange = Depends(),
+        timezone_name: Optional[str] = config.BOILER_CONTROL_TIMEZONE
+):
     """
     Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
+    Принимает 3 **опциональных** параметра.
+    - **start_date**: Дата время начала управляющего воздействия (формат см. в конфигах).
+    - **end_date**: Дата время окончания управляющего воздействия (формат см. в конфигах).
+    - **timezone_name**: Имя временной зоны для обработки запроса и генерации ответа.
+    По-умолчанию берется из конфигов.
     """
 
     boiler_t_predictor = get_dependency(BoilerTPredictor)
 
     predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_t(dates_range.start_date, dates_range.end_date)
 
-    boiler_control_timezone = gettz(config.BOILER_CONTROL_TIMEZONE)
+    boiler_control_timezone = gettz(timezone_name)
     predicted_boiler_t_ds = []
     for _, row in predicted_boiler_t_df.iterrows():
         datetime_ = row[consts.TIMESTAMP_COLUMN_NAME]

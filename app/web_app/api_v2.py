@@ -17,21 +17,41 @@ api_router = APIRouter(prefix="/api/v2")
 def get_predicted_boiler_t(
         start_datetime: Optional[datetime] = None,
         end_datetime: Optional[datetime] = None,
-        response_timezone: Optional[str] = config.BOILER_CONTROL_TIMEZONE
+        timezone_name: Optional[str] = config.BOILER_CONTROL_TIMEZONE
 ):
     """
     Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
     Принимает 3 **опциональных** параметра.
-    - **start_datetime**: Дата время начала управляющего воздействия в формате ISO8601 (2020-01-30T00:36:05+05:00).
-    - **end_datetime**: Дата время окончания управляющего воздействия в формате ISO8601 (2020-01-30T01:59:59+05:00).
-    - **response_timezone**: Имя временной зоны для генерации ответа. По-умолчанию берется из конфигов.
+    - **start_datetime**: Дата время начала управляющего воздействия в формате ISO8601.
+    - **end_datetime**: Дата время окончания управляющего воздействия в формате ISO8601.
+    - **timezone_name**: Имя временной зоны для обработки запроса и генерации ответа. По-умолчанию берется из конфигов.
+    ---
+    Возможные форматы времени в запросе:
+    - 2020-01-30T00:17+05:00 - Временная зона для парсинга берется из самой строки, наиболее предпочтительный формат.
+    - 2020-01-30T00:17 - Временная зона берется из параметра timezone_name.
+    - 2020-01-30T00:17:01.1234567+05:00 - Временная зона для парсинга берется из самой строки, формат «O» в C#.
+    ---
+    Форматы времени в ответе:
+    - 2020-01-30T00:17:07+05:00 - Парсится при помощи DateTimeStyle.RoundtripKind в C#.
+    Временна зона берётся из парметра timezone_name.
+    ---
+    Формат timezone_name:
+    См. столбец «TZ database name»
+    https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
     """
 
-    response_timezone = gettz(response_timezone)
+    boiler_control_timezone = gettz(timezone_name)
+
     if start_datetime is None:
-        start_datetime = datetime.now(tz=response_timezone)
+        start_datetime = datetime.now(tz=boiler_control_timezone)
+    if start_datetime.tzname() is None:
+        start_datetime = start_datetime.astimezone(boiler_control_timezone)
+
     if end_datetime is None:
         end_datetime = start_datetime + consts.TIME_TICK
+    if end_datetime.tzname() is None:
+        end_datetime = end_datetime.astimezone(boiler_control_timezone)
+
     boiler_t_predictor = get_dependency(BoilerTPredictor)
 
     predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_t(start_datetime, end_datetime)
@@ -39,7 +59,7 @@ def get_predicted_boiler_t(
     predicted_boiler_t_ds = []
     for _, row in predicted_boiler_t_df.iterrows():
         datetime_ = row[consts.TIMESTAMP_COLUMN_NAME]
-        datetime_ = datetime_.astimezone(response_timezone)
+        datetime_ = datetime_.astimezone(boiler_control_timezone)
 
         boiler_t = row[consts.BOILER_NAME_COLUMN_NAME]
         boiler_t = round(boiler_t, 1)
