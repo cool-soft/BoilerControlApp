@@ -1,7 +1,8 @@
-/venv/
 /.idea/
-/storage/
+/venv/
 
 *.pyc
 
-logs/
+/storage/
+/logs/
+config.yaml*
