@@ -13,7 +13,11 @@ from web_app.api_v2 import api_router as api_v2
 if __name__ == '__main__':
     CONFIG_FILEPATH = os.path.abspath("../config.yaml")
 
-    app_config = GlobalAppConfig.load_app_config(CONFIG_FILEPATH)
+    if not os.path.exists(CONFIG_FILEPATH):
+        app_config = GlobalAppConfig()
+        app_config.save_app_config(CONFIG_FILEPATH)
+    else:
+        app_config = GlobalAppConfig.load_app_config(CONFIG_FILEPATH)
 
     logging.basicConfig(
         filename=app_config.logging.path,
