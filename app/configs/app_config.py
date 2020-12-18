@@ -1,4 +1,3 @@
-import os
 
 import yaml
 from pydantic import BaseModel
@@ -10,7 +9,6 @@ from configs.service_config import ServiceConfig
 
 
 class AppConfig(BaseModel):
-    __CONFIG_PATH = os.path.abspath("../config.yaml")
 
     boiler_t_predictor: BoilerTPredictorConfig = BoilerTPredictorConfig()
     logging: LoggingConfig = LoggingConfig()
@@ -18,15 +16,15 @@ class AppConfig(BaseModel):
     service: ServiceConfig = ServiceConfig()
 
     @classmethod
-    def load_app_config(cls):
-        with open(cls.__CONFIG_PATH) as f:
+    def load_app_config(cls, filepath):
+        with open(filepath) as f:
             config_as_dict = yaml.safe_load(f)
         app_config = cls.parse_obj(config_as_dict)
         return app_config
 
-    def save_app_config(self):
+    def save_app_config(self, filepath):
         config_as_dict = self.dict()
-        with open(self.__CONFIG_PATH, "w") as f:
+        with open(filepath, "w") as f:
             yaml.safe_dump(config_as_dict, f)
 
 
