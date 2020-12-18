@@ -5,7 +5,6 @@ import pandas as pd
 import requests
 from dateutil.tz import tzlocal, gettz
 
-from configs.weather_forecast_provider_config import WeatherForecastProviderConfig
 from dataset_utils import data_consts
 from dataset_utils.preprocess_utils import (
     rename_column,
@@ -16,6 +15,7 @@ from dataset_utils.preprocess_utils import (
     round_timestamp,
     interpolate_passes_of_t
 )
+from .weather_forecast_provider_config import WeatherForecastProviderConfig
 
 
 class WeatherForecastProvider:
