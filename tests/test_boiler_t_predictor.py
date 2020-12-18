@@ -4,7 +4,7 @@ from dateutil.tz import gettz
 from matplotlib import pyplot as plt
 from datetime import datetime
 
-from configs import GlobalAppConfig
+from configs.app_configs import GlobalAppConfig
 from dataset_utils import data_consts
 from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
