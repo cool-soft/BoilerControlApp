@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 from dateutil.tz import tzlocal, gettz
 
-from configs import WeatherForecastProviderConfig
+from configs.weather_forecast_provider_config import WeatherForecastProviderConfig
 from dataset_utils import data_consts
 from dataset_utils.preprocess_utils import (
     rename_column,
