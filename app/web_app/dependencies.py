@@ -1,12 +1,11 @@
 from datetime import datetime
 from typing import Optional
 
+from app_configs import GlobalAppConfig
 from dateutil.tz import gettz
 
-from configs.app_config import GlobalAppConfig
 from dataset_utils import data_consts
 from dataset_utils.preprocess_utils import parse_datetime
-
 
 app_config = GlobalAppConfig()
 

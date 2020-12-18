@@ -1,13 +1,13 @@
 import logging
 from typing import Optional
 
+from app_configs import GlobalAppConfig
 from dateutil.tz import gettz
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from configs.app_config import GlobalAppConfig
-from dataset_utils import data_consts
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
+from dataset_utils import data_consts
 from dependency_injection import get_dependency
 from web_app.dependencies import InputDatesRange
 

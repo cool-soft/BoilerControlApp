@@ -1,10 +1,10 @@
 import os
 
 import uvicorn
+from app_configs import GlobalAppConfig
 from fastapi import FastAPI
 
 from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
-from configs.app_config import GlobalAppConfig
 from dependency_injection import add_dependency
 from logging_utils import setup_default_logger_from_config
 from web_app.api_v1 import api_router as api_v1

@@ -1,7 +1,7 @@
 import logging.handlers
 import sys
 
-from configs.logging_config import LoggingConfig
+from app_configs import LoggingConfig
 
 
 def setup_default_logger_from_config(config: LoggingConfig):

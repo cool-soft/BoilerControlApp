@@ -1,14 +1,13 @@
 import yaml
 from pydantic import BaseModel
 
-from configs.boiler_t_predictor_config import BoilerTPredictorConfig
-from configs.datetime_processing_config import DatetimeProcessingConfig
-from configs.logging_config import LoggingConfig
-from configs.service_config import ServiceConfig
+from app_configs.datetime_processing_config import DatetimeProcessingConfig
+from app_configs.logging_config import LoggingConfig
+from app_configs.service_config import ServiceConfig
+from boiler_t_prediction import BoilerTPredictorConfig
 
 
 class AppConfig(BaseModel):
-
     boiler_t_predictor: BoilerTPredictorConfig = BoilerTPredictorConfig()
     logging: LoggingConfig = LoggingConfig()
     datetime_processing: DatetimeProcessingConfig = DatetimeProcessingConfig()
