@@ -4,17 +4,18 @@ import yaml
 from pydantic import BaseModel
 
 
+class WeatherForecastProviderConfig(BaseModel):
+    server_address: str = "https://lysva.agt.town/"
+    server_timezone: str = "Asia/Yekaterinburg"
+    update_interval: int = 600
+
+
 class BoilerTPredictorConfig(BaseModel):
     home_t_dispersion_coefficient: float = 0.97
     t_graph_path: str = "../storage/t_graph.csv"
     homes_deltas_path: str = "../storage/homes_time_delta.csv"
     optimized_t_table_path: str = "../storage/optimized_t_table.pickle"
-
-
-class WeatherForecastProviderConfig(BaseModel):
-    server_address: str = "https://lysva.agt.town/"
-    server_timezone: str = "Asia/Yekaterinburg"
-    update_interval: int = 600
+    weather_forecast_provider: WeatherForecastProviderConfig = WeatherForecastProviderConfig()
 
 
 class LoggingConfig(BaseModel):
@@ -42,8 +43,7 @@ class ServiceConfig(BaseModel):
 class AppConfig(BaseModel):
     __CONFIG_PATH = os.path.abspath("../config.yaml")
 
-    boiler_t_prediction: BoilerTPredictorConfig = BoilerTPredictorConfig()
-    weather_forecast_providing: WeatherForecastProviderConfig = WeatherForecastProviderConfig()
+    boiler_t_predictor: BoilerTPredictorConfig = BoilerTPredictorConfig()
     logging: LoggingConfig = LoggingConfig()
     datetime_processing: DatetimeProcessingConfig = DatetimeProcessingConfig()
     service: ServiceConfig = ServiceConfig()

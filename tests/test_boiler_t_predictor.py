@@ -19,15 +19,15 @@ if __name__ == '__main__':
     min_date = datetime.now(tz=gettz(app_config.datetime_processing.boiler_controller_timezone))
     max_date = min_date + (100 * data_consts.TIME_TICK)
 
-    optimized_t_table = load_dataframe(app_config.boiler_t_prediction.optimized_t_table_path)
-    temp_graph = pd.read_csv(os.path.abspath(app_config.boiler_t_prediction.t_graph_path))
-    homes_time_deltas = pd.read_csv(app_config.boiler_t_prediction.homes_deltas_path)
+    optimized_t_table = load_dataframe(app_config.boiler_t_predictor.optimized_t_table_path)
+    temp_graph = pd.read_csv(os.path.abspath(app_config.boiler_t_predictor.t_graph_path))
+    homes_time_deltas = pd.read_csv(app_config.boiler_t_predictor.homes_deltas_path)
     max_home_time_delta = homes_time_deltas[data_consts.TIME_DELTA_COLUMN_NAME].max()
 
     weather_forecast_provider = WeatherForecastProvider()
-    weather_forecast_provider.set_weather_forecast_server_timezone(
-        gettz(app_config.weather_forecast_providing.server_timezone))
-    weather_forecast_provider.set_weather_forecast_server_address(app_config.weather_forecast_providing.server_address)
+    weather_forecast_provider.set_server_timezone(
+        gettz(app_config.weather_forecast_provider.server_timezone))
+    weather_forecast_provider.set_server_address(app_config.weather_forecast_provider.server_address)
 
     boiler_t_predictor = BoilerTPredictor()
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)

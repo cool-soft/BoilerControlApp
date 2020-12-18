@@ -1,8 +1,12 @@
-boiler_t_prediction:
+boiler_t_predictor:
   home_t_dispersion_coefficient: 0.97
   homes_deltas_path: ../storage/homes_time_delta.csv
   optimized_t_table_path: ../storage/optimized_t_table.pickle
   t_graph_path: ../storage/t_graph.csv
+  weather_forecast_provider:
+    server_address: https://lysva.agt.town/
+    server_timezone: Asia/Yekaterinburg
+    update_interval: 600
 datetime_processing:
   boiler_controller_timezone: Asia/Yekaterinburg
   request_patterns:
@@ -17,7 +21,3 @@ logging:
 service:
   host: 0.0.0.0
   port: 270
-weather_forecast_providing:
-  server_address: https://lysva.agt.town/
-  server_timezone: Asia/Yekaterinburg
-  update_interval: 600

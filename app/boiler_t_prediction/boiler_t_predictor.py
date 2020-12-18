@@ -1,14 +1,19 @@
 import logging
+import os
 
 import numpy as np
 import pandas as pd
 
+from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
+from configs import BoilerTPredictorConfig
 from dataset_utils import data_consts
+from dataset_utils.io_utils import load_dataframe
 
 
 class BoilerTPredictor:
 
     def __init__(self):
+        logging.debug("Initialization of BoilerTPredictor")
         self._optimized_t_table = None
         self._homes_time_deltas = None
         self._temp_graph = None
@@ -114,3 +119,29 @@ class BoilerTPredictor:
             need_boiler_t = max(need_boiler_t, need_boiler_t_for_home)
 
         return need_boiler_t
+
+    @classmethod
+    def from_config(cls, config: BoilerTPredictorConfig):
+        boiler_t_predictor = cls()
+
+        optimized_t_table_path = os.path.abspath(config.optimized_t_table_path)
+        logging.debug(f"Loading optimized t table from {optimized_t_table_path}")
+        optimized_t_table = load_dataframe(optimized_t_table_path)
+        boiler_t_predictor.set_optimized_t_table(optimized_t_table)
+
+        t_graph_path = os.path.abspath(config.t_graph_path)
+        logging.debug(f"Loading optimized t graph from {t_graph_path}")
+        temp_graph = pd.read_csv(t_graph_path)
+        boiler_t_predictor.set_temp_graph(temp_graph)
+
+        homes_deltas_path = os.path.abspath(config.homes_deltas_path)
+        logging.debug(f"Home time deltas from {homes_deltas_path}")
+        homes_time_deltas = pd.read_csv(homes_deltas_path)
+        boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
+
+        weather_forecast_provider = WeatherForecastProvider.from_config(config.weather_forecast_provider)
+        boiler_t_predictor.set_weather_forecast_provider(weather_forecast_provider)
+
+        boiler_t_predictor.set_dispersion_coefficient(config.home_t_dispersion_coefficient)
+
+        return boiler_t_predictor
