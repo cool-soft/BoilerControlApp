@@ -130,12 +130,12 @@ class BoilerTPredictor:
         boiler_t_predictor.set_optimized_t_table(optimized_t_table)
 
         t_graph_path = os.path.abspath(config.t_graph_path)
-        logging.debug(f"Loading optimized t graph from {t_graph_path}")
+        logging.debug(f"Loading t graph from {t_graph_path}")
         temp_graph = pd.read_csv(t_graph_path)
         boiler_t_predictor.set_temp_graph(temp_graph)
 
         homes_deltas_path = os.path.abspath(config.homes_deltas_path)
-        logging.debug(f"Home time deltas from {homes_deltas_path}")
+        logging.debug(f"Loading home time deltas from {homes_deltas_path}")
         homes_time_deltas = pd.read_csv(homes_deltas_path)
         boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
 
