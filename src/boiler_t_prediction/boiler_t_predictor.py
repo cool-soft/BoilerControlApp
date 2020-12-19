@@ -58,7 +58,7 @@ class BoilerTPredictor:
         t_graph_requirements_dates_list = weather_forecast_df[consts.TIMESTAMP_COLUMN_NAME].to_list()
         t_graph_requirements_df = pd.DataFrame({
             consts.TIMESTAMP_COLUMN_NAME: t_graph_requirements_dates_list,
-            consts.REQUIRED_T_IN_HOME_COLUMN_NAME: t_graph_requirements_arr
+            consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME: t_graph_requirements_arr
         })
 
         return t_graph_requirements_df
@@ -66,14 +66,17 @@ class BoilerTPredictor:
     def _get_required_t_by_t_graph_for_weather_t(self, weather_t):
         available_t_condition = self._temp_graph[consts.WEATHER_T_COLUMN_NAME] <= weather_t
         available_t = self._temp_graph[available_t_condition]
-        need_t_in_home_by_t_graph = available_t[consts.REQUIRED_T_IN_HOME_COLUMN_NAME].min()
+        if not available_t.empty:
+            need_t_in_home_by_t_graph = available_t[consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].min()
+        else:
+            need_t_in_home_by_t_graph = self._temp_graph[consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].max()
         return need_t_in_home_by_t_graph
 
     def _get_need_boiler_t(self, t_graph_requirements_df):
         max_home_time_delta = self._homes_time_deltas[consts.TIME_DELTA_COLUMN_NAME].max()
         need_boiler_t_df_len = len(t_graph_requirements_df) - max_home_time_delta
 
-        t_graph_requirements_arr = t_graph_requirements_df[consts.REQUIRED_T_IN_HOME_COLUMN_NAME].to_numpy()
+        t_graph_requirements_arr = t_graph_requirements_df[consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].to_numpy()
         need_boiler_t_arr = np.empty(shape=(need_boiler_t_df_len,), dtype=np.float)
         for time_moment in range(need_boiler_t_df_len):
             need_boiler_t = self._calc_need_boiler_t_for_time_moment(time_moment, t_graph_requirements_arr)
