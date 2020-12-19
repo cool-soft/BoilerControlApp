@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from weather_forecast_providing import WeatherForecastProviderConfig
+from configs.weather_forecast_provider_config import WeatherForecastProviderConfig
 
 
 class BoilerTPredictorConfig(BaseModel):

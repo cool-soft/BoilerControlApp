@@ -15,7 +15,7 @@ from dataset_utils.preprocess_utils import (
     round_timestamp,
     interpolate_passes_of_t
 )
-from .weather_forecast_provider_config import WeatherForecastProviderConfig
+from configs.weather_forecast_provider_config import WeatherForecastProviderConfig
 
 
 class WeatherForecastProvider:

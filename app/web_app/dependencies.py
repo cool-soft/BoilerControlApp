@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from app_configs import GlobalAppConfig
+from configs.app_config import GlobalAppConfig
 from dateutil.tz import gettz
 
 from dataset_utils import data_consts
