@@ -82,7 +82,10 @@ class BoilerTPredictor:
     def _get_required_t_by_t_graph_for_weather_t(self, weather_t):
         available_t_condition = self._temp_graph[data_consts.WEATHER_T_COLUMN_NAME] <= weather_t
         available_t = self._temp_graph[available_t_condition]
-        need_t_in_home_by_t_graph = available_t[data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].min()
+        if not available_t.empty:
+            need_t_in_home_by_t_graph = available_t[data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].min()
+        else:
+            need_t_in_home_by_t_graph = self._temp_graph[data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].max()
         return need_t_in_home_by_t_graph
 
     def _get_need_boiler_t(self, t_graph_requirements_df):
