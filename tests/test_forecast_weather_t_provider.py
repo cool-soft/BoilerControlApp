@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from dataset_utils import data_consts
-from weather_forecast_providing.weather_forecast_provider import WeatherForecastProvider
+from weather_forecast_provider import WeatherForecastProvider
 
 
 if __name__ == '__main__':

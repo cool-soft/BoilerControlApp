@@ -6,8 +6,8 @@ from datetime import datetime
 
 from configs.app_config import GlobalAppConfig
 from dataset_utils import data_consts
-from weather_forecast_providing.weather_forecast_provider import WeatherForecastProvider
-from boiler_t_prediction.boiler_t_predictor import BoilerTPredictor
+from weather_forecast_provider import WeatherForecastProvider
+from boiler_t_predictor import BoilerTPredictor
 import pandas as pd
 
 from dataset_utils.io_utils import load_dataframe

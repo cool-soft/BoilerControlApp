@@ -6,8 +6,8 @@ import pandas as pd
 
 from dataset_utils import data_consts
 from dataset_utils.io_utils import load_dataframe
-from weather_forecast_providing import WeatherForecastProvider
-from .boiler_t_predictor_config import BoilerTPredictorConfig
+from weather_forecast_provider import WeatherForecastProvider
+from configs.boiler_t_predictor_config import BoilerTPredictorConfig
 
 
 class BoilerTPredictor:
