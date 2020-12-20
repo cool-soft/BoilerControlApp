@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     boiler_t_predictor = BoilerTPredictorService()
     boiler_t_predictor.set_optimized_t_table(optimized_t_table)
-    boiler_t_predictor.set_temp_graph(temp_graph)
+    boiler_t_predictor.set_temp_graph_service(temp_graph)
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
     boiler_t_predictor.set_weather_forecast_service(weather_forecast_provider)
 
