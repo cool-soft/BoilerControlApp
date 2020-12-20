@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 
-from containers.services import Services
+from containers import Services
 from web_app import api_v1
 # from web_app import api_v2
 

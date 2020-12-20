@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from boiler_control.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
-from containers.services import Services
+from containers import Services
 from dataset_utils import data_consts
 from web_app.dependencies import InputDatesRange
 
