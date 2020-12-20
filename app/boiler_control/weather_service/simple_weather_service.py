@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 from dateutil.tz import tzlocal, gettz
 
-from .weather_forecast_service import WeatherForecastService
+from .weather_forecast_service import WeatherService
 from dataset_utils import data_consts
 from dataset_utils.preprocess_utils import (
     rename_column,
@@ -18,7 +18,7 @@ from dataset_utils.preprocess_utils import (
 )
 
 
-class SimpleWeatherForecastService(WeatherForecastService):
+class SimpleWeatherService(WeatherService):
 
     def __init__(self, server_timezone=None, server_address=None, update_interval=1800):
         logging.debug("Initialization of WeatherForecastProvider")
@@ -38,7 +38,7 @@ class SimpleWeatherForecastService(WeatherForecastService):
     def set_update_interval(self, lifetime):
         self._weather_forecast_update_interval = lifetime
 
-    def get_weather_forecast(self, start_datetime: datetime, end_datetime: datetime):
+    def get_weather(self, start_datetime: datetime, end_datetime: datetime):
         logging.debug(f"Requested weather forecast from {start_datetime.isoformat()} to {end_datetime.isoformat()}")
 
         if self._is_datetime_not_in_cache(end_datetime) or \
