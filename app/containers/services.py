@@ -1,8 +1,8 @@
 from dependency_injector import containers, providers
 
-from boiler_t_predictor_service import BoilerTPredictorService
-from temp_graph_service.file_temp_graph_service import FileTempGraphService
-from weather_forecast_service import WeatherForecastService
+from boiler_control.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
+from boiler_control.temp_graph_service import FileTempGraphService
+from boiler_control.weather_forecast_service.simple_weather_forecast_service import SimpleWeatherForecastService
 from resources.home_time_deltas_resource import HomeTimeDeltasResource
 from resources.optimized_t_table_resource import OptimizedTTableResource
 
@@ -28,14 +28,14 @@ class Services(containers.DeclarativeContainer):
     )
 
     weather_forecast_service = providers.Singleton(
-        WeatherForecastService,
+        SimpleWeatherForecastService,
         server_timezone=config.weather_forecast_service.server_timezone,
         server_address=config.weather_forecast_service.server_address,
         update_interval=config.weather_forecast_service.update_interval
     )
 
     boiler_t_predictor_service = providers.Singleton(
-        BoilerTPredictorService.create_service,
+        SimpleBoilerTPredictorService.create_service,
         optimized_t_table=optimized_t_table,
         home_time_deltas=homes_time_deltas,
         temp_graph_service=temp_graph_service,

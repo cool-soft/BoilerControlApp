@@ -3,10 +3,12 @@ import logging
 import numpy as np
 import pandas as pd
 
+from .boiler_t_predictor_service import BoilerTPredictorService
+
 from dataset_utils import data_consts
 
 
-class BoilerTPredictorService:
+class SimpleBoilerTPredictorService(BoilerTPredictorService):
 
     def __init__(self, ):
         logging.debug("Initialization of BoilerTPredictor")

@@ -6,7 +6,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from boiler_t_predictor_service import BoilerTPredictorService
+from boiler_control.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
 from containers.services import Services
 from dataset_utils import data_consts
 from web_app.dependencies import InputDatesRange
@@ -19,7 +19,7 @@ api_router = APIRouter(prefix="/api/v1")
 def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
         timezone_name: Optional[str] = "Asia/Yekaterinburg",
-        boiler_t_predictor: BoilerTPredictorService = Depends(Provide[Services.boiler_t_predictor_service])
+        boiler_t_predictor: SimpleBoilerTPredictorService = Depends(Provide[Services.boiler_t_predictor_service])
 ):
     """
     Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
