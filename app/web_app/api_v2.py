@@ -7,7 +7,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from boiler_t_predictor_service import BoilerTPredictorService
+from boiler_control.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
 from containers.services import Services
 from dataset_utils import data_consts
 
@@ -20,7 +20,7 @@ def get_predicted_boiler_t(
         start_datetime: Optional[datetime] = None,
         end_datetime: Optional[datetime] = None,
         timezone_name: Optional[str] = "Asia/Yekaterinburg",
-        boiler_t_predictor: BoilerTPredictorService = Depends(Provide[Services.boiler_t_predictor_service])
+        boiler_t_predictor: SimpleBoilerTPredictorService = Depends(Provide[Services.boiler_t_predictor_service])
 ):
     # noinspection SpellCheckingInspection
     """

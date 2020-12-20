@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 from dateutil.tz import tzlocal, gettz
 
+from .weather_forecast_service import WeatherForecastService
 from dataset_utils import data_consts
 from dataset_utils.preprocess_utils import (
     rename_column,
@@ -17,7 +18,7 @@ from dataset_utils.preprocess_utils import (
 )
 
 
-class WeatherForecastService:
+class SimpleWeatherForecastService(WeatherForecastService):
 
     def __init__(self, server_timezone=None, server_address=None, update_interval=1800):
         logging.debug("Initialization of WeatherForecastProvider")
