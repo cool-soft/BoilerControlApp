@@ -8,18 +8,13 @@ from dataset_utils import data_consts
 
 class BoilerTPredictorService:
 
-    def __init__(self,
-                 optimized_t_table=None,
-                 home_time_deltas=None,
-                 temp_graph=None,
-                 home_t_dispersion_coefficient=1,
-                 weather_forecast_service=None):
+    def __init__(self, ):
         logging.debug("Initialization of BoilerTPredictor")
-        self._optimized_t_table = optimized_t_table
-        self._homes_time_deltas = home_time_deltas
-        self._temp_graph = temp_graph
-        self._home_t_dispersion_coefficient = home_t_dispersion_coefficient
-        self._weather_forecast_service = weather_forecast_service
+        self._optimized_t_table = None
+        self._homes_time_deltas = None
+        self._temp_graph_service = None
+        self._home_t_dispersion_coefficient = 1
+        self._weather_forecast_service = None
 
     def set_homes_time_deltas(self, homes_time_deltas):
         logging.debug("Set homes time deltas")
@@ -29,17 +24,17 @@ class BoilerTPredictorService:
         logging.debug("Set optimized t table")
         self._optimized_t_table = t_table
 
-    def set_temp_graph(self, temp_graph):
-        logging.debug("Set temp graph")
-        self._temp_graph = temp_graph
+    def set_temp_graph_service(self, temp_graph_service):
+        logging.debug("Set temp graph service")
+        self._temp_graph_service = temp_graph_service
+
+    def set_weather_forecast_service(self, weather_forecast_service):
+        logging.debug("Set weather forecast service")
+        self._weather_forecast_service = weather_forecast_service
 
     def set_dispersion_coefficient(self, coefficient):
         logging.debug(f"Set dispersion coefficient to {coefficient}")
         self._home_t_dispersion_coefficient = coefficient
-
-    def set_weather_forecast_service(self, weather_forecast_service):
-        logging.debug("Set weather forecast informer")
-        self._weather_forecast_service = weather_forecast_service
 
     def get_need_boiler_t(self, start_datetime, end_datetime):
         logging.debug(f"Requested predicted boiler t from {start_datetime.isoformat()} to {end_datetime.isoformat()}")
@@ -69,7 +64,7 @@ class BoilerTPredictorService:
 
         weather_t_forecast_arr = weather_forecast_df[data_consts.WEATHER_T_COLUMN_NAME].to_numpy()
         for i, weather_t in enumerate(weather_t_forecast_arr):
-            required_t_by_t_graph = self._get_required_t_by_t_graph_for_weather_t(weather_t)
+            required_t_by_t_graph = self._temp_graph_service.get_required_t_at_home_in(weather_t)
             t_graph_requirements_arr[i] = required_t_by_t_graph
 
         t_graph_requirements_dates_list = weather_forecast_df[data_consts.TIMESTAMP_COLUMN_NAME].to_list()
@@ -79,15 +74,6 @@ class BoilerTPredictorService:
         })
 
         return t_graph_requirements_df
-
-    def _get_required_t_by_t_graph_for_weather_t(self, weather_t):
-        available_t_condition = self._temp_graph[data_consts.WEATHER_T_COLUMN_NAME] <= weather_t
-        available_t = self._temp_graph[available_t_condition]
-        if not available_t.empty:
-            need_t_in_home_by_t_graph = available_t[data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].min()
-        else:
-            need_t_in_home_by_t_graph = self._temp_graph[data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].max()
-        return need_t_in_home_by_t_graph
 
     def _get_need_boiler_t(self, t_graph_requirements_df):
         logging.debug(f"Requested need boiler t for t graph requirements")
@@ -123,3 +109,22 @@ class BoilerTPredictorService:
             need_boiler_t = max(need_boiler_t, need_boiler_t_for_home)
 
         return need_boiler_t
+
+    @classmethod
+    def create_service(
+            cls,
+            optimized_t_table=None,
+            home_time_deltas=None,
+            temp_graph_service=None,
+            home_t_dispersion_coefficient=1,
+            weather_forecast_service=None):
+
+        boiler_t_prediction_service = cls()
+        boiler_t_prediction_service.set_optimized_t_table(optimized_t_table)
+        boiler_t_prediction_service.set_homes_time_deltas(home_time_deltas)
+        boiler_t_prediction_service.set_temp_graph_service(temp_graph_service)
+        boiler_t_prediction_service.set_homes_time_deltas(home_time_deltas)
+        boiler_t_prediction_service.set_dispersion_coefficient(home_t_dispersion_coefficient)
+        boiler_t_prediction_service.set_weather_forecast_service(weather_forecast_service)
+
+        return boiler_t_prediction_service
