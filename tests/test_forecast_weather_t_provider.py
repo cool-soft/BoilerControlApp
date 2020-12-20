@@ -2,12 +2,12 @@
 from datetime import datetime
 
 from dataset_utils import data_consts
-from weather_forecast_provider import WeatherForecastProvider
+from weather_forecast_service import WeatherForecastService
 
 
 if __name__ == '__main__':
 
-    t_provider = WeatherForecastProvider()
+    t_provider = WeatherForecastService()
 
     min_date = datetime.now()
     max_date = min_date + (data_consts.TIME_TICK * 10)

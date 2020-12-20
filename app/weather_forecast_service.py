@@ -15,17 +15,17 @@ from dataset_utils.preprocess_utils import (
     round_timestamp,
     interpolate_passes_of_t
 )
-from configs.weather_forecast_provider_config import WeatherForecastProviderConfig
 
 
-class WeatherForecastProvider:
+class WeatherForecastService:
 
-    def __init__(self):
+    def __init__(self, server_timezone=None, server_address=None, update_interval=1800):
         logging.debug("Initialization of WeatherForecastProvider")
+        self._forecast_weather_server_timezone = server_timezone
+        self._weather_forecast_server_address = server_address
+        self._weather_forecast_update_interval = update_interval
+
         self._cached_forecast_df = pd.DataFrame()
-        self._forecast_weather_server_timezone = None
-        self._weather_forecast_server_address = None
-        self._weather_forecast_update_interval = 1800
         self._cached_weather_forecast_last_update = None
 
     def set_server_timezone(self, server_timezone):
@@ -102,7 +102,7 @@ class WeatherForecastProvider:
         logging.debug("Preprocessing weather forecast")
         df = pd.read_json(response_text)
         df = rename_column(df, data_consts.SOFT_M_WEATHER_T_COLUMN_NAME, data_consts.WEATHER_T_COLUMN_NAME)
-        df = convert_date_and_time_to_timestamp(df, tzinfo=self._forecast_weather_server_timezone)
+        df = convert_date_and_time_to_timestamp(df, tzinfo=gettz(self._forecast_weather_server_timezone))
         df = round_timestamp(df)
         df = interpolate_passes_of_t(df, t_column_name=data_consts.WEATHER_T_COLUMN_NAME)
         df = remove_duplicates_by_timestamp(df)
@@ -112,11 +112,3 @@ class WeatherForecastProvider:
     def _get_from_cache(self, start_datetime, end_datetime):
         logging.debug("Taking weather forecast from cache")
         return filter_by_timestamp(self._cached_forecast_df, start_datetime, end_datetime).copy()
-
-    @classmethod
-    def from_config(cls, config: WeatherForecastProviderConfig):
-        weather_forecast_provider = cls()
-        weather_forecast_provider.set_server_address(config.server_address)
-        weather_forecast_provider.set_server_timezone(gettz(config.server_timezone))
-        weather_forecast_provider.set_update_interval(config.update_interval)
-        return weather_forecast_provider

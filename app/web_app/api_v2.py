@@ -2,24 +2,25 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from configs.app_config import GlobalAppConfig
 from dateutil.tz import gettz
-from fastapi import APIRouter
+from dependency_injector.wiring import Provide, inject
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from boiler_t_predictor import BoilerTPredictor
+from boiler_t_predictor_service import BoilerTPredictorService
+from containers.services import Services
 from dataset_utils import data_consts
-from dependency_injection import get_dependency
 
 api_router = APIRouter(prefix="/api/v2")
-app_config = GlobalAppConfig()
 
 
 @api_router.get("/getPredictedBoilerT", response_class=JSONResponse)
+@inject
 def get_predicted_boiler_t(
         start_datetime: Optional[datetime] = None,
         end_datetime: Optional[datetime] = None,
-        timezone_name: Optional[str] = app_config.datetime_processing.boiler_controller_timezone
+        timezone_name: Optional[str] = "Asia/Yekaterinburg",
+        boiler_t_predictor: BoilerTPredictorService = Depends(Provide[Services.boiler_t_predictor_service])
 ):
     # noinspection SpellCheckingInspection
     """
@@ -63,8 +64,6 @@ def get_predicted_boiler_t(
         end_datetime = start_datetime + data_consts.TIME_TICK
     if end_datetime.tzname() is None:
         end_datetime = end_datetime.astimezone(boiler_control_timezone)
-
-    boiler_t_predictor = get_dependency(BoilerTPredictor)
 
     predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_t(start_datetime, end_datetime)
 
