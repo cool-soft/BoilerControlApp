@@ -15,7 +15,7 @@ class Application(containers.DeclarativeContainer):
 
     core = providers.Container(
         Core,
-        config=config.endpoints
+        config=config.core
     )
 
     server = providers.Container(
