@@ -20,7 +20,8 @@ api_router = APIRouter(prefix="/api/v2")
 def get_predicted_boiler_t(
         start_datetime: Optional[datetime] = None,
         end_datetime: Optional[datetime] = None,
-        timezone_name: Optional[str] = Depends(Provide[Core.config.datetime_processing.boiler_controller_timezone]),
+        timezone_name: Optional[str] = None,
+        datetime_processing_params=Depends(Provide[Core.config.datetime_processing]),
         boiler_t_predictor: BoilerTPredictorService = Depends(Provide[Services.boiler_t_predictor_service])
 ):
     # noinspection SpellCheckingInspection
@@ -54,24 +55,27 @@ def get_predicted_boiler_t(
     logging.debug(f"(API V2) Requested predicted boiler t for dates range "
                   f"from {start_datetime} to {end_datetime} timezone={timezone_name}")
 
-    boiler_control_timezone = gettz(timezone_name)
+    if timezone_name is None:
+        timezone_name = datetime_processing_params.get("default_timezone")
+
+    work_timezone = gettz(timezone_name)
 
     if start_datetime is None:
-        start_datetime = datetime.now(tz=boiler_control_timezone)
+        start_datetime = datetime.now(tz=work_timezone)
     if start_datetime.tzname() is None:
-        start_datetime = start_datetime.astimezone(boiler_control_timezone)
+        start_datetime = start_datetime.astimezone(work_timezone)
 
     if end_datetime is None:
         end_datetime = start_datetime + data_consts.TIME_TICK
     if end_datetime.tzname() is None:
-        end_datetime = end_datetime.astimezone(boiler_control_timezone)
+        end_datetime = end_datetime.astimezone(work_timezone)
 
     predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_t(start_datetime, end_datetime)
 
     predicted_boiler_t_ds = []
     for _, row in predicted_boiler_t_df.iterrows():
         datetime_ = row[data_consts.TIMESTAMP_COLUMN_NAME]
-        datetime_ = datetime_.astimezone(boiler_control_timezone)
+        datetime_ = datetime_.astimezone(work_timezone)
 
         boiler_t = row[data_consts.BOILER_NAME_COLUMN_NAME]
         boiler_t = round(boiler_t, 1)
