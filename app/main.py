@@ -1,4 +1,4 @@
-from containers import Application
+from containers.application import Application
 from endpoints import api_v1  # , api_v2
 
 if __name__ == '__main__':
