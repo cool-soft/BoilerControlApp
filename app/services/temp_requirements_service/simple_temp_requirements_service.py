@@ -7,9 +7,9 @@ from .temp_requirements_service import TempRequirementsService
 
 class SimpleTempRequirementsService(TempRequirementsService):
 
-    def __init__(self):
-        self._temp_graph = None
-        self._weather_service = None
+    def __init__(self, temp_graph, weather_service):
+        self._temp_graph = temp_graph
+        self._weather_service = weather_service
 
     def set_temp_graph(self, temp_graph):
         self._temp_graph = temp_graph
@@ -43,10 +43,3 @@ class SimpleTempRequirementsService(TempRequirementsService):
         else:
             required_t_at_home_in = self._temp_graph[data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].max()
         return required_t_at_home_in
-
-    @classmethod
-    def create_service(cls, temp_graph, weather_service):
-        temp_requirements_service = cls()
-        temp_requirements_service.set_temp_graph(temp_graph)
-        temp_requirements_service.set_weather_service(weather_service)
-        return temp_requirements_service

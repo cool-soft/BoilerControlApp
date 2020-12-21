@@ -6,8 +6,8 @@ from datetime import datetime
 
 from configs.app_config import GlobalAppConfig
 from dataset_utils import data_consts
-from boiler_control.weather_service.simple_weather_service import SimpleWeatherService
-from boiler_control.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
+from services.weather_service.simple_weather_service import SimpleWeatherService
+from services.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
 import pandas as pd
 
 from dataset_utils.io_utils import load_dataframe

@@ -10,12 +10,17 @@ from dataset_utils import data_consts
 
 class SimpleBoilerTPredictorService(BoilerTPredictorService):
 
-    def __init__(self, ):
+    def __init__(self,
+                 optimized_t_table=None,
+                 home_time_deltas=None,
+                 temp_requirements_service=None,
+                 home_t_dispersion_coefficient=1):
+
         logging.debug("Initialization of BoilerTPredictor")
-        self._optimized_t_table = None
-        self._homes_time_deltas = None
-        self._temp_requirements_service = None
-        self._home_t_dispersion_coefficient = 1
+        self._optimized_t_table = optimized_t_table
+        self._homes_time_deltas = home_time_deltas
+        self._temp_requirements_service = temp_requirements_service
+        self._home_t_dispersion_coefficient = home_t_dispersion_coefficient
 
     def set_homes_time_deltas(self, homes_time_deltas):
         logging.debug("Set homes time deltas")
@@ -39,7 +44,7 @@ class SimpleBoilerTPredictorService(BoilerTPredictorService):
         max_home_time_delta = self._homes_time_deltas[data_consts.TIME_DELTA_COLUMN_NAME].max()
         temp_requirements_end_datetime = end_datetime + (max_home_time_delta * data_consts.TIME_TICK)
 
-        temp_requirements_df = self._temp_requirements_service.get_required_t_at_home_in_for_df(
+        temp_requirements_df = self._temp_requirements_service.get_required_temp(
             start_datetime, temp_requirements_end_datetime
         )
         if len(temp_requirements_df) < max_home_time_delta + 1:
@@ -86,20 +91,3 @@ class SimpleBoilerTPredictorService(BoilerTPredictorService):
             need_boiler_t = max(need_boiler_t, need_boiler_t_for_home)
 
         return need_boiler_t
-
-    @classmethod
-    def create_service(
-            cls,
-            optimized_t_table=None,
-            home_time_deltas=None,
-            temp_requirements_service=None,
-            home_t_dispersion_coefficient=1):
-
-        boiler_t_prediction_service = cls()
-        boiler_t_prediction_service.set_optimized_t_table(optimized_t_table)
-        boiler_t_prediction_service.set_homes_time_deltas(home_time_deltas)
-        boiler_t_prediction_service.set_temp_requirements_service(temp_requirements_service)
-        boiler_t_prediction_service.set_homes_time_deltas(home_time_deltas)
-        boiler_t_prediction_service.set_dispersion_coefficient(home_t_dispersion_coefficient)
-
-        return boiler_t_prediction_service
