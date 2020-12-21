@@ -9,7 +9,6 @@ if __name__ == '__main__':
     application.services.wire(modules=(api_v1, api_v2))
 
     app = application.server.fast_api_app()
-
     app.include_router(api_v1.api_router)
     app.include_router(api_v2.api_router)
 
