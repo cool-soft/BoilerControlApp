@@ -7,7 +7,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from containers import Services
+from containers.services import Services
 from dataset_utils import data_consts
 from services.boiler_t_predictor_service import BoilerTPredictorService
 
