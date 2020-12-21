@@ -1,4 +1,7 @@
+import fastapi
 from dependency_injector import containers, providers
+from uvicorn import Config as UvicornConfig
+from uvicorn import Server as UvicornServer
 
 from services.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
 from services.temp_requirements_service import SimpleTempRequirementsService
@@ -52,6 +55,23 @@ class Endpoints(containers.DeclarativeContainer):
     config = providers.Configuration()
 
 
+class Server(containers.DeclarativeContainer):
+    config = providers.Configuration()
+
+    fast_api_app = providers.Singleton(fastapi.FastAPI)
+    server_config = providers.Singleton(
+        UvicornConfig,
+        app=fast_api_app,
+        host=config.host,
+        port=config.port,
+        # log_config=None
+    )
+    server = providers.Singleton(
+        UvicornServer,
+        config=server_config
+    )
+
+
 class Application(containers.DeclarativeContainer):
     config = providers.Configuration()
 
@@ -63,4 +83,9 @@ class Application(containers.DeclarativeContainer):
     endpoints = providers.Container(
         Endpoints,
         config=config.endpoints
+    )
+
+    server = providers.Container(
+        Server,
+        config=config.server
     )
