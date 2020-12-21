@@ -8,7 +8,7 @@ class Server(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     fast_api_app = providers.Singleton(fastapi.FastAPI)
-    
+
     server = providers.Singleton(
         UvicornServer,
         config=providers.Singleton(
