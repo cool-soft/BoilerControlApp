@@ -6,7 +6,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from containers.endpoints import Endpoints
+from containers.core import Core
 from containers.services import Services
 from dataset_utils import data_consts
 from endpoints.dependencies import InputDatesRange
@@ -19,8 +19,7 @@ api_router = APIRouter(prefix="/api/v1")
 @inject
 def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
-        timezone_name: Optional[str] = Depends(Provide[
-                                                   Endpoints.config.datetime_processing.boiler_controller_timezone]),
+        timezone_name: Optional[str] = Depends(Provide[Core.config.datetime_processing.boiler_controller_timezone]),
         boiler_t_predictor: SimpleBoilerTPredictorService = Depends(Provide[Services.boiler_t_predictor_service])
 ):
     """

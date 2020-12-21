@@ -1,5 +1,5 @@
 from dependency_injector import containers, providers
 
 
-class Endpoints(containers.DeclarativeContainer):
+class Core(containers.DeclarativeContainer):
     config = providers.Configuration()

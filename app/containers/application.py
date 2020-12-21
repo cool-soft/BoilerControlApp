@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from containers.endpoints import Endpoints
+from containers.core import Core
 from containers.services import Services
 from containers.server import Server
 
@@ -13,8 +13,8 @@ class Application(containers.DeclarativeContainer):
         config=config.services
     )
 
-    endpoints = providers.Container(
-        Endpoints,
+    core = providers.Container(
+        Core,
         config=config.endpoints
     )
 
