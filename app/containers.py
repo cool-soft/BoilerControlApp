@@ -1,6 +1,8 @@
 import fastapi
 from dependency_injector import containers, providers
+# noinspection SpellCheckingInspection
 from uvicorn import Config as UvicornConfig
+# noinspection SpellCheckingInspection
 from uvicorn import Server as UvicornServer
 
 from services.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
