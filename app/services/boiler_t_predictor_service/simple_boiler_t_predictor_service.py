@@ -15,23 +15,23 @@ class SimpleBoilerTPredictorService(BoilerTPredictorService):
                  home_time_deltas=None,
                  temp_requirements_service=None,
                  home_t_dispersion_coefficient=1):
-
-        logging.debug("Initialization of BoilerTPredictor")
+        self._logger = logging.getLogger(self.__class__.__name__)
+        self._logger.debug("Creating instance of the service")
         self._optimized_t_table = optimized_t_table
         self._homes_time_deltas = home_time_deltas
         self._temp_requirements_service = temp_requirements_service
         self._home_t_dispersion_coefficient = home_t_dispersion_coefficient
 
     def set_homes_time_deltas(self, homes_time_deltas):
-        logging.debug("Set homes time deltas")
+        self._logger.debug("Set homes time deltas")
         self._homes_time_deltas = homes_time_deltas
 
     def set_optimized_t_table(self, t_table):
-        logging.debug("Set optimized t table")
+        self._logger.debug("Set optimized t table")
         self._optimized_t_table = t_table
 
     def set_temp_requirements_service(self, temp_graph_service):
-        logging.debug("Set temp requirements service")
+        self._logger.debug("Set temp requirements service")
         self._temp_requirements_service = temp_graph_service
 
     def set_dispersion_coefficient(self, coefficient):
@@ -39,7 +39,8 @@ class SimpleBoilerTPredictorService(BoilerTPredictorService):
         self._home_t_dispersion_coefficient = coefficient
 
     def get_need_boiler_t(self, start_datetime, end_datetime):
-        logging.debug(f"Requested predicted boiler t from {start_datetime.isoformat()} to {end_datetime.isoformat()}")
+        self._logger.debug(f"Requested predicted boiler t "
+                           f"from {start_datetime} to {end_datetime}")
 
         max_home_time_delta = self._homes_time_deltas[data_consts.TIME_DELTA_COLUMN_NAME].max()
         temp_requirements_end_datetime = end_datetime + (max_home_time_delta * data_consts.TIME_TICK)
@@ -58,7 +59,7 @@ class SimpleBoilerTPredictorService(BoilerTPredictorService):
         return need_boiler_t_df
 
     def _get_need_boiler_t(self, temp_requirements_df):
-        logging.debug(f"Requested need boiler temp for temp requirements")
+        self._logger.debug(f"Requested need boiler temp for temp requirements")
 
         max_home_time_delta = self._homes_time_deltas[data_consts.TIME_DELTA_COLUMN_NAME].max()
         need_boiler_t_df_len = len(temp_requirements_df) - max_home_time_delta

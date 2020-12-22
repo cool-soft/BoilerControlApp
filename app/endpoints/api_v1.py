@@ -31,7 +31,8 @@ def get_predicted_boiler_t(
     - **timezone_name**: Имя временной зоны для обработки запроса и генерации ответа.
     По-умолчанию берется из конфигов.
     """
-    logging.debug(f"(API V1) Requested predicted boiler t for dates range "
+    _logger = logging.getLogger(__name__)
+    _logger.debug(f"Requested predicted boiler t for dates range "
                   f"from {dates_range.start_date} to {dates_range.end_date}"
                   f"with timezone_name {timezone_name}")
 

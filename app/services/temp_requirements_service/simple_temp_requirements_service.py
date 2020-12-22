@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 import pandas as pd
 
@@ -8,16 +10,23 @@ from .temp_requirements_service import TempRequirementsService
 class SimpleTempRequirementsService(TempRequirementsService):
 
     def __init__(self, temp_graph, weather_service):
+        self._logger = logging.getLogger(self.__class__.__name__)
+        self._logger.debug("Creating instance of the service")
+
         self._temp_graph = temp_graph
         self._weather_service = weather_service
 
     def set_temp_graph(self, temp_graph):
+        self._logger.debug("Temp graph is set")
         self._temp_graph = temp_graph
 
     def set_weather_service(self, weather_service):
+        self._logger.debug("Weather service is set")
         self._weather_service = weather_service
 
     def get_required_temp(self, start_datetime, end_datetime):
+        self._logger.debug(f"Requested required temp from {start_datetime} to {end_datetime}")
+
         weather_df = self._weather_service.get_weather(start_datetime, end_datetime)
 
         weather_df_len = len(weather_df)
@@ -42,4 +51,6 @@ class SimpleTempRequirementsService(TempRequirementsService):
             required_t_at_home_in = available_t[data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].min()
         else:
             required_t_at_home_in = self._temp_graph[data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME].max()
+            self._logger.debug(f"Weather temp {weather_t} is not in temp graph. "
+                               f"Need temp by temp graph is{required_t_at_home_in}")
         return required_t_at_home_in
