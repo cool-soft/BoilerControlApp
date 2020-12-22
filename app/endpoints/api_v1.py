@@ -33,7 +33,7 @@ def get_predicted_boiler_t(
     """
     _logger = logging.getLogger(__name__)
     _logger.debug(f"Requested predicted boiler t for dates range "
-                  f"from {dates_range.start_date} to {dates_range.end_date}"
+                  f"from {dates_range.start_date} to {dates_range.end_date} "
                   f"with timezone_name {timezone_name}")
 
     if timezone_name is None:
