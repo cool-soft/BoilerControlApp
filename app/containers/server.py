@@ -7,13 +7,13 @@ from uvicorn import Config as UvicornConfig, Server as UvicornServer
 class Server(containers.DeclarativeContainer):
     config = providers.Configuration()
 
-    fast_api_app = providers.Singleton(fastapi.FastAPI)
+    app = providers.Dependency()
 
     server = providers.Singleton(
         UvicornServer,
         config=providers.Singleton(
             UvicornConfig,
-            app=fast_api_app,
+            app=app,
             host=config.host,
             port=config.port,
             log_config=None
