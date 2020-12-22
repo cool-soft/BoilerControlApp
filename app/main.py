@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     application.config.from_yaml('../config.yaml')
     application.init_resources()
-    
+
     application.core.wire(modules=(api_v1, api_v2))
     application.services.wire(modules=(api_v1, api_v2))
 
