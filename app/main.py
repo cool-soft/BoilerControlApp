@@ -17,8 +17,8 @@ if __name__ == '__main__':
     application.server.app.override(providers.Object(app))
 
     application.config.from_yaml(CONFIG_PATH)
-    application.services.init_resources()
     application.core.init_resources()
+    application.services.init_resources()
 
     application.core.wire(modules=(api_v1, api_v2))
     application.services.wire(modules=(api_v1, api_v2))
