@@ -4,6 +4,7 @@ from resources.home_time_deltas_resource import HomeTimeDeltasResource
 from resources.optimized_t_table_resource import OptimizedTTableResource
 from resources.temp_graph_resource import TempGraphResource
 from services.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
+from services.temp_graph_service.online_temp_graph_service import OnlineTempGraphService
 from services.temp_graph_service.simple_temp_graph_service import SimpleTempGraphService
 from services.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
 from services.weather_service.simple_weather_service import SimpleWeatherService
@@ -22,11 +23,6 @@ class Services(containers.DeclarativeContainer):
         config.boiler_t_prediction_service.homes_deltas_path
     )
 
-    temp_graph = providers.Resource(
-        TempGraphResource,
-        config.temp_requirements_service.temp_graph_path
-    )
-
     weather_service = providers.Singleton(
         SimpleWeatherService,
         server_timezone=config.weather_forecast_service.server_timezone,
@@ -35,8 +31,9 @@ class Services(containers.DeclarativeContainer):
     )
 
     temp_graph_service = providers.Singleton(
-        SimpleTempGraphService,
-        temp_graph=temp_graph
+        OnlineTempGraphService,
+        server_address=config.temp_graph_service.server_address,
+        update_interval=config.temp_graph_service.update_interval
     )
 
     temp_requirements_service = providers.Singleton(

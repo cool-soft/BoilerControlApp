@@ -54,7 +54,7 @@ class OnlineTempGraphService(TempGraphService):
         self._logger.debug("Updating temp graph from server")
         data = self._get_temp_graph_from_server()
         new_temp_graph_df = self._preprocess_temp_graph(data)
-        self._cached_temp_graph_df = new_temp_graph_df
+        self._temp_graph_cache = new_temp_graph_df
         self._temp_graph_last_update = datetime.now(tzlocal())
 
     # noinspection PyMethodMayBeStatic
