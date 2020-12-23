@@ -23,7 +23,7 @@ class SimpleWeatherService(WeatherService):
     def __init__(self, server_timezone=None, server_address=None, update_interval=1800):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
-        self._forecast_weather_server_timezone = server_timezone
+        self._weather_forecast_server_timezone = server_timezone
         self._weather_forecast_server_address = server_address
         self._weather_forecast_update_interval = update_interval
 
@@ -32,7 +32,7 @@ class SimpleWeatherService(WeatherService):
 
     def set_server_timezone(self, server_timezone):
         self._logger.debug(f"Server timezone is set to {server_timezone}")
-        self._forecast_weather_server_timezone = server_timezone
+        self._weather_forecast_server_timezone = server_timezone
 
     def set_server_address(self, server_address):
         self._logger.debug(f"Server address is set to {server_address}")
@@ -106,7 +106,7 @@ class SimpleWeatherService(WeatherService):
         self._logger.debug("Preprocessing weather forecast")
         df = pd.read_json(response_text)
         df = rename_column(df, data_consts.SOFT_M_WEATHER_T_COLUMN_NAME, data_consts.WEATHER_T_COLUMN_NAME)
-        df = convert_date_and_time_to_timestamp(df, tzinfo=gettz(self._forecast_weather_server_timezone))
+        df = convert_date_and_time_to_timestamp(df, tzinfo=gettz(self._weather_forecast_server_timezone))
         df = round_timestamp(df)
         df = interpolate_passes_of_t(df, t_column_name=data_consts.WEATHER_T_COLUMN_NAME)
         df = remove_duplicates_by_timestamp(df)

@@ -22,7 +22,7 @@ if __name__ == '__main__':
     application.services.wire(modules=(api_v1, api_v2))
 
     logger.debug("Creating FastAPI app")
-    app = FastAPI()
+    app = FastAPI(debug=True)
     app.include_router(api_v1.api_router)
     app.include_router(api_v2.api_router)
     application.server.app.override(providers.Object(app))
