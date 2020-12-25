@@ -7,7 +7,7 @@ from containers.application import Application
 from endpoints import api_v1, api_v2
 
 if __name__ == '__main__':
-    CONFIG_PATH = "../config.yaml"
+    CONFIG_PATH = "../configs/config.yaml"
 
     application = Application()
     application.config.from_yaml(CONFIG_PATH)
