@@ -1,15 +1,15 @@
 
 from datetime import datetime
 
-import consts
-from boiler_t_prediction.weather_forecast_provider import WeatherForecastProvider
+from dataset_utils import data_consts
+from services.weather_service.simple_weather_service import SimpleWeatherService
 
 
 if __name__ == '__main__':
 
-    t_provider = WeatherForecastProvider()
+    t_provider = SimpleWeatherService()
 
     min_date = datetime.now()
-    max_date = min_date + (consts.TIME_TICK * 10)
-    a = t_provider.get_weather_forecast(min_date, max_date)
+    max_date = min_date + (data_consts.TIME_TICK * 10)
+    a = t_provider.get_weather(min_date, max_date)
     print(a)
