@@ -6,23 +6,22 @@ import requests
 from dateutil.tz import tzlocal
 
 import column_names
-
+from .weather_data_parsers.weather_data_parser import WeatherDataParser
 from .weather_service import WeatherService
 
 
 class OnlineSoftMWeatherService(WeatherService):
 
-    def __init__(self, server_address=None, update_interval=1800, weather_data_parser=None):
+    def __init__(self, server_address=None, update_interval=1800, weather_data_parser: WeatherDataParser = None):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
 
         self._weather_data_server_address = server_address
         self._weather_data_update_interval = update_interval
+        self._weather_data_parser = weather_data_parser
 
         self._cached_weather_df = pd.DataFrame()
         self._cached_weather_data_last_update = None
-
-        self._weather_data_parser = weather_data_parser
 
     def set_server_address(self, server_address):
         self._logger.debug(f"Server address is set to {server_address}")
@@ -31,6 +30,10 @@ class OnlineSoftMWeatherService(WeatherService):
     def set_update_interval(self, update_interval):
         self._logger.debug(f"Weather update interval is set to {update_interval}")
         self._weather_data_update_interval = update_interval
+
+    def set_weather_data_parser(self, weather_data_parser: WeatherDataParser):
+        self._logger.debug("Weather data parser is set")
+        self._weather_data_parser = weather_data_parser
 
     def get_weather(self, start_datetime: datetime, end_datetime: datetime):
         self._logger.debug(f"Requested weather info from {start_datetime} to {end_datetime}")

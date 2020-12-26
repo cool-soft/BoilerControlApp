@@ -5,19 +5,22 @@ import pandas as pd
 import requests
 from dateutil.tz import tzlocal
 
+from .temp_graph_parsers.temp_graph_parser import TempGraphParser
 from .temp_graph_service import TempGraphService
 
 
 class OnlineSoftMTempGraphService(TempGraphService):
 
-    def __init__(self, server_address=None, update_interval=24*3600, temp_graph_parser=None):
+    def __init__(self, server_address=None, update_interval=24 * 3600, temp_graph_parser: TempGraphParser = None):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
+
         self._temp_graph_server_address = server_address
-        self._temp_graph_last_update = None
         self._temp_graph_update_interval = update_interval
-        self._temp_graph_cache = pd.DataFrame()
         self._temp_graph_parser = temp_graph_parser
+
+        self._temp_graph_last_update = None
+        self._temp_graph_cache = pd.DataFrame()
 
     def set_server_address(self, server_address):
         self._logger.debug(f"Server address is set to {server_address}")
@@ -26,6 +29,10 @@ class OnlineSoftMTempGraphService(TempGraphService):
     def set_update_interval(self, update_interval):
         self._logger.debug(f"Temp graph update interval is set to {update_interval}")
         self._temp_graph_update_interval = update_interval
+
+    def set_temp_graph_parser(self, temp_graph_parser: TempGraphParser):
+        self._logger.debug("Temp graph parser is set")
+        self._temp_graph_parser = temp_graph_parser
 
     def get_temp_graph(self):
         self._logger.debug(f"Requested temp graph")
