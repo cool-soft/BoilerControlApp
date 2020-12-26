@@ -26,7 +26,10 @@ class Services(containers.DeclarativeContainer):
 
     weather_data_parser = providers.Singleton(
         SoftMWeatherDataParser,
-        weather_data_timezone_name=config.weather_forecast_service.server_timezone
+        weather_data_timezone_name=config.weather_forecast_service.server_timezone,
+        soft_m_weather_t_column_name=soft_m_column_names.SOFT_M_WEATHER_T,
+        soft_m_weather_date_column_name=soft_m_column_names.SOFT_M_WEATHER_DATE,
+        soft_m_weather_time_column_name=soft_m_column_names.SOFT_M_WEATHER_TIME
     )
     weather_service = providers.Singleton(
         OnlineSoftMWeatherService,

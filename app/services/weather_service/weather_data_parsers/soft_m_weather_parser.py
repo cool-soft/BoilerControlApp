@@ -5,7 +5,6 @@ import pandas as pd
 from dateutil.tz import gettz
 
 import column_names
-import soft_m_column_names
 import time_tick
 from preprocess_utils import round_datetime, parse_time
 from .weather_data_parser import WeatherDataParser
@@ -13,10 +12,18 @@ from .weather_data_parser import WeatherDataParser
 
 class SoftMWeatherDataParser(WeatherDataParser):
 
-    def __init__(self, weather_data_timezone_name):
+    def __init__(self,
+                 weather_data_timezone_name,
+                 soft_m_weather_t_column_name,
+                 soft_m_weather_date_column_name,
+                 soft_m_weather_time_column_name):
 
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
+
+        self._soft_m_weather_t_column_name = soft_m_weather_t_column_name
+        self._soft_m_weather_date_column_name = soft_m_weather_date_column_name
+        self._soft_m_weather_time_column_name = soft_m_weather_time_column_name
 
         self._weather_data_timezone_name = weather_data_timezone_name
         self._time_parse_pattern = r"(?P<hour>\d\d):(?P<min>\d\d):(?P<sec>\d\d)"
@@ -27,7 +34,7 @@ class SoftMWeatherDataParser(WeatherDataParser):
         df = pd.read_json(weather_as_text)
         df.rename(
             columns={
-                soft_m_column_names.SOFT_M_WEATHER_T: column_names.WEATHER_T
+                self._soft_m_weather_t_column_name: column_names.WEATHER_T
             },
             inplace=True
         )
@@ -40,17 +47,17 @@ class SoftMWeatherDataParser(WeatherDataParser):
     def _convert_date_and_time_to_timestamp(self, df):
         datetime_list = []
         for _, row in df.iterrows():
-            time_as_str = row[soft_m_column_names.SOFT_M_TIME]
+            time_as_str = row[self._soft_m_weather_time_column_name]
             time = parse_time(time_as_str, self._time_parse_pattern)
 
-            date = row[soft_m_column_names.SOFT_M_DATE].date()
+            date = row[self._soft_m_weather_date_column_name].date()
 
             datetime_ = datetime.datetime.combine(date, time, tzinfo=gettz(self._weather_data_timezone_name))
             datetime_list.append(datetime_)
 
         df[column_names.TIMESTAMP] = datetime_list
-        del df[soft_m_column_names.SOFT_M_DATE]
-        del df[soft_m_column_names.SOFT_M_TIME]
+        del df[self._soft_m_weather_date_column_name]
+        del df[self._soft_m_weather_time_column_name]
 
         return df
 
