@@ -13,7 +13,7 @@ if __name__ == '__main__':
     application.config.from_yaml(CONFIG_PATH)
 
     application.core.init_resources()
-    application.services.init_resources()
+    application.services.boiler_t_prediction.init_resources()
 
     logger = logging.getLogger(__name__)  # Must be placed after core.init_resources()
 

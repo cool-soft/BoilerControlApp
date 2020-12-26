@@ -11,6 +11,7 @@ import time_tick
 from containers.core import Core
 from containers.services import Services
 import column_names
+from containers.services_containers.simple_boiler_t_prediction_container import SimpleBoilerTPredictionContainer
 from services.boiler_t_predictor_service.boiler_t_predictor_service import BoilerTPredictorService
 
 api_router = APIRouter(prefix="/api/v2")
@@ -23,7 +24,9 @@ def get_predicted_boiler_t(
         end_datetime: Optional[datetime] = None,
         timezone_name: Optional[str] = None,
         datetime_processing_params=Depends(Provide[Core.config.datetime_processing]),
-        boiler_t_predictor: BoilerTPredictorService = Depends(Provide[Services.boiler_t_predictor_service])
+        boiler_t_predictor: BoilerTPredictorService = Depends(
+            Provide[Services.boiler_t_prediction.boiler_t_predictor_service]
+        )
 ):
     # noinspection SpellCheckingInspection
     """
