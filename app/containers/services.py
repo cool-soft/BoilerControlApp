@@ -7,7 +7,10 @@ from services.temp_graph_service.online_soft_m_temp_graph_service import OnlineS
 from services.temp_graph_service.temp_graph_parsers.soft_m_temp_graph_parser import SoftMTempGraphParser
 from services.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
 from services.weather_service.online_soft_m_weather_service import OnlineSoftMWeatherService
+from services.weather_service.weather_data_interpolators.weather_data_linear_interpolator import \
+    WeatherDataLinearInterpolator
 from services.weather_service.weather_data_parsers.soft_m_weather_parser import SoftMWeatherDataParser
+from time_tick import TIME_TICK
 
 
 class Services(containers.DeclarativeContainer):
@@ -27,11 +30,18 @@ class Services(containers.DeclarativeContainer):
         SoftMWeatherDataParser,
         weather_data_timezone_name=config.weather_forecast_service.server_timezone
     )
+
+    weather_data_interpolator = providers.Singleton(
+        WeatherDataLinearInterpolator,
+        time_tick=TIME_TICK
+    )
+
     weather_service = providers.Singleton(
         OnlineSoftMWeatherService,
         server_address=config.weather_forecast_service.server_address,
         update_interval=config.weather_forecast_service.update_interval,
-        weather_data_parser=weather_data_parser
+        weather_data_parser=weather_data_parser,
+        weather_data_interpolator=weather_data_interpolator
     )
 
     temp_graph_parser = providers.Singleton(SoftMTempGraphParser)
