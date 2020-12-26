@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 import column_names
@@ -9,9 +11,14 @@ from .weather_data_interpolator import WeatherDataInterpolator
 class WeatherDataLinearInterpolator(WeatherDataInterpolator):
 
     def __init__(self):
+        self._logger = logging.getLogger(self.__class__.__name__)
+        self._logger.debug("Creating instance of the service")
+
         self._time_tick = time_tick.TIME_TICK
 
     def interpolate_weather_data(self, weather_data: pd.DataFrame) -> pd.DataFrame:
+        self._logger.debug("Requested weather data interpolating")
+
         weather_data[column_names.TIMESTAMP] = weather_data[column_names.TIMESTAMP].apply(
             lambda datetime_: round_datetime(datetime_, self._time_tick.total_seconds())
         )
@@ -21,6 +28,8 @@ class WeatherDataLinearInterpolator(WeatherDataInterpolator):
 
     # noinspection PyMethodMayBeStatic
     def _interpolate_passes_of_weather_data(self, weather_data: pd.DataFrame):
+        self._logger.debug("Interpolating passes of weather data")
+
         weather_data.sort_values(by=column_names.TIMESTAMP, ignore_index=True, inplace=True)
         interpolated_values = []
 
