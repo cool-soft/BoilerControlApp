@@ -8,7 +8,7 @@ from dateutil.tz import tzlocal
 from .temp_graph_service import TempGraphService
 
 
-class OnlineTempGraphService(TempGraphService):
+class OnlineSoftMTempGraphService(TempGraphService):
 
     def __init__(self, server_address=None, update_interval=24*3600, temp_graph_parser=None):
         self._logger = logging.getLogger(self.__class__.__name__)

@@ -4,10 +4,11 @@ from resources.home_time_deltas_resource import HomeTimeDeltasResource
 from resources.optimized_t_table_resource import OptimizedTTableResource
 from services.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
 from services.temp_graph_service.temp_graph_parsers.soft_m_temp_graph_parser import SoftMTempGraphParser
-from services.temp_graph_service.online_temp_graph_service import OnlineTempGraphService
+from services.temp_graph_service.online_soft_m_temp_graph_service import OnlineSoftMTempGraphService
 from services.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
-from services.weather_service.simple_weather_service import SimpleWeatherService
+from services.weather_service.online_soft_m_weather_service import OnlineSoftMWeatherService
 import data_consts
+from services.weather_service.weather_data_parsers.soft_m_weather_parser import SoftMWeatherDataParser
 
 
 class Services(containers.DeclarativeContainer):
@@ -23,11 +24,20 @@ class Services(containers.DeclarativeContainer):
         config.boiler_t_prediction_service.homes_deltas_path
     )
 
+    weather_data_parser = providers.Singleton(
+        SoftMWeatherDataParser,
+        soft_m_weather_column_name=data_consts.SOFT_M_WEATHER_T_COLUMN_NAME,
+        soft_m_date_column_name=data_consts.SOFT_M_DATE_COLUMN_NAME,
+        soft_m_time_column_name=data_consts.SOFT_M_TIME_COLUMN_NAME,
+        timestamp_column_name=data_consts.TIMESTAMP_COLUMN_NAME,
+        weather_t_column_name=data_consts.WEATHER_T_COLUMN_NAME,
+        weather_data_timezone_name=config.weather_forecast_service.server_timezone
+    )
     weather_service = providers.Singleton(
-        SimpleWeatherService,
-        server_timezone=config.weather_forecast_service.server_timezone,
+        OnlineSoftMWeatherService,
         server_address=config.weather_forecast_service.server_address,
-        update_interval=config.weather_forecast_service.update_interval
+        update_interval=config.weather_forecast_service.update_interval,
+        weather_data_parser=weather_data_parser
     )
 
     temp_graph_parser = providers.Singleton(
@@ -41,7 +51,7 @@ class Services(containers.DeclarativeContainer):
     )
 
     temp_graph_service = providers.Singleton(
-        OnlineTempGraphService,
+        OnlineSoftMTempGraphService,
         server_address=config.temp_graph_service.server_address,
         update_interval=config.temp_graph_service.update_interval,
         temp_graph_parser=temp_graph_parser

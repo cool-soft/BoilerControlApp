@@ -7,7 +7,7 @@ from datetime import datetime
 
 from configs.app_config import GlobalAppConfig
 import data_consts
-from services.weather_service.simple_weather_service import SimpleWeatherService
+from services.weather_service.online_soft_m_weather_service import OnlineSoftMWeatherService
 from services.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
 import pandas as pd
 
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     homes_time_deltas = pd.read_csv(app_config.boiler_t_predictor.homes_deltas_path)
     max_home_time_delta = homes_time_deltas[data_consts.TIME_DELTA_COLUMN_NAME].max()
 
-    weather_forecast_provider = SimpleWeatherService()
+    weather_forecast_provider = OnlineSoftMWeatherService()
     weather_forecast_provider.set_server_timezone(
         gettz(app_config.weather_forecast_provider.server_timezone))
     weather_forecast_provider.set_server_address(app_config.weather_forecast_provider.server_address)
