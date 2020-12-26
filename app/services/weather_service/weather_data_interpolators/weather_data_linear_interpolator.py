@@ -1,16 +1,15 @@
-import datetime
-
 import pandas as pd
 
 import column_names
+import time_tick
 from preprocess_utils import round_datetime
 from .weather_data_interpolator import WeatherDataInterpolator
 
 
 class WeatherDataLinearInterpolator(WeatherDataInterpolator):
 
-    def __init__(self, time_tick: datetime.timedelta):
-        self._time_tick = time_tick
+    def __init__(self):
+        self._time_tick = time_tick.TIME_TICK
 
     def interpolate_weather_data(self, weather_data: pd.DataFrame) -> pd.DataFrame:
         weather_data[column_names.TIMESTAMP] = weather_data[column_names.TIMESTAMP].apply(

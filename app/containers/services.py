@@ -31,10 +31,7 @@ class Services(containers.DeclarativeContainer):
         weather_data_timezone_name=config.weather_forecast_service.server_timezone
     )
 
-    weather_data_interpolator = providers.Singleton(
-        WeatherDataLinearInterpolator,
-        time_tick=TIME_TICK
-    )
+    weather_data_interpolator = providers.Singleton(WeatherDataLinearInterpolator)
 
     weather_service = providers.Singleton(
         OnlineSoftMWeatherService,
