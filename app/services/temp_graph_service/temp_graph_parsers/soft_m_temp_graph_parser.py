@@ -8,17 +8,9 @@ from .temp_graph_parser import TempGraphParser
 
 class SoftMTempGraphParser(TempGraphParser):
 
-    def __init__(self,
-                 soft_m_weather_column_name,
-                 soft_m_required_t_at_home_in_column_name,
-                 soft_m_required_t_at_home_out_column_name):
-
+    def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
-
-        self._soft_m_weather_column_name = soft_m_weather_column_name
-        self._soft_m_required_t_at_home_in_column_name = soft_m_required_t_at_home_in_column_name
-        self._soft_m_required_t_at_home_out_column_name = soft_m_required_t_at_home_out_column_name
 
     def parse_temp_graph(self, temp_graph_as_text):
         self._logger.debug("Parsing temp graph")
@@ -26,9 +18,9 @@ class SoftMTempGraphParser(TempGraphParser):
         df = pd.read_json(temp_graph_as_text)
         df.rename(
             columns={
-                self._soft_m_weather_column_name: column_names.WEATHER_T,
-                self._soft_m_required_t_at_home_in_column_name: column_names.REQUIRED_T_AT_HOME_IN,
-                self._soft_m_required_t_at_home_out_column_name: column_names.REQUIRED_T_AT_HOME_OUT
+                column_names.SOFT_M_TEMP_GRAPH_WEATHER_T: column_names.WEATHER_T,
+                column_names.SOFT_M_TEMP_GRAPH_REQUIRED_T_AT_HOME_IN: column_names.REQUIRED_T_AT_HOME_IN,
+                column_names.SOFT_M_TEMP_GRAPH_REQUIRED_T_AT_HOME_OUT: column_names.REQUIRED_T_AT_HOME_OUT
             },
             inplace=True)
         return df
