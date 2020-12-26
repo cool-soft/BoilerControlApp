@@ -2,9 +2,7 @@ import datetime
 import math
 import re
 
-import numpy as np
-
-from dataset_utils import data_consts
+import data_consts
 
 
 def round_timestamp(df):
@@ -110,67 +108,8 @@ def filter_by_timestamp(df, min_date, max_date):
     return df
 
 
-# noinspection SpellCheckingInspection
-def average_values(x, window_len=4, window='hanning'):
-    if x.ndim != 1:
-        raise ValueError("smooth only accepts 1 dimension arrays.")
-
-    if x.size < window_len:
-        raise ValueError("Input vector needs to be bigger than window size.")
-
-    if window not in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
-
-    if window_len < 3:
-        return x
-
-    s = np.r_[x[window_len - 1:0:-1], x, x[-2:-window_len - 1:-1]]
-
-    if window == 'flat':
-        w = np.ones(window_len, 'd')
-    else:
-        w = getattr(np, window)(window_len)
-
-    y = np.convolve(w / w.sum(), s, mode='valid')
-    return y[(window_len // 2 - 1 + (window_len % 2)):-(window_len // 2)]
-    # return y
-
-
 def remove_duplicates_by_timestamp(df):
     df.drop_duplicates(data_consts.TIMESTAMP_COLUMN_NAME, inplace=True, ignore_index=True)
-    return df
-
-
-def reset_index(df):
-    df.reset_index(drop=True, inplace=True)
-    return df
-
-
-def exclude_rows_without_value(df, column_name=data_consts.BOILER_PIPE_1_COLUMN_NAME):
-    df = df[df[column_name].notnull()]
-    return df
-
-
-def convert_to_float(df, column_name=data_consts.BOILER_PIPE_1_COLUMN_NAME):
-    df[column_name] = df[column_name].apply(convert_str_to_float)
-    return df
-
-
-def convert_str_to_float(value):
-    if isinstance(value, str):
-        value = value.replace(",", ".")
-    value = float(value)
-    return value
-
-
-def remove_bad_zeros_in_water_t(df, column_name=data_consts.BOILER_PIPE_1_COLUMN_NAME):
-    df[column_name] = df[column_name].apply(lambda t: t > 100 and t / 100 or t)
-    return df
-
-
-def remove_disabled_t(df, disabled_t_threshold, column_name=data_consts.BOILER_PIPE_1_COLUMN_NAME):
-    if disabled_t_threshold != 0:
-        df = df[df[column_name] >= disabled_t_threshold]
     return df
 
 
@@ -205,16 +144,6 @@ def parse_time(time_as_str):
 def rename_column(df, src_name, dst_name):
     df[dst_name] = df[src_name]
     del df[src_name]
-    return df
-
-
-def round_down(df, column_name=data_consts.BOILER_PIPE_1_COLUMN_NAME):
-    df[column_name] = df[column_name].apply(math.floor)
-    return df
-
-
-def convert_str_to_timestamp(df):
-    df[data_consts.TIMESTAMP_COLUMN_NAME] = df[data_consts.TIMESTAMP_COLUMN_NAME].apply(parse_datetime)
     return df
 
 

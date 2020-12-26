@@ -6,8 +6,8 @@ import requests
 from dateutil.tz import tzlocal, gettz
 
 from .weather_service import WeatherService
-from dataset_utils import data_consts
-from dataset_utils.preprocess_utils import (
+import data_consts
+from preprocess_utils import (
     rename_column,
     remove_duplicates_by_timestamp,
     convert_date_and_time_to_timestamp,

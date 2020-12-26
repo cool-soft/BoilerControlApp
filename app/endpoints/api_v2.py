@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 
 from containers.core import Core
 from containers.services import Services
-from dataset_utils import data_consts
+import data_consts
 from services.boiler_t_predictor_service.boiler_t_predictor_service import BoilerTPredictorService
 
 api_router = APIRouter(prefix="/api/v2")

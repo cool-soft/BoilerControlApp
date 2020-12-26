@@ -5,7 +5,7 @@ import pandas as pd
 
 from .boiler_t_predictor_service import BoilerTPredictorService
 
-from dataset_utils import data_consts
+import data_consts
 
 
 class SimpleBoilerTPredictorService(BoilerTPredictorService):

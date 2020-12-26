@@ -5,20 +5,19 @@ import pandas as pd
 import requests
 from dateutil.tz import tzlocal
 
-from dataset_utils import data_consts
-from dataset_utils.preprocess_utils import rename_column
 from .temp_graph_service import TempGraphService
 
 
 class OnlineTempGraphService(TempGraphService):
 
-    def __init__(self, server_address=None, update_interval=24*3600):
+    def __init__(self, server_address=None, update_interval=24*3600, temp_graph_parser=None):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
         self._temp_graph_server_address = server_address
         self._temp_graph_last_update = None
         self._temp_graph_update_interval = update_interval
         self._temp_graph_cache = pd.DataFrame()
+        self._temp_graph_parser = temp_graph_parser
 
     def set_server_address(self, server_address):
         self._logger.debug(f"Server address is set to {server_address}")
@@ -53,31 +52,15 @@ class OnlineTempGraphService(TempGraphService):
     def _update_temp_graph_from_server(self):
         self._logger.debug("Updating temp graph from server")
         data = self._get_temp_graph_from_server()
-        new_temp_graph_df = self._preprocess_temp_graph(data)
-        self._temp_graph_cache = new_temp_graph_df
+        self._temp_graph_cache = self._temp_graph_parser.parse_temp_graph(data)
         self._temp_graph_last_update = datetime.now(tzlocal())
 
-    # noinspection PyMethodMayBeStatic
     def _get_temp_graph_from_server(self):
         self._logger.debug(f"Requesting temp graph from server {self._temp_graph_server_address}")
         url = f"{self._temp_graph_server_address}/JSON/"
-        # noinspection SpellCheckingInspection
         params = {
             "method": "getTempGraphic"
         }
         response = requests.get(url, params=params)
-        self._logger.debug(f"Temp graph is loaded. Response status code is {response.status_code}")
+        self._logger.debug(f"Temp graph is loaded from server. Response status code is {response.status_code}")
         return response.text
-
-    # noinspection PyMethodMayBeStatic
-    def _preprocess_temp_graph(self, response_text):
-        self._logger.debug("Preprocessing temp graph")
-        df = pd.read_json(response_text)
-        df = rename_column(df, data_consts.SOFT_M_TEMP_GRAPH_WEATHER_COLUMN_NAME, data_consts.WEATHER_T_COLUMN_NAME)
-        df = rename_column(df,
-                           data_consts.SOFT_M_TEMP_GRAPH_REQUIRED_T_AT_HOME_IN_COLUMN_NAME,
-                           data_consts.REQUIRED_T_AT_HOME_IN_COLUMN_NAME)
-        df = rename_column(df,
-                           data_consts.SOFT_M_TEMP_GRAPH_REQUIRED_T_AT_HOME_OUT_COLUMN_NAME,
-                           data_consts.REQUIRED_T_AT_HOME_OUT_COLUMN_NAME)
-        return df

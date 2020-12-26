@@ -3,7 +3,7 @@ from datetime import datetime
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from dataset_utils import data_consts
+import data_consts
 from services.temp_graph_service.simple_temp_graph_service import SimpleTempGraphService
 from services.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
 from services.weather_service.weather_service import WeatherService

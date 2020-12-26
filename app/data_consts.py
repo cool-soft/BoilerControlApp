@@ -3,7 +3,6 @@ from datetime import timedelta as _timedelta
 TIME_TICK = _timedelta(minutes=3)
 
 TIMESTAMP_COLUMN_NAME = "timestamp"
-UPDATED_TIMESTAMP_COLUMN_NAME = "updated_at"
 TIME_DELTA_COLUMN_NAME = "time_delta"
 WEATHER_T_COLUMN_NAME = "weather_t"
 HOME_NAME_COLUMN_NAME = "home_name"

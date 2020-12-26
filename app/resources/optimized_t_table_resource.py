@@ -1,10 +1,9 @@
 import logging
 import os
+import pickle
 
-from dependency_injector import resources
 import pandas as pd
-
-from dataset_utils.io_utils import load_dataframe
+from dependency_injector import resources
 
 
 class OptimizedTTableResource(resources.Resource):
@@ -13,7 +12,8 @@ class OptimizedTTableResource(resources.Resource):
         logger = logging.getLogger(self.__class__.__name__)
         optimized_temp_table_path = os.path.abspath(optimized_temp_table_path)
         logger.debug(f"Loading optimized temp table from {optimized_temp_table_path}")
-        optimized_t_table = load_dataframe(optimized_temp_table_path)
+        with open(optimized_temp_table_path, "rb") as f:
+            optimized_t_table = pickle.load(f)
         return optimized_t_table
 
     def shutdown(self, optimized_temp_table: pd.DataFrame):

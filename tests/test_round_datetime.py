@@ -1,5 +1,5 @@
-from dataset_utils import data_consts
-from dataset_utils.preprocess_utils import round_datetime
+import data_consts
+from preprocess_utils import round_datetime
 from datetime import datetime
 
 if __name__ == '__main__':

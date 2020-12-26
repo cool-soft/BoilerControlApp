@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from dataset_utils import data_consts
+import data_consts
 from .temp_requirements_service import TempRequirementsService
 
 

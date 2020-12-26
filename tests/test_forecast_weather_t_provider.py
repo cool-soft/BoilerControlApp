@@ -1,7 +1,7 @@
 
 from datetime import datetime
 
-from dataset_utils import data_consts
+import data_consts
 from services.weather_service.simple_weather_service import SimpleWeatherService
 
 

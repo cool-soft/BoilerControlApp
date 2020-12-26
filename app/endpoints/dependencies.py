@@ -6,8 +6,8 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 
 from containers.core import Core
-from dataset_utils import data_consts
-from dataset_utils.preprocess_utils import parse_datetime
+import data_consts
+from preprocess_utils import parse_datetime
 
 
 class InputDatesRange:

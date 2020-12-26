@@ -1,16 +1,15 @@
 import os
+import pickle
 
 from dateutil.tz import gettz
 from matplotlib import pyplot as plt
 from datetime import datetime
 
 from configs.app_config import GlobalAppConfig
-from dataset_utils import data_consts
+import data_consts
 from services.weather_service.simple_weather_service import SimpleWeatherService
 from services.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
 import pandas as pd
-
-from dataset_utils.io_utils import load_dataframe
 
 
 if __name__ == '__main__':
@@ -19,7 +18,8 @@ if __name__ == '__main__':
     min_date = datetime.now(tz=gettz(app_config.datetime_processing.boiler_controller_timezone))
     max_date = min_date + (100 * data_consts.TIME_TICK)
 
-    optimized_t_table = load_dataframe(app_config.boiler_t_predictor.optimized_t_table_path)
+    with open(app_config.boiler_t_predictor.optimized_t_table_path, "rb") as f:
+        optimized_t_table = pickle.load(f)
     temp_graph = pd.read_csv(os.path.abspath(app_config.boiler_t_predictor.t_graph_path))
     homes_time_deltas = pd.read_csv(app_config.boiler_t_predictor.homes_deltas_path)
     max_home_time_delta = homes_time_deltas[data_consts.TIME_DELTA_COLUMN_NAME].max()
