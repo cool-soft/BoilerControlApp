@@ -1,12 +1,12 @@
 services:
-  boiler_t_prediction_service:
+  boiler_t_prediction:
     home_t_dispersion_coefficient: 1
     homes_deltas_path: ../storage/homes_time_delta.csv
     optimized_t_table_path: ../storage/optimized_t_table.pickle
-  temp_graph_service:
+  temp_graph_providing:
     server_address: https://lysva.agt.town/
     update_interval: 86400
-  weather_forecast_service:
+  weather_forecasting:
     server_address: https://lysva.agt.town/
     server_timezone: Asia/Yekaterinburg
     update_interval: 600
@@ -32,7 +32,7 @@ core:
         class: logging.handlers.RotatingFileHandler
         formatter: formatter
         filename: ../logs/log.log
-        maxBytes: 102400
+        maxBytes: 1024000
         backupCount: 5
         encoding: "UTF-8"
     loggers:
