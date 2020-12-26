@@ -7,9 +7,10 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
+import time_tick
 from containers.core import Core
 from containers.services import Services
-import data_consts
+import column_names
 from services.boiler_t_predictor_service.boiler_t_predictor_service import BoilerTPredictorService
 
 api_router = APIRouter(prefix="/api/v2")
@@ -68,7 +69,7 @@ def get_predicted_boiler_t(
         start_datetime = start_datetime.astimezone(work_timezone)
 
     if end_datetime is None:
-        end_datetime = start_datetime + data_consts.TIME_TICK
+        end_datetime = start_datetime + time_tick.TIME_TICK
     if end_datetime.tzname() is None:
         end_datetime = end_datetime.astimezone(work_timezone)
 
@@ -76,10 +77,10 @@ def get_predicted_boiler_t(
 
     predicted_boiler_t_ds = []
     for _, row in predicted_boiler_t_df.iterrows():
-        datetime_ = row[data_consts.TIMESTAMP_COLUMN_NAME]
+        datetime_ = row[column_names.TIMESTAMP]
         datetime_ = datetime_.astimezone(work_timezone)
 
-        boiler_t = row[data_consts.BOILER_NAME_COLUMN_NAME]
+        boiler_t = row[column_names.BOILER]
         boiler_t = round(boiler_t, 1)
 
         predicted_boiler_t_ds.append((datetime_, boiler_t))

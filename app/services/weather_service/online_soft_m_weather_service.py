@@ -5,10 +5,8 @@ import pandas as pd
 import requests
 from dateutil.tz import tzlocal
 
-from preprocess_utils import (
-    filter_by_timestamp,
-    get_min_max_timestamp
-)
+import column_names
+
 from .weather_service import WeatherService
 
 
@@ -45,7 +43,7 @@ class OnlineSoftMWeatherService(WeatherService):
 
     def _is_datetime_not_in_cache(self, datetime_):
         self._logger.debug("Checking that requested datetime in cache")
-        _, max_cached_datetime = get_min_max_timestamp(self._cached_weather_df)
+        max_cached_datetime = self._get_max_cached_datetime()
 
         if max_cached_datetime is None:
             self._logger.debug("Max cached datetime is None")
@@ -57,6 +55,12 @@ class OnlineSoftMWeatherService(WeatherService):
 
         self._logger.debug("Requested datetime in cache")
         return False
+
+    def _get_max_cached_datetime(self):
+        if self._cached_weather_df.empty:
+            return None
+        max_date = self._cached_weather_df[column_names.TIMESTAMP].max()
+        return max_date
 
     def _is_cached_forecast_expired(self):
         self._logger.debug("Checking that cached weather forecast is not expired")
@@ -94,4 +98,8 @@ class OnlineSoftMWeatherService(WeatherService):
 
     def _get_from_cache(self, start_datetime, end_datetime):
         self._logger.debug("Taking weather forecast from cache")
-        return filter_by_timestamp(self._cached_weather_df, start_datetime, end_datetime).copy()
+        df = self._cached_weather_df[
+            (self._cached_weather_df[column_names.TIMESTAMP] >= start_datetime) &
+            (self._cached_weather_df[column_names.TIMESTAMP] < end_datetime)
+            ]
+        return df.copy()

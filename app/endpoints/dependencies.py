@@ -5,8 +5,9 @@ from dateutil.tz import gettz
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 
+import column_names
+import time_tick
 from containers.core import Core
-import data_consts
 from preprocess_utils import parse_datetime
 
 
@@ -32,6 +33,6 @@ class InputDatesRange:
             self.start_date = parse_datetime(start_date, request_datetime_patterns, timezone=work_timezone)
 
         if end_date is None:
-            self.end_date = self.start_date + data_consts.TIME_TICK
+            self.end_date = self.start_date + time_tick.TIME_TICK
         else:
             self.end_date = parse_datetime(end_date, request_datetime_patterns, timezone=work_timezone)

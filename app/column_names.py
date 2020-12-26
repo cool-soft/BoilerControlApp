@@ -1,0 +1,7 @@
+TIMESTAMP = "timestamp"
+TIME_DELTA = "time_delta"
+WEATHER_T = "weather_t"
+HOME_NAME = "home_name"
+REQUIRED_T_AT_HOME_IN = "required_t_at_home_in"
+REQUIRED_T_AT_HOME_OUT = "required_t_at_home_out"
+BOILER = "BOILER"
