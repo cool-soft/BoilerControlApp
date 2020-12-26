@@ -3,10 +3,9 @@ import logging
 import numpy as np
 import pandas as pd
 
+import column_names
 import time_tick
 from .boiler_t_predictor_service import BoilerTPredictorService
-
-import column_names
 
 
 class SimpleBoilerTPredictorService(BoilerTPredictorService):
@@ -44,7 +43,9 @@ class SimpleBoilerTPredictorService(BoilerTPredictorService):
                            f"from {start_datetime} to {end_datetime}")
 
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()
-        temp_requirements_end_datetime = end_datetime + (max_home_time_delta * time_tick.TIME_TICK)
+        temp_requirements_end_datetime = end_datetime + (
+                max_home_time_delta * time_tick.TIME_TICK
+        )
 
         temp_requirements_df = self._temp_requirements_service.get_required_temp(
             start_datetime, temp_requirements_end_datetime

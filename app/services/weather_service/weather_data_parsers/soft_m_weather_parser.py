@@ -5,7 +5,7 @@ import pandas as pd
 from dateutil.tz import gettz
 
 import column_names
-import time_tick
+from time_tick import TIME_TICK
 from preprocess_utils import round_datetime, parse_time
 from .weather_data_parser import WeatherDataParser
 
@@ -13,7 +13,6 @@ from .weather_data_parser import WeatherDataParser
 class SoftMWeatherDataParser(WeatherDataParser):
 
     def __init__(self, weather_data_timezone_name):
-
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
 
@@ -32,7 +31,9 @@ class SoftMWeatherDataParser(WeatherDataParser):
         )
 
         df = self._convert_date_and_time_to_timestamp(df)
-        df[column_names.TIMESTAMP] = df[column_names.TIMESTAMP].apply(round_datetime)
+        df[column_names.TIMESTAMP] = df[column_names.TIMESTAMP].apply(
+            lambda datetime_: round_datetime(datetime_, TIME_TICK.total_seconds())
+        )
         df = self._interpolate_passes_of_weather_data(df)
         return df
 
@@ -72,11 +73,11 @@ class SoftMWeatherDataParser(WeatherDataParser):
             next_t = row[column_names.WEATHER_T]
 
             datetime_delta = next_datetime - previous_datetime
-            if datetime_delta > time_tick.TIME_TICK:
-                number_of_passes = int(datetime_delta // time_tick.TIME_TICK) - 1
+            if datetime_delta > TIME_TICK:
+                number_of_passes = int(datetime_delta // TIME_TICK) - 1
                 t_step = (next_t - previous_t) / number_of_passes
                 for pass_n in range(1, number_of_passes + 1):
-                    interpolated_datetime = previous_datetime + (time_tick.TIME_TICK * pass_n)
+                    interpolated_datetime = previous_datetime + (TIME_TICK * pass_n)
                     interpolated_t = previous_t + (t_step * pass_n)
                     interpolated_values.append({
                         column_names.TIMESTAMP: interpolated_datetime,
