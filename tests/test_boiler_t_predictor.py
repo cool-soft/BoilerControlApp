@@ -36,7 +36,7 @@ if __name__ == '__main__':
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
     boiler_t_predictor.set_weather_forecast_service(weather_forecast_provider)
 
-    predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_t(min_date, max_date)
+    predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_temp(min_date, max_date)
     predicted_boiler_t_arr = predicted_boiler_t_df[column_names.BOILER_OUT_TEMP].to_numpy()
 
     dates_arr = predicted_boiler_t_df[column_names.TIMESTAMP].to_list()

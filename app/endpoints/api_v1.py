@@ -42,7 +42,7 @@ def get_predicted_boiler_t(
     if timezone_name is None:
         timezone_name = datetime_processing_params.get("default_timezone")
 
-    predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_t(dates_range.start_date, dates_range.end_date)
+    predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_temp(dates_range.start_date, dates_range.end_date)
 
     work_timezone = gettz(timezone_name)
     response_datetime_pattern = datetime_processing_params.get("response_pattern")

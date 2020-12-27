@@ -17,6 +17,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
                  home_min_temp_coefficient=1):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
+
         self._temp_correlation_table = temp_correlation_table
         self._homes_time_deltas = home_time_deltas
         self._temp_requirements_service = temp_requirements_service
@@ -38,9 +39,8 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         logging.debug(f"Set home min temp coefficient to {min_temp_coefficient}")
         self._home_min_temp_coefficient = min_temp_coefficient
 
-    def get_need_boiler_t(self, start_datetime, end_datetime):
-        self._logger.debug(f"Requested predicted boiler t "
-                           f"from {start_datetime} to {end_datetime}")
+    def get_need_boiler_temp(self, start_datetime, end_datetime):
+        self._logger.debug(f"Requested predicted boiler t from {start_datetime} to {end_datetime}")
 
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()
         temp_requirements_end_datetime = end_datetime + (max_home_time_delta * time_tick.TIME_TICK)

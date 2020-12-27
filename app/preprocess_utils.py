@@ -38,3 +38,12 @@ def parse_time(time_as_str, time_parse_pattern):
     second = int(parsed.group("sec"))
     time = datetime.time(hour=hour, minute=minute, second=second)
     return time
+
+
+def arithmetic_round(number):
+    number_floor = math.floor(number)
+    if number - number_floor < 0.5:
+        rounded_number = number_floor
+    else:
+        rounded_number = number_floor + 1
+    return rounded_number

@@ -1,9 +1,9 @@
 import logging
 
-import numpy as np
 import pandas as pd
 
 import column_names
+from preprocess_utils import arithmetic_round
 from .temp_requirements_service import TempRequirementsService
 
 
@@ -29,29 +29,35 @@ class SimpleTempRequirementsService(TempRequirementsService):
 
         weather_df = self._weather_service.get_weather(start_datetime, end_datetime)
 
-        weather_df_len = len(weather_df)
-        temp_requirements_arr = np.empty(shape=(weather_df_len,), dtype=np.float)
-        weather_t_arr = weather_df[column_names.WEATHER_TEMP].to_numpy()
+        required_temp_at_home_in_list = []
+        required_temp_at_home_out_list = []
+        weather_temp_arr = weather_df[column_names.WEATHER_TEMP].to_numpy()
         temp_graph = self._temp_graph_service.get_temp_graph()
-        for i, weather_t in enumerate(weather_t_arr):
-            required_temp = self._get_required_temp_at_home_in_by_temp_graph(weather_t, temp_graph)
-            temp_requirements_arr[i] = required_temp
+        for weather_temp in weather_temp_arr:
+            required_temp = self._get_required_temp_by_temp_graph(weather_temp, temp_graph)
+            required_temp_at_home_in_list.append(required_temp[column_names.REQUIRED_TEMP_AT_HOME_IN])
+            required_temp_at_home_out_list.append(required_temp[column_names.REQUIRED_TEMP_AT_HOME_OUT])
 
         temp_requirements_dates_list = weather_df[column_names.TIMESTAMP].to_list()
         temp_requirements_df = pd.DataFrame({
             column_names.TIMESTAMP: temp_requirements_dates_list,
-            column_names.REQUIRED_TEMP_AT_HOME_IN: temp_requirements_arr
+            column_names.REQUIRED_TEMP_AT_HOME_IN: required_temp_at_home_in_list,
+            column_names.REQUIRED_TEMP_AT_HOME_OUT: required_temp_at_home_out_list
         })
 
         return temp_requirements_df
 
-    def _get_required_temp_at_home_in_by_temp_graph(self, weather_t, temp_graph):
-        available_t_condition = temp_graph[column_names.WEATHER_TEMP] <= weather_t
-        available_t = temp_graph[available_t_condition]
-        if not available_t.empty:
-            required_t_at_home_in = available_t[column_names.REQUIRED_TEMP_AT_HOME_IN].min()
+    def _get_required_temp_by_temp_graph(self, weather_temp, temp_graph):
+        weather_temp = arithmetic_round(weather_temp)
+
+        available_temp_condition = temp_graph[column_names.WEATHER_TEMP] <= weather_temp
+        available_temp = temp_graph[available_temp_condition]
+        if not available_temp.empty:
+            required_temp_idx = available_temp[column_names.WEATHER_TEMP].idxmax()
+
         else:
-            required_t_at_home_in = temp_graph[column_names.REQUIRED_TEMP_AT_HOME_IN].max()
-            self._logger.debug(f"Weather temp {weather_t} is not in temp graph. "
-                               f"Need temp by temp graph is {required_t_at_home_in}")
-        return required_t_at_home_in
+            required_temp_idx = temp_graph[column_names.WEATHER_TEMP].idxmin()
+            self._logger.debug(f"Weather temp {weather_temp} is not in temp graph.")
+
+        required_temp = temp_graph.loc[required_temp_idx]
+        return required_temp.copy()

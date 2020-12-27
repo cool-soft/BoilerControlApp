@@ -76,7 +76,7 @@ def get_predicted_boiler_t(
     if end_datetime.tzname() is None:
         end_datetime = end_datetime.astimezone(work_timezone)
 
-    predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_t(start_datetime, end_datetime)
+    predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_temp(start_datetime, end_datetime)
 
     predicted_boiler_t_ds = []
     for _, row in predicted_boiler_t_df.iterrows():
