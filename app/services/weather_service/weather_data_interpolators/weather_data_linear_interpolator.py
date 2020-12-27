@@ -14,13 +14,11 @@ class WeatherDataLinearInterpolator(WeatherDataInterpolator):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
 
-        self._time_tick = time_tick.TIME_TICK
-
     def interpolate_weather_data(self, weather_data: pd.DataFrame) -> pd.DataFrame:
         self._logger.debug("Requested weather data interpolating")
 
         weather_data[column_names.TIMESTAMP] = weather_data[column_names.TIMESTAMP].apply(
-            lambda datetime_: round_datetime(datetime_, self._time_tick.total_seconds())
+            lambda datetime_: round_datetime(datetime_, time_tick.TIME_TICK.total_seconds())
         )
         weather_data.drop_duplicates(column_names.TIMESTAMP, inplace=True, ignore_index=True)
         weather_data = self._interpolate_passes_of_weather_data(weather_data)
@@ -46,11 +44,11 @@ class WeatherDataLinearInterpolator(WeatherDataInterpolator):
             next_t = row[column_names.WEATHER_T]
 
             datetime_delta = next_datetime - previous_datetime
-            if datetime_delta > self._time_tick:
-                number_of_passes = int(datetime_delta // self._time_tick) - 1
+            if datetime_delta > time_tick.TIME_TICK:
+                number_of_passes = int(datetime_delta // time_tick.TIME_TICK) - 1
                 t_step = (next_t - previous_t) / number_of_passes
                 for pass_n in range(1, number_of_passes + 1):
-                    interpolated_datetime = previous_datetime + (self._time_tick * pass_n)
+                    interpolated_datetime = previous_datetime + (time_tick.TIME_TICK * pass_n)
                     interpolated_t = previous_t + (t_step * pass_n)
                     interpolated_values.append({
                         column_names.TIMESTAMP: interpolated_datetime,

@@ -12,6 +12,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
     def __init__(self, temp_graph_service=None, weather_service=None):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
+
         self._temp_graph_service = temp_graph_service
         self._weather_service = weather_service
 
@@ -52,5 +53,5 @@ class SimpleTempRequirementsService(TempRequirementsService):
         else:
             required_t_at_home_in = temp_graph[column_names.REQUIRED_T_AT_HOME_IN].max()
             self._logger.debug(f"Weather temp {weather_t} is not in temp graph. "
-                               f"Need temp by temp graph is{required_t_at_home_in}")
+                               f"Need temp by temp graph is {required_t_at_home_in}")
         return required_t_at_home_in
