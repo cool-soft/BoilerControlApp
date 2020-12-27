@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 from services.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
 
 
-class TempRequirementsContainer(containers.DeclarativeContainer):
+class SimpleTempRequirementsContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     temp_graph_service = providers.Dependency()

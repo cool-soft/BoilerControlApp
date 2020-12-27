@@ -6,7 +6,7 @@ from services.weather_service.weather_data_interpolators.weather_data_linear_int
 from services.weather_service.weather_data_parsers.soft_m_weather_parser import SoftMWeatherDataParser
 
 
-class SoftMWeatherContainer(containers.DeclarativeContainer):
+class OnlineWeatherContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     weather_data_parser = providers.Singleton(

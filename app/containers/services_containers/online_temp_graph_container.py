@@ -4,7 +4,7 @@ from services.temp_graph_service.online_soft_m_temp_graph_service import OnlineS
 from services.temp_graph_service.temp_graph_parsers.soft_m_temp_graph_parser import SoftMTempGraphParser
 
 
-class OnlineSoftMTempGraphContainer(containers.DeclarativeContainer):
+class OnlineTempGraphContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     temp_graph_parser = providers.Singleton(SoftMTempGraphParser)
