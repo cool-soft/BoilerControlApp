@@ -37,11 +37,11 @@ class WeatherDataLinearInterpolator(WeatherDataInterpolator):
 
             if previous_datetime is None:
                 previous_datetime = row[column_names.TIMESTAMP]
-                previous_t = row[column_names.WEATHER_T]
+                previous_t = row[column_names.WEATHER_TEMP]
                 continue
 
             next_datetime = row[column_names.TIMESTAMP]
-            next_t = row[column_names.WEATHER_T]
+            next_t = row[column_names.WEATHER_TEMP]
 
             datetime_delta = next_datetime - previous_datetime
             if datetime_delta > time_tick.TIME_TICK:
@@ -52,7 +52,7 @@ class WeatherDataLinearInterpolator(WeatherDataInterpolator):
                     interpolated_t = previous_t + (t_step * pass_n)
                     interpolated_values.append({
                         column_names.TIMESTAMP: interpolated_datetime,
-                        column_names.WEATHER_T: interpolated_t,
+                        column_names.WEATHER_TEMP: interpolated_t,
                     })
 
             previous_t = next_t

@@ -6,7 +6,7 @@ import pandas as pd
 from dependency_injector import resources
 
 
-class OptimizedTTableResource(resources.Resource):
+class TempCorrelationTable(resources.Resource):
 
     def init(self, optimized_temp_table_path) -> pd.DataFrame:
         logger = logging.getLogger(self.__class__.__name__)

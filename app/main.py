@@ -21,7 +21,7 @@ def wire(application_container):
 
 def init_resources(application_container):
     application_container.core.init_resources()
-    application_container.services.boiler_t_prediction.init_resources()
+    application_container.services.boiler_temp_prediction.init_resources()
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ from configs.app_config import GlobalAppConfig
 import column_names
 import time_tick
 from services.weather_service.online_soft_m_weather_service import OnlineSoftMWeatherService
-from services.boiler_t_predictor_service.simple_boiler_t_predictor_service import SimpleBoilerTPredictorService
+from services.boiler_temp_prediction_service.simple_boiler_temp_prediction_service import SimpleBoilerTempPredictionService
 import pandas as pd
 
 
@@ -30,23 +30,23 @@ if __name__ == '__main__':
         gettz(app_config.weather_forecast_provider.server_timezone))
     weather_forecast_provider.set_server_address(app_config.weather_forecast_provider.server_address)
 
-    boiler_t_predictor = SimpleBoilerTPredictorService()
-    boiler_t_predictor.set_optimized_t_table(optimized_t_table)
+    boiler_t_predictor = SimpleBoilerTempPredictionService()
+    boiler_t_predictor.set_temp_correlation_table(optimized_t_table)
     boiler_t_predictor.set_temp_requirements_service(temp_graph)
     boiler_t_predictor.set_homes_time_deltas(homes_time_deltas)
     boiler_t_predictor.set_weather_forecast_service(weather_forecast_provider)
 
     predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_t(min_date, max_date)
-    predicted_boiler_t_arr = predicted_boiler_t_df[column_names.BOILER].to_numpy()
+    predicted_boiler_t_arr = predicted_boiler_t_df[column_names.BOILER_OUT_TEMP].to_numpy()
 
     dates_arr = predicted_boiler_t_df[column_names.TIMESTAMP].to_list()
 
     weather_t_df = weather_forecast_provider.get_weather(min_date, max_date)
-    weather_t_arr = weather_t_df[column_names.WEATHER_T].to_numpy()
+    weather_t_arr = weather_t_df[column_names.WEATHER_TEMP].to_numpy()
     weather_t_arr = weather_t_arr[:len(predicted_boiler_t_arr)]
 
     for idx, row in predicted_boiler_t_df.iterrows():
-        print(row[column_names.TIMESTAMP], round(row[column_names.BOILER], 1))
+        print(row[column_names.TIMESTAMP], round(row[column_names.BOILER_OUT_TEMP], 1))
 
     plt.plot(dates_arr, predicted_boiler_t_arr, label="Predicted boiler t")
     plt.plot(dates_arr, weather_t_arr, label="Weather t")

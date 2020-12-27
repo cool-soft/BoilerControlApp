@@ -9,9 +9,9 @@ from fastapi.responses import JSONResponse
 import column_names
 from containers.core import Core
 from containers.services import Services
-from containers.services_containers.simple_boiler_t_prediction_container import SimpleBoilerTPredictionContainer
+from containers.services_containers.simple_boiler_temp_prediction_container import SimpleBoilerTempPredictionContainer
 from endpoints.dependencies import InputDatesRange
-from services.boiler_t_predictor_service.boiler_t_predictor_service import BoilerTPredictorService
+from services.boiler_temp_prediction_service.boiler_temp_prediction_service import BoilerTempPredictionService
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -21,8 +21,8 @@ api_router = APIRouter(prefix="/api/v1")
 def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
         timezone_name: Optional[str] = None,
-        boiler_t_predictor: BoilerTPredictorService = Depends(
-            Provide[Services.boiler_t_prediction.boiler_t_predictor_service]
+        boiler_t_predictor: BoilerTempPredictionService = Depends(
+            Provide[Services.boiler_temp_prediction.boiler_temp_prediction_service]
         ),
         datetime_processing_params=Depends(Provide[Core.config.datetime_processing])
 ):
@@ -52,7 +52,7 @@ def get_predicted_boiler_t(
         datetime_ = datetime_.astimezone(work_timezone)
         datetime_as_str = datetime_.strftime(response_datetime_pattern)
 
-        boiler_t = row[column_names.BOILER]
+        boiler_t = row[column_names.BOILER_OUT_TEMP]
         boiler_t = round(boiler_t, 1)
 
         predicted_boiler_t_ds.append((datetime_as_str, boiler_t))

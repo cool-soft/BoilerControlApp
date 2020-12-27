@@ -1,12 +1,12 @@
 services:
-  boiler_t_prediction:
-    home_t_dispersion_coefficient: 1
+  boiler_temp_prediction:
+    home_min_temp_coefficient: 1
     homes_deltas_path: ../storage/homes_time_delta.csv
-    optimized_t_table_path: ../storage/optimized_t_table.pickle
+    temp_correlation_table_path: ../storage/temp_correlation_table.pickle
   temp_graph_providing:
     server_address: https://lysva.agt.town/
     update_interval: 86400
-  weather_forecasting:
+  weather_information_providing:
     server_address: https://lysva.agt.town/
     server_timezone: Asia/Yekaterinburg
     update_interval: 600

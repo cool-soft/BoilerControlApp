@@ -22,7 +22,7 @@ def main():
                     start_datetime + (2 * time_tick.TIME_TICK),
                     start_datetime + (3 * time_tick.TIME_TICK),
                 ],
-                column_names.WEATHER_T: [
+                column_names.WEATHER_TEMP: [
                     10,
                     1,
                     -1,
@@ -32,8 +32,8 @@ def main():
             return fake_weather_info
 
     fake_temp_graph = pd.DataFrame({
-        column_names.WEATHER_T: [1, -1],
-        column_names.REQUIRED_T_AT_HOME_IN: [20, 30]
+        column_names.WEATHER_TEMP: [1, -1],
+        column_names.REQUIRED_TEMP_AT_HOME_IN: [20, 30]
     })
 
     temp_graph_service = SimpleTempGraphService()

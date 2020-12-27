@@ -24,7 +24,7 @@ class SoftMWeatherDataParser(WeatherDataParser):
         df = pd.read_json(weather_as_text)
         df.rename(
             columns={
-                column_names.SOFT_M_WEATHER_T: column_names.WEATHER_T
+                column_names.SOFT_M_WEATHER_TEMP: column_names.WEATHER_TEMP
             },
             inplace=True
         )

@@ -31,7 +31,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
 
         weather_df_len = len(weather_df)
         temp_requirements_arr = np.empty(shape=(weather_df_len,), dtype=np.float)
-        weather_t_arr = weather_df[column_names.WEATHER_T].to_numpy()
+        weather_t_arr = weather_df[column_names.WEATHER_TEMP].to_numpy()
         temp_graph = self._temp_graph_service.get_temp_graph()
         for i, weather_t in enumerate(weather_t_arr):
             required_temp = self._get_required_temp_at_home_in_by_temp_graph(weather_t, temp_graph)
@@ -40,18 +40,18 @@ class SimpleTempRequirementsService(TempRequirementsService):
         temp_requirements_dates_list = weather_df[column_names.TIMESTAMP].to_list()
         temp_requirements_df = pd.DataFrame({
             column_names.TIMESTAMP: temp_requirements_dates_list,
-            column_names.REQUIRED_T_AT_HOME_IN: temp_requirements_arr
+            column_names.REQUIRED_TEMP_AT_HOME_IN: temp_requirements_arr
         })
 
         return temp_requirements_df
 
     def _get_required_temp_at_home_in_by_temp_graph(self, weather_t, temp_graph):
-        available_t_condition = temp_graph[column_names.WEATHER_T] <= weather_t
+        available_t_condition = temp_graph[column_names.WEATHER_TEMP] <= weather_t
         available_t = temp_graph[available_t_condition]
         if not available_t.empty:
-            required_t_at_home_in = available_t[column_names.REQUIRED_T_AT_HOME_IN].min()
+            required_t_at_home_in = available_t[column_names.REQUIRED_TEMP_AT_HOME_IN].min()
         else:
-            required_t_at_home_in = temp_graph[column_names.REQUIRED_T_AT_HOME_IN].max()
+            required_t_at_home_in = temp_graph[column_names.REQUIRED_TEMP_AT_HOME_IN].max()
             self._logger.debug(f"Weather temp {weather_t} is not in temp graph. "
                                f"Need temp by temp graph is {required_t_at_home_in}")
         return required_t_at_home_in
