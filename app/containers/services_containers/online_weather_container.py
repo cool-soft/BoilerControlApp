@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 from services.weather_service.online_soft_m_weather_service import OnlineSoftMWeatherService
 from services.weather_service.weather_data_interpolators.weather_data_linear_interpolator import \
     WeatherDataLinearInterpolator
-from services.weather_service.weather_data_parsers.soft_m_weather_parser import SoftMWeatherDataParser
+from services.weather_service.weather_data_parsers.soft_m_weather_data_parser import SoftMWeatherDataParser
 
 
 class OnlineWeatherContainer(containers.DeclarativeContainer):

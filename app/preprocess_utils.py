@@ -5,8 +5,7 @@ import re
 
 def round_datetime(src_datetime, time_tick_in_seconds):
     src_timestamp = src_datetime.timestamp()
-    time_step_in_seconds = time_tick_in_seconds
-    rounded_timestamp = math.ceil(src_timestamp / time_step_in_seconds) * time_step_in_seconds
+    rounded_timestamp = math.ceil(src_timestamp / time_tick_in_seconds) * time_tick_in_seconds
     rounded_datetime = datetime.datetime.fromtimestamp(rounded_timestamp, tz=src_datetime.tzinfo)
     return rounded_datetime
 
