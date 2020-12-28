@@ -2,7 +2,7 @@ TIMESTAMP = "timestamp"
 TIME_DELTA = "time_delta"
 WEATHER_TEMP = "weather_temp"
 HOME_NAME = "home_name"
-BOILER_OUT_TEMP = "BOILER"
+TEMP_AT_BOILER_OUT = "BOILER"
 TEMP_AT_HOME_IN = "temp_at_home_in"
 TEMP_AT_HOME_OUT = "temp_at_home_out"
 

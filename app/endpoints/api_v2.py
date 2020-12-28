@@ -83,7 +83,7 @@ def get_predicted_boiler_t(
         datetime_ = row[column_names.TIMESTAMP]
         datetime_ = datetime_.astimezone(work_timezone)
 
-        boiler_t = row[column_names.BOILER_OUT_TEMP]
+        boiler_t = row[column_names.TEMP_AT_BOILER_OUT]
         boiler_t = round(boiler_t, 1)
 
         predicted_boiler_t_ds.append((datetime_, boiler_t))

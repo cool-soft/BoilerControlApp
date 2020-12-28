@@ -51,7 +51,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         if len(temp_requirements_df) < max_home_time_delta + 1:
             return pd.DataFrame({
                 column_names.TIMESTAMP: [],
-                column_names.BOILER_OUT_TEMP: []
+                column_names.TEMP_AT_BOILER_OUT: []
             })
 
         need_boiler_temp_df = self._get_need_boiler_temp_for_temp_requirements_df(temp_requirements_df)
@@ -74,7 +74,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         need_boiler_temp_dates_list = temp_requirements_dates_list[:need_boiler_temp_df_len]
         need_boiler_temp_df = pd.DataFrame({
             column_names.TIMESTAMP: need_boiler_temp_dates_list,
-            column_names.BOILER_OUT_TEMP: need_boiler_temp_arr
+            column_names.TEMP_AT_BOILER_OUT: need_boiler_temp_arr
         })
         return need_boiler_temp_df
 
@@ -88,7 +88,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
             need_home_temp *= self._home_min_temp_coefficient
             need_temp_condition = self._temp_correlation_table[home_name] >= need_home_temp
             need_boiler_temp_for_home = self._temp_correlation_table[
-                need_temp_condition][column_names.BOILER_OUT_TEMP].min()
+                need_temp_condition][column_names.TEMP_AT_BOILER_OUT].min()
             need_boiler_temp = max(need_boiler_temp, need_boiler_temp_for_home)
 
         return need_boiler_temp
