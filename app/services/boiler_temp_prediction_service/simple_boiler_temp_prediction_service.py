@@ -64,7 +64,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()
         need_boiler_temp_df_len = len(temp_requirements_df) - max_home_time_delta
 
-        temp_requirements_arr = temp_requirements_df[column_names.REQUIRED_TEMP_AT_HOME_IN].to_numpy()
+        temp_requirements_arr = temp_requirements_df[column_names.TEMP_AT_HOME_IN].to_numpy()
         need_boiler_temp_arr = np.empty(shape=(need_boiler_temp_df_len,), dtype=np.float)
         for time_moment_number in range(need_boiler_temp_df_len):
             need_boiler_temp = self._calc_need_boiler_temp_for_time_moment(time_moment_number, temp_requirements_arr)

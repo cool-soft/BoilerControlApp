@@ -17,8 +17,8 @@ class FakeTempGraphService(TempGraphService):
     def get_temp_graph(self):
         return pd.DataFrame({
             column_names.WEATHER_TEMP: [11, 10, 9, -9, -10, -11],
-            column_names.REQUIRED_TEMP_AT_HOME_IN: [12, 11, 10, 28, 30, 32],
-            column_names.REQUIRED_TEMP_AT_HOME_OUT: [10, 8, 6, 22, 24, 26]
+            column_names.TEMP_AT_HOME_IN: [12, 11, 10, 28, 30, 32],
+            column_names.TEMP_AT_HOME_OUT: [10, 8, 6, 22, 24, 26]
         })
 
 
@@ -56,10 +56,10 @@ if __name__ == '__main__':
 
     assert len(weather_df) == len(temp_requirements)
     assert column_names.TIMESTAMP in temp_requirements.columns
-    assert column_names.REQUIRED_TEMP_AT_HOME_IN in temp_requirements.columns
-    assert column_names.REQUIRED_TEMP_AT_HOME_OUT in temp_requirements.columns
+    assert column_names.TEMP_AT_HOME_IN in temp_requirements.columns
+    assert column_names.TEMP_AT_HOME_OUT in temp_requirements.columns
 
     weather_temp_list = weather_df[column_names.WEATHER_TEMP].to_list()
-    required_temp_at_home_in_list = temp_requirements[column_names.REQUIRED_TEMP_AT_HOME_IN].to_list()
+    required_temp_at_home_in_list = temp_requirements[column_names.TEMP_AT_HOME_IN].to_list()
     for weather_temp, required_tem_ath_home_in in zip(weather_temp_list, required_temp_at_home_in_list):
         print(f"Weather temp: {weather_temp}, Temp at home in: {required_tem_ath_home_in}")

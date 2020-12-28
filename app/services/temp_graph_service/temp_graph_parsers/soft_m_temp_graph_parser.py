@@ -19,8 +19,8 @@ class SoftMTempGraphParser(TempGraphParser):
         df.rename(
             columns={
                 column_names.SOFT_M_TEMP_GRAPH_WEATHER_TEMP: column_names.WEATHER_TEMP,
-                column_names.SOFT_M_TEMP_GRAPH_REQUIRED_TEMP_AT_HOME_IN: column_names.REQUIRED_TEMP_AT_HOME_IN,
-                column_names.SOFT_M_TEMP_GRAPH_REQUIRED_TEMP_AT_HOME_OUT: column_names.REQUIRED_TEMP_AT_HOME_OUT
+                column_names.SOFT_M_TEMP_GRAPH_TEMP_AT_HOME_IN: column_names.TEMP_AT_HOME_IN,
+                column_names.SOFT_M_TEMP_GRAPH_TEMP_AT_HOME_OUT: column_names.TEMP_AT_HOME_OUT
             },
             inplace=True)
         return df

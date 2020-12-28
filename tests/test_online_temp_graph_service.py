@@ -15,6 +15,6 @@ if __name__ == '__main__':
 
     assert isinstance(temp_graph, pd.DataFrame)
     assert column_names.WEATHER_TEMP in temp_graph.columns
-    assert column_names.REQUIRED_TEMP_AT_HOME_IN in temp_graph.columns
-    assert column_names.REQUIRED_TEMP_AT_HOME_OUT in temp_graph.columns
+    assert column_names.TEMP_AT_HOME_IN in temp_graph.columns
+    assert column_names.TEMP_AT_HOME_OUT in temp_graph.columns
     assert len(temp_graph) > 0
