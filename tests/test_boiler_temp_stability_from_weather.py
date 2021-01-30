@@ -43,8 +43,7 @@ class FakeWeatherService(WeatherService):
 def main():
     min_weather_temp = -40
     max_weather_temp = 20
-    weather_step = 1
-    k_2 = 0.97
+    weather_step = 5
 
     temp_graph_service_config = {
         "server_address": "https://lysva.agt.town/",
@@ -52,7 +51,7 @@ def main():
     }
 
     boiler_temp_prediction_service_config = {
-        "home_min_temp_coefficient": 1,
+        "home_min_temp_coefficient": 0.97,
         "homes_deltas_path": "../storage/homes_time_delta.csv",
         "temp_correlation_table_path": "../storage/temp_correlation_table.pickle"
     }
@@ -81,21 +80,15 @@ def main():
     boiler_temp_list, weather_temp_list = calc_boiler_temp(boiler_temp_prediction_service, end_datetime,
                                                            max_weather_temp, min_weather_temp, start_datetime,
                                                            weather_service, weather_step)
-    boiler_temp_arr1 = np.array(boiler_temp_list)
-    plt.plot(weather_temp_list, boiler_temp_list, label="К допуска: 1")
+    gradient = np.gradient(boiler_temp_list, weather_temp_list)
 
-    boiler_temp_prediction_service.set_home_min_temp_coefficient(k_2)
-    boiler_temp_list, weather_temp_list = calc_boiler_temp(boiler_temp_prediction_service, end_datetime,
-                                                           max_weather_temp, min_weather_temp, start_datetime,
-                                                           weather_service, weather_step)
-    boiler_temp_arr2 = np.array(boiler_temp_list)
-    plt.plot(weather_temp_list, boiler_temp_list, label=f"К допуска: {k_2}")
+    res_x, res_y = calc_mean_gradient(gradient, weather_temp_list)
+    for x, y in zip(res_x, res_y):
+        print(f"от {x[0]:3} до {x[1]:3}: {y:5.3}")
 
-    delta = np.abs(boiler_temp_arr1 - boiler_temp_arr2)
-    plt.plot(weather_temp_list, delta, label="Разница по модулю")
-
+    plt.plot(weather_temp_list, gradient, label="GRADIENT")
     plt.xlabel("Температура окр. среды")
-    plt.ylabel("Температура бойлера")
+    plt.ylabel("Градиент температуры бойлера")
 
     plt.grid()
     plt.legend()
@@ -106,14 +99,28 @@ def calc_boiler_temp(boiler_temp_prediction_service, end_datetime, max_weather_t
                      weather_service, weather_step):
     weather_temp_list = []
     boiler_temp_list = []
-    for i in range(min_weather_temp, max_weather_temp, weather_step):
-        weather_service.set_weather_temp_const(i)
+    current_temp = min_weather_temp
+    while current_temp <= max_weather_temp:
+        weather_service.set_weather_temp_const(current_temp)
         boiler_temp_df = boiler_temp_prediction_service.get_need_boiler_temp(start_datetime, end_datetime)
         boiler_temp = boiler_temp_df[column_names.TEMP_AT_BOILER_OUT].to_list()
 
-        weather_temp_list.append(i)
+        weather_temp_list.append(current_temp)
         boiler_temp_list.append(boiler_temp[0])
+
+        current_temp += weather_step
+
     return boiler_temp_list, weather_temp_list
+
+
+def calc_mean_gradient(gradient, x):
+    result_x = []
+    result_y = []
+    for i in range(len(gradient)-1):
+        result_x.append((x[i], x[i+1]))
+        result_y.append(np.mean((gradient[i], gradient[i+1])))
+
+    return result_x, result_y
 
 
 if __name__ == '__main__':
