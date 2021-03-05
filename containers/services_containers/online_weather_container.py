@@ -1,16 +1,17 @@
 from dependency_injector import containers, providers
 
 from services.weather_service.online_soft_m_weather_service import OnlineSoftMWeatherService
-from services.weather_service.weather_data_interpolators.weather_data_linear_interpolator import \
+from heating_system.weather_dataset_utils.weather_data_interpolators.weather_data_linear_interpolator import \
     WeatherDataLinearInterpolator
-from services.weather_service.weather_data_parsers.soft_m_weather_data_parser import SoftMWeatherDataParser
+from heating_system.weather_dataset_utils.weather_data_parsers.soft_m_json_weather_data_parser import \
+    SoftMJSONWeatherDataParser
 
 
 class OnlineWeatherContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     weather_data_parser = providers.Singleton(
-        SoftMWeatherDataParser,
+        SoftMJSONWeatherDataParser,
         weather_data_timezone_name=config.server_timezone
     )
 
