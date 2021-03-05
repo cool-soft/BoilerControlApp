@@ -3,8 +3,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from heating_system import column_names
-import time_tick
+from heating_system import column_names, time_tick
 from .boiler_temp_prediction_service import BoilerTempPredictionService
 
 

@@ -7,10 +7,9 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-import time_tick
 from containers.core import Core
 from containers.services import Services
-from heating_system import column_names
+from heating_system import column_names, time_tick
 from services.boiler_temp_prediction_service.boiler_temp_prediction_service import BoilerTempPredictionService
 
 api_router = APIRouter(prefix="/api/v2")
