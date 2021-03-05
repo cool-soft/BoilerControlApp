@@ -3,6 +3,4 @@
 
 *.pyc
 
-/storage/
-/logs/
-/cofigs/
+/dev_data/

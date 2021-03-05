@@ -1,3 +1,4 @@
+import argparse
 import logging
 
 from dependency_injector import providers
@@ -25,10 +26,12 @@ def init_resources(application_container):
 
 
 if __name__ == '__main__':
-    CONFIG_PATH = "configs/config.yaml"
+    parser = argparse.ArgumentParser(description='Control boiler')
+    parser.add_argument('--config', default="/etc/boiler_config.yaml", help='path to config file')
+    args = parser.parse_args()
 
     application = Application()
-    application.config.from_yaml(CONFIG_PATH)
+    application.config.from_yaml(args.config)
 
     init_resources(application)
 
