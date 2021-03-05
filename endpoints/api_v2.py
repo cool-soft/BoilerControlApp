@@ -11,7 +11,6 @@ import time_tick
 from containers.core import Core
 from containers.services import Services
 import column_names
-from containers.services_containers.simple_boiler_temp_prediction_container import SimpleBoilerTempPredictionContainer
 from services.boiler_temp_prediction_service.boiler_temp_prediction_service import BoilerTempPredictionService
 
 api_router = APIRouter(prefix="/api/v2")
