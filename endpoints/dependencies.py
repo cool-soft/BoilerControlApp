@@ -7,7 +7,7 @@ from fastapi import Depends
 
 from heating_system import time_tick
 from containers.core import Core
-from preprocess_utils import parse_datetime
+from heating_system.preprocess_utils import parse_datetime
 
 
 class InputDatesRange:
