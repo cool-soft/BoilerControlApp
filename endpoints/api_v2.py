@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 import time_tick
 from containers.core import Core
 from containers.services import Services
-import column_names
+from heating_system import column_names
 from services.boiler_temp_prediction_service.boiler_temp_prediction_service import BoilerTempPredictionService
 
 api_router = APIRouter(prefix="/api/v2")
@@ -82,7 +82,7 @@ def get_predicted_boiler_t(
         datetime_ = row[column_names.TIMESTAMP]
         datetime_ = datetime_.astimezone(work_timezone)
 
-        boiler_t = row[column_names.TEMP_AT_BOILER_OUT]
+        boiler_t = row[column_names.BOILER_OUT_TEMP]
         boiler_t = round(boiler_t, 1)
 
         predicted_boiler_t_ds.append((datetime_, boiler_t))

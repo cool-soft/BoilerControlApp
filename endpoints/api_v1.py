@@ -6,7 +6,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-import column_names
+from heating_system import column_names
 from containers.core import Core
 from containers.services import Services
 from endpoints.dependencies import InputDatesRange
@@ -51,7 +51,7 @@ def get_predicted_boiler_t(
         datetime_ = datetime_.astimezone(work_timezone)
         datetime_as_str = datetime_.strftime(response_datetime_pattern)
 
-        boiler_t = row[column_names.TEMP_AT_BOILER_OUT]
+        boiler_t = row[column_names.BOILER_OUT_TEMP]
         boiler_t = round(boiler_t, 1)
 
         predicted_boiler_t_ds.append((datetime_as_str, boiler_t))

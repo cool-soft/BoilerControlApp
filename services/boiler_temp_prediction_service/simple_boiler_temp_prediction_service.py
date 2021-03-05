@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-import column_names
+from heating_system import column_names
 import time_tick
 from .boiler_temp_prediction_service import BoilerTempPredictionService
 
@@ -51,7 +51,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         if len(temp_requirements_df) < max_home_time_delta + 1:
             return pd.DataFrame({
                 column_names.TIMESTAMP: [],
-                column_names.TEMP_AT_BOILER_OUT: []
+                column_names.BOILER_OUT_TEMP: []
             })
 
         need_boiler_temp_df = self._get_need_boiler_temp_for_temp_requirements_df(temp_requirements_df)
@@ -64,7 +64,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()
         need_boiler_temp_df_len = len(temp_requirements_df) - max_home_time_delta
 
-        temp_requirements_arr = temp_requirements_df[column_names.TEMP_AT_HOME_IN].to_numpy()
+        temp_requirements_arr = temp_requirements_df[column_names.FORWARD_PIPE_TEMP].to_numpy()
         need_boiler_temp_arr = np.empty(shape=(need_boiler_temp_df_len,), dtype=np.float)
         for time_moment_number in range(need_boiler_temp_df_len):
             need_boiler_temp = self._calc_need_boiler_temp_for_time_moment(time_moment_number, temp_requirements_arr)
@@ -74,7 +74,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         need_boiler_temp_dates_list = temp_requirements_dates_list[:need_boiler_temp_df_len]
         need_boiler_temp_df = pd.DataFrame({
             column_names.TIMESTAMP: need_boiler_temp_dates_list,
-            column_names.TEMP_AT_BOILER_OUT: need_boiler_temp_arr
+            column_names.BOILER_OUT_TEMP: need_boiler_temp_arr
         })
         return need_boiler_temp_df
 
@@ -88,7 +88,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
             need_home_temp *= self._home_min_temp_coefficient
             need_temp_condition = self._temp_correlation_table[home_name] >= need_home_temp
             need_boiler_temp_for_home = self._temp_correlation_table[
-                need_temp_condition][column_names.TEMP_AT_BOILER_OUT].min()
+                need_temp_condition][column_names.BOILER_OUT_TEMP].min()
             need_boiler_temp = max(need_boiler_temp, need_boiler_temp_for_home)
 
         return need_boiler_temp
