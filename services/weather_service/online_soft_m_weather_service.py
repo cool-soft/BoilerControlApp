@@ -6,8 +6,9 @@ import requests
 from dateutil.tz import tzlocal
 
 from heating_system import column_names
-from .weather_data_interpolators.weather_data_interpolator import WeatherDataInterpolator
-from .weather_data_parsers.weather_data_parser import WeatherDataParser
+from heating_system.weather_dataset_utils.weather_data_interpolators.weather_data_interpolator import \
+    WeatherDataInterpolator
+from heating_system.weather_dataset_utils.weather_data_parsers.weather_data_parser import WeatherDataParser
 from .weather_service import WeatherService
 
 

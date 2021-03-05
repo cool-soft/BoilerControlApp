@@ -25,7 +25,7 @@ def init_resources(application_container):
 
 
 if __name__ == '__main__':
-    CONFIG_PATH = "../boiler_control_configs/config.yaml"
+    CONFIG_PATH = "configs/config.yaml"
 
     application = Application()
     application.config.from_yaml(CONFIG_PATH)

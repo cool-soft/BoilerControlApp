@@ -1,4 +1,3 @@
-import fastapi
 from dependency_injector import containers, providers
 # noinspection SpellCheckingInspection
 from uvicorn import Config as UvicornConfig, Server as UvicornServer
