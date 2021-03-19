@@ -9,7 +9,8 @@ from fastapi.responses import JSONResponse
 
 from containers.core import Core
 from containers.services import Services
-from heating_system import column_names, time_tick
+from boiler_temp_prediction.constants import column_names
+import time_tick
 from boiler_temp_prediction.boiler_temp_prediction_service.boiler_temp_prediction_service \
     import BoilerTempPredictionService
 

@@ -5,7 +5,7 @@ from dateutil.tz import gettz
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 
-from heating_system import time_tick
+import time_tick
 from containers.core import Core
 from heating_system.preprocess_utils import parse_datetime
 

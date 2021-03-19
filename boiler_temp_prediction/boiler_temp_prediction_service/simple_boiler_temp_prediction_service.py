@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 
 import temp_requirements.constants.column_names
-from heating_system import column_names, time_tick
+from boiler_temp_prediction.constants import column_names
+import time_tick
 from boiler_temp_prediction.boiler_temp_prediction_service.boiler_temp_prediction_service \
     import BoilerTempPredictionService
 

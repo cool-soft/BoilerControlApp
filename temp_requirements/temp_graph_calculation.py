@@ -2,7 +2,7 @@ import logging
 
 import pandas as pd
 
-from heating_system import column_names
+from temp_requirements.constants import column_names
 from heating_system.preprocess_utils import arithmetic_round
 
 
