@@ -1,9 +1,6 @@
 [submodule "tests"]
 	path = tests
 	url = https://github.com/user11336/BoilerControlAppTests.git
-[submodule "heating_system"]
-	path = heating_system
-	url = https://github.com/user11336/heating_system.git
 [submodule "weather_data"]
 	path = weather_data
 	url = https://github.com/user11336/weather_data.git
