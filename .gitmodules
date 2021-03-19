@@ -7,3 +7,6 @@
 [submodule "weather_data"]
 	path = weather_data
 	url = https://github.com/user11336/weather_data.git
+[submodule "parsing_utils"]
+	path = parsing_utils
+	url = https://github.com/user11336/parsing_utils.git
