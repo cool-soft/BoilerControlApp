@@ -1,9 +1,9 @@
 from dependency_injector import containers, providers
 
-from heating_system.weather_data.providers.online_soft_m_weather_forecast_provider import OnlineSoftMWeatherForecastProvider
-from heating_system.weather_data.interpolators.weather_data_linear_interpolator import \
+from weather_data.providers.online_soft_m_weather_forecast_provider import OnlineSoftMWeatherForecastProvider
+from weather_data.interpolators.weather_data_linear_interpolator import \
     WeatherDataLinearInterpolator
-from heating_system.weather_data.parsers.soft_m_json_weather_data_parser import \
+from weather_data.parsers.soft_m_json_weather_data_parser import \
     SoftMJSONWeatherDataParser
 
 
