@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 
 from temp_requirements.constants import column_names
-from heating_system.preprocess_utils import arithmetic_round
+from temp_requirements.utils import arithmetic_round
 from .temp_requirements_service import TempRequirementsService
 
 
