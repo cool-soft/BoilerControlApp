@@ -41,7 +41,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         logging.debug(f"Set home min temp coefficient to {min_temp_coefficient}")
         self._home_min_temp_coefficient = min_temp_coefficient
 
-    def get_need_boiler_temp(self, start_datetime, end_datetime):
+    def get_need_boiler_temp(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp):
         self._logger.debug(f"Requested predicted boiler t from {start_datetime} to {end_datetime}")
 
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()

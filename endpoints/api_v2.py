@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 from dateutil.tz import gettz
+import pandas as pd
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
@@ -67,14 +68,18 @@ def get_predicted_boiler_t(
     work_timezone = gettz(timezone_name)
 
     if start_datetime is None:
-        start_datetime = datetime.now(tz=work_timezone)
+        start_datetime = pd.Timestamp.now(tz=work_timezone)
+    else:
+        start_datetime = pd.Timestamp(start_datetime)
     if start_datetime.tzname() is None:
-        start_datetime = start_datetime.astimezone(work_timezone)
+        start_datetime = start_datetime.replace(tzinfo=work_timezone)
 
     if end_datetime is None:
         end_datetime = start_datetime + time_tick.TIME_TICK
+    else:
+        end_datetime = pd.Timestamp(end_datetime)
     if end_datetime.tzname() is None:
-        end_datetime = end_datetime.astimezone(work_timezone)
+        end_datetime = end_datetime.replace(tzinfo=work_timezone)
 
     predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_temp(start_datetime, end_datetime)
 

@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+import pandas as pd
 from dateutil.tz import gettz
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends

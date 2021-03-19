@@ -1,4 +1,4 @@
-from datetime import datetime
+import pandas as pd
 from typing import Optional
 
 from dateutil.tz import gettz
@@ -27,11 +27,15 @@ class InputDatesRange:
         request_datetime_patterns = datetime_processing_params.get("request_patterns")
 
         if start_date is None:
-            self.start_date = datetime.now(tz=work_timezone)
+            self.start_date = pd.Timestamp.now(tz=work_timezone)
         else:
-            self.start_date = parse_datetime(start_date, request_datetime_patterns, timezone=work_timezone)
+            self.start_date = pd.Timestamp(
+                parse_datetime(start_date, request_datetime_patterns, timezone=work_timezone)
+            )
 
         if end_date is None:
             self.end_date = self.start_date + time_tick.TIME_TICK
         else:
-            self.end_date = parse_datetime(end_date, request_datetime_patterns, timezone=work_timezone)
+            self.end_date = pd.Timestamp(
+                parse_datetime(end_date, request_datetime_patterns, timezone=work_timezone)
+            )
