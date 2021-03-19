@@ -1,9 +1,9 @@
 from dependency_injector import containers, providers
 
-from heating_system.weather_data.weather_service.online_soft_m_weather_service import OnlineSoftMWeatherService
-from heating_system.weather_data.weather_data_interpolators.weather_data_linear_interpolator import \
+from heating_system.weather_data.providers.online_soft_m_weather_forecast_provider import OnlineSoftMWeatherForecastProvider
+from heating_system.weather_data.interpolators.weather_data_linear_interpolator import \
     WeatherDataLinearInterpolator
-from heating_system.weather_data.weather_data_parsers.soft_m_json_weather_data_parser import \
+from heating_system.weather_data.parsers.soft_m_json_weather_data_parser import \
     SoftMJSONWeatherDataParser
 
 
@@ -18,7 +18,7 @@ class OnlineWeatherContainer(containers.DeclarativeContainer):
     weather_data_interpolator = providers.Singleton(WeatherDataLinearInterpolator)
 
     weather_service = providers.Singleton(
-        OnlineSoftMWeatherService,
+        OnlineSoftMWeatherForecastProvider,
         server_address=config.server_address,
         update_interval=config.update_interval,
         weather_data_parser=weather_data_parser,
