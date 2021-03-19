@@ -3,6 +3,7 @@ import logging
 import numpy as np
 import pandas as pd
 
+import heating_system.temp_requirements_utils.constants.column_names
 from heating_system import column_names, time_tick
 from .boiler_temp_prediction_service import BoilerTempPredictionService
 
@@ -63,7 +64,8 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()
         need_boiler_temp_df_len = len(temp_requirements_df) - max_home_time_delta
 
-        temp_requirements_arr = temp_requirements_df[column_names.FORWARD_PIPE_TEMP].to_numpy()
+        temp_requirements_arr = temp_requirements_df[
+            heating_system.temp_requirements_utils.constants.column_names.FORWARD_PIPE_TEMP].to_numpy()
         need_boiler_temp_arr = np.empty(shape=(need_boiler_temp_df_len,), dtype=np.float)
         for time_moment_number in range(need_boiler_temp_df_len):
             need_boiler_temp = self._calc_need_boiler_temp_for_time_moment(time_moment_number, temp_requirements_arr)
