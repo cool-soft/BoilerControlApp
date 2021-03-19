@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 from dateutil.tz import tzlocal
 
-from heating_system.temp_requirements_utils.temp_graph_parsers.temp_graph_parser import TempGraphParser
+from temp_requirements.temp_graph_parsers.temp_graph_parser import TempGraphParser
 from .temp_graph_service import TempGraphService
 
 

@@ -10,7 +10,8 @@ from heating_system import column_names
 from containers.core import Core
 from containers.services import Services
 from endpoints.dependencies import InputDatesRange
-from services.boiler_temp_prediction_service.boiler_temp_prediction_service import BoilerTempPredictionService
+from boiler_temp_prediction.boiler_temp_prediction_service.boiler_temp_prediction_service \
+    import BoilerTempPredictionService
 
 api_router = APIRouter(prefix="/api/v1")
 

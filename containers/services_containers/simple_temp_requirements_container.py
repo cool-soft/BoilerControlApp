@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from services.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
+from temp_requirements.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
 
 
 class SimpleTempRequirementsContainer(containers.DeclarativeContainer):

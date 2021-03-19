@@ -2,7 +2,7 @@ from dependency_injector import containers, providers
 
 from resources.home_time_deltas_resource import HomeTimeDeltasResource
 from resources.optimized_t_table_resource import TempCorrelationTable
-from services.boiler_temp_prediction_service.simple_boiler_temp_prediction_service import \
+from boiler_temp_prediction.boiler_temp_prediction_service.simple_boiler_temp_prediction_service import \
     SimpleBoilerTempPredictionService
 
 
