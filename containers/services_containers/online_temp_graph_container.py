@@ -1,6 +1,6 @@
 from dependency_injector import containers, providers
 
-from temp_requirements.temp_graph_service.online_soft_m_temp_graph_service import OnlineSoftMTempGraphService
+from temp_requirements.temp_graph_providers.online_soft_m_temp_graph_provider import OnlineSoftMTempGraphProvider
 from temp_requirements.temp_graph_parsers.soft_m_temp_graph_parser import SoftMTempGraphParser
 
 
@@ -10,7 +10,7 @@ class OnlineTempGraphContainer(containers.DeclarativeContainer):
     temp_graph_parser = providers.Singleton(SoftMTempGraphParser)
 
     temp_graph_service = providers.Singleton(
-        OnlineSoftMTempGraphService,
+        OnlineSoftMTempGraphProvider,
         server_address=config.server_address,
         update_interval=config.update_interval,
         temp_graph_parser=temp_graph_parser

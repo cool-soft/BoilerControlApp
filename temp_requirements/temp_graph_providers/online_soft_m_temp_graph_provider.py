@@ -6,10 +6,10 @@ import requests
 from dateutil.tz import tzlocal
 
 from temp_requirements.temp_graph_parsers.temp_graph_parser import TempGraphParser
-from .temp_graph_service import TempGraphService
+from .temp_graph_provider import TempGraphProvider
 
 
-class OnlineSoftMTempGraphService(TempGraphService):
+class OnlineSoftMTempGraphProvider(TempGraphProvider):
 
     def __init__(self, server_address=None, update_interval=24 * 3600, temp_graph_parser: TempGraphParser = None):
         self._logger = logging.getLogger(self.__class__.__name__)

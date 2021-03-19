@@ -1,9 +1,9 @@
 import logging
 
-from .temp_graph_service import TempGraphService
+from .temp_graph_provider import TempGraphProvider
 
 
-class SimpleTempGraphService(TempGraphService):
+class SimpleTempGraphProvider(TempGraphProvider):
 
     def __init__(self, temp_graph=None):
         self._logger = logging.getLogger(self.__class__.__name__)
