@@ -1,12 +1,13 @@
 from dependency_injector import containers, providers
 
+from boiler_temp_prediction.boiler_temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
 from resources.home_time_deltas_resource import HomeTimeDeltasResource
 from resources.optimized_t_table_resource import TempCorrelationTable
-from boiler_temp_prediction.boiler_temp_prediction_service.simple_boiler_temp_prediction_service import \
-    SimpleBoilerTempPredictionService
+from services.boiler_temp_prediction_service.corr_table_boiler_temp_prediction_service import \
+    CorrTableBoilerTempPredictionService
 
 
-class SimpleBoilerTempPredictionContainer(containers.DeclarativeContainer):
+class CorrTableBoilerTempPredictionContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     temp_requirements_service = providers.Dependency()
@@ -21,10 +22,15 @@ class SimpleBoilerTempPredictionContainer(containers.DeclarativeContainer):
         config.homes_deltas_path
     )
 
-    boiler_temp_prediction_service = providers.Singleton(
-        SimpleBoilerTempPredictionService,
+    corr_table_temp_predictor = providers.Singleton(
+        CorrTableTempPredictor,
         temp_correlation_table=temp_correlation_table,
         home_time_deltas=homes_time_deltas,
-        temp_requirements_service=temp_requirements_service,
         home_min_temp_coefficient=config.home_min_temp_coefficient
+    )
+
+    boiler_temp_prediction_service = providers.Singleton(
+        CorrTableBoilerTempPredictionService,
+        temp_predictor=corr_table_temp_predictor,
+        temp_requirements_service=temp_requirements_service
     )

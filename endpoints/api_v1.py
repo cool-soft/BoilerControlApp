@@ -6,7 +6,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from boiler_temp_prediction.boiler_temp_prediction_service.boiler_temp_prediction_service \
+from services.boiler_temp_prediction_service.boiler_temp_prediction_service \
     import BoilerTempPredictionService
 from boiler_temp_prediction.constants import column_names
 from containers.core import Core

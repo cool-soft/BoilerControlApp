@@ -12,7 +12,7 @@ from containers.core import Core
 from containers.services import Services
 from boiler_temp_prediction.constants import column_names
 import time_tick
-from boiler_temp_prediction.boiler_temp_prediction_service.boiler_temp_prediction_service \
+from services.boiler_temp_prediction_service.boiler_temp_prediction_service \
     import BoilerTempPredictionService
 
 api_router = APIRouter(prefix="/api/v2")
