@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-import temp_requirements.constants.column_names
+import temp_graph.constants.column_names
 from boiler_temp_prediction.constants import column_names
 import time_tick
 from boiler_temp_prediction.boiler_temp_prediction_service.boiler_temp_prediction_service \
@@ -67,7 +67,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
         need_boiler_temp_df_len = len(temp_requirements_df) - max_home_time_delta
 
         temp_requirements_arr = temp_requirements_df[
-            temp_requirements.constants.column_names.FORWARD_PIPE_TEMP].to_numpy()
+            temp_graph.constants.column_names.FORWARD_PIPE_TEMP].to_numpy()
         # noinspection PyUnresolvedReferences
         need_boiler_temp_arr = np.empty(shape=(need_boiler_temp_df_len,), dtype=np.float)
         for time_moment_number in range(need_boiler_temp_df_len):

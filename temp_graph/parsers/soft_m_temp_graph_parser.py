@@ -2,7 +2,7 @@ import logging
 
 import pandas as pd
 
-from temp_requirements.constants import column_names
+from temp_graph.constants import column_names
 from .temp_graph_parser import TempGraphParser
 
 
