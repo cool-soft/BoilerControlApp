@@ -1,13 +1,12 @@
 from dependency_injector import containers, providers
 
+from services.weather_service.weather_forecast_service_with_cache import WeatherForecastServiceWithCache
+from weather_data.interpolators.weather_data_linear_interpolator import WeatherDataLinearInterpolator
+from weather_data.parsers.soft_m_json_weather_data_parser import SoftMJSONWeatherDataParser
 from weather_data.providers.online_soft_m_weather_forecast_provider import OnlineSoftMWeatherForecastProvider
-from weather_data.interpolators.weather_data_linear_interpolator import \
-    WeatherDataLinearInterpolator
-from weather_data.parsers.soft_m_json_weather_data_parser import \
-    SoftMJSONWeatherDataParser
 
 
-class OnlineWeatherContainer(containers.DeclarativeContainer):
+class OnlinerWeatherForecastContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     weather_data_parser = providers.Singleton(
@@ -17,10 +16,14 @@ class OnlineWeatherContainer(containers.DeclarativeContainer):
 
     weather_data_interpolator = providers.Singleton(WeatherDataLinearInterpolator)
 
-    weather_service = providers.Singleton(
+    weather_forecast_provider = providers.Singleton(
         OnlineSoftMWeatherForecastProvider,
-        server_address=config.server_address,
-        update_interval=config.update_interval,
         weather_data_parser=weather_data_parser,
         weather_data_interpolator=weather_data_interpolator
+    )
+
+    weather_forecast_service = providers.Singleton(
+        WeatherForecastServiceWithCache,
+        update_interval=config.update_interval,
+        weather_forecast_provider=weather_forecast_provider
     )

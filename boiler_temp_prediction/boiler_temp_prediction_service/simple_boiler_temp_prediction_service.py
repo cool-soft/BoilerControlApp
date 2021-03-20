@@ -68,6 +68,7 @@ class SimpleBoilerTempPredictionService(BoilerTempPredictionService):
 
         temp_requirements_arr = temp_requirements_df[
             temp_requirements.constants.column_names.FORWARD_PIPE_TEMP].to_numpy()
+        # noinspection PyUnresolvedReferences
         need_boiler_temp_arr = np.empty(shape=(need_boiler_temp_df_len,), dtype=np.float)
         for time_moment_number in range(need_boiler_temp_df_len):
             need_boiler_temp = self._calc_need_boiler_temp_for_time_moment(time_moment_number, temp_requirements_arr)

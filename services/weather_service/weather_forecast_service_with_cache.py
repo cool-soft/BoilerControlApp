@@ -5,10 +5,10 @@ from dateutil.tz import tzlocal
 
 from weather_data.constants import column_names
 from weather_data.providers.weather_provider import WeatherProvider
-from .weather_forecast_service import WeatherForecastService
+from .weather_service import WeatherService
 
 
-class WeatherForecastServiceWithCache(WeatherForecastService):
+class WeatherForecastServiceWithCache(WeatherService):
 
     def __init__(self,
                  weather_forecast_provider: WeatherProvider = None,
@@ -29,7 +29,7 @@ class WeatherForecastServiceWithCache(WeatherForecastService):
         self._logger.debug("Weather provider is set")
         self._weather_forecast_provider = weather_provider
 
-    def get_weather_forecast(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp) -> pd.DataFrame:
+    def get_weather(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp) -> pd.DataFrame:
         self._logger.debug(f"Requested weather forecast from {start_datetime} to {end_datetime}")
 
         if self._is_datetime_not_in_cache(end_datetime) or \

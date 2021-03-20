@@ -11,7 +11,6 @@ class OnlineTempGraphContainer(containers.DeclarativeContainer):
 
     temp_graph_service = providers.Singleton(
         OnlineSoftMTempGraphProvider,
-        server_address=config.server_address,
         update_interval=config.update_interval,
         temp_graph_parser=temp_graph_parser
     )

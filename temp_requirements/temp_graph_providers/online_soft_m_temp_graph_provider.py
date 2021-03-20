@@ -11,14 +11,17 @@ from .temp_graph_provider import TempGraphProvider
 
 class OnlineSoftMTempGraphProvider(TempGraphProvider):
 
-    def __init__(self, server_address=None, update_interval=24 * 3600, temp_graph_parser: TempGraphParser = None):
+    def __init__(self,
+                 server_address="https://lysva.agt.town/",
+                 update_interval=24 * 3600,
+                 temp_graph_parser: TempGraphParser = None):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
 
         self._temp_graph_server_address = server_address
-        self._temp_graph_update_interval = update_interval
         self._temp_graph_parser = temp_graph_parser
 
+        self._temp_graph_update_interval = update_interval
         self._temp_graph_last_update = None
         self._temp_graph_cache = pd.DataFrame()
 
