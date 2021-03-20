@@ -2,8 +2,8 @@ import logging
 
 import pandas as pd
 
-from temp_requirements.constants import column_names
-from temp_requirements.utils import arithmetic_round
+from constants import column_names
+from temp_requirements_calculators.utils import arithmetic_round
 
 
 class TempGraphRequirementsCalculator:

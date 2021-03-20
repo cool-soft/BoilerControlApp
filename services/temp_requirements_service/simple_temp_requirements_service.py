@@ -2,8 +2,7 @@ import logging
 
 import pandas as pd
 
-# TODO: TIMESTAMP COLUMN
-from temp_graph.constants import column_names
+from constants import column_names
 from .temp_requirements_service import TempRequirementsService
 from ..temp_graph_service.temp_graph_service import TempGraphService
 from ..weather_service.weather_service import WeatherService
@@ -49,14 +48,14 @@ class SimpleTempRequirementsService(TempRequirementsService):
             required_temp = self._temp_graph_requirements_calculator.get_temp_requirements_for_weather_temp(
                 weather_temp
             )
-            required_temp_at_home_in_list.append(required_temp[column_names.FORWARD_PIPE_TEMP])
-            required_temp_at_home_out_list.append(required_temp[column_names.BACKWARD_PIPE_TEMP])
+            required_temp_at_home_in_list.append(required_temp[column_names.FORWARD_PIPE_COOLANT_TEMP])
+            required_temp_at_home_out_list.append(required_temp[column_names.BACKWARD_PIPE_COOLANT_TEMP])
 
         temp_requirements_dates_list = weather_df[column_names.TIMESTAMP].to_list()
         temp_requirements_df = pd.DataFrame({
             column_names.TIMESTAMP: temp_requirements_dates_list,
-            column_names.FORWARD_PIPE_TEMP: required_temp_at_home_in_list,
-            column_names.BACKWARD_PIPE_TEMP: required_temp_at_home_out_list
+            column_names.FORWARD_PIPE_COOLANT_TEMP: required_temp_at_home_in_list,
+            column_names.BACKWARD_PIPE_COOLANT_TEMP: required_temp_at_home_out_list
         })
 
         return temp_requirements_df

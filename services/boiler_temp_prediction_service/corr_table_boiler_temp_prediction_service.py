@@ -2,11 +2,11 @@ import logging
 
 import pandas as pd
 
-import time_tick
+import constants.column_names
+from constants import time_tick
 from services.boiler_temp_prediction_service.boiler_temp_prediction_service \
     import BoilerTempPredictionService
-from boiler_temp_prediction.boiler_temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
-from boiler_temp_prediction.constants import column_names
+from boiler_temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
 from services.temp_requirements_service.temp_requirements_service import TempRequirementsService
 
 
@@ -33,7 +33,7 @@ class CorrTableBoilerTempPredictionService(BoilerTempPredictionService):
         self._logger.debug(f"Requested predicted boiler t from {start_datetime} to {end_datetime}")
 
         homes_time_deltas = self._temp_predictor.get_homes_time_deltas()
-        max_home_time_delta = homes_time_deltas[column_names.TIME_DELTA].max()
+        max_home_time_delta = homes_time_deltas[constants.column_names.TIME_DELTA].max()
         temp_requirements_end_datetime = end_datetime + (max_home_time_delta * time_tick.TIME_TICK)
 
         temp_requirements_df = self._temp_requirements_service.get_required_temp(

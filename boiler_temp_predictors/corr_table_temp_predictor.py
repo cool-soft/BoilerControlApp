@@ -1,8 +1,8 @@
 import logging
+
 import pandas as pd
 
-from boiler_temp_prediction.constants import column_names
-from temp_graph.constants import column_names as temp_graph_column_names
+from constants import column_names
 
 
 class CorrTableTempPredictor:
@@ -39,7 +39,7 @@ class CorrTableTempPredictor:
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()
         boiler_temp_count = len(temp_requirements_df) - max_home_time_delta
 
-        temp_requirements_arr = temp_requirements_df[temp_graph_column_names.FORWARD_PIPE_TEMP].to_numpy()
+        temp_requirements_arr = temp_requirements_df[column_names.FORWARD_PIPE_COOLANT_TEMP].to_numpy()
         boiler_temp_list = []
         for time_moment_number in range(boiler_temp_count):
             need_boiler_temp = self._calc_boiler_temp_for_time_moment(time_moment_number, temp_requirements_arr)
@@ -49,7 +49,7 @@ class CorrTableTempPredictor:
         boiler_temp_dates_list = temp_requirements_dates_list[:boiler_temp_count]
         need_boiler_temp_df = pd.DataFrame({
             column_names.TIMESTAMP: boiler_temp_dates_list,
-            column_names.BOILER_OUT_TEMP: boiler_temp_list
+            column_names.TEMP_PREDICTION_BOILER_OUT_TEMP: boiler_temp_list
         })
         return need_boiler_temp_df
 
@@ -63,7 +63,7 @@ class CorrTableTempPredictor:
             need_home_temp *= self._home_min_temp_coefficient
             need_temp_condition = self._temp_correlation_table[home_name] >= need_home_temp
             need_boiler_temp_for_home = self._temp_correlation_table[
-                need_temp_condition][column_names.BOILER_OUT_TEMP].min()
+                need_temp_condition][column_names.TEMP_PREDICTION_BOILER_OUT_TEMP].min()
             need_boiler_temp = max(need_boiler_temp, need_boiler_temp_for_home)
 
         return need_boiler_temp
