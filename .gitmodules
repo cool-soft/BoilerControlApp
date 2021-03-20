@@ -7,3 +7,6 @@
 [submodule "parsing_utils"]
 	path = parsing_utils
 	url = https://github.com/user11336/parsing_utils.git
+[submodule "constants"]
+	path = constants
+	url = https://github.com/user11336/BoilerConstants.git
