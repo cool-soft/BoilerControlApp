@@ -38,6 +38,13 @@ class CorrTableTempPredictor:
         boiler_temp_count = len(temp_requirements_df) - max_home_time_delta
 
         temp_requirements_arr = temp_requirements_df[column_names.FORWARD_PIPE_COOLANT_TEMP].to_numpy()
+
+        if len(temp_requirements_arr) < max_home_time_delta + 1:
+            return pd.DataFrame({
+                column_names.TIMESTAMP: [],
+                column_names.FORWARD_PIPE_COOLANT_TEMP: []
+            })
+
         boiler_temp_list = []
         for time_moment_number in range(boiler_temp_count):
             need_boiler_temp = self._calc_boiler_temp_for_time_moment(time_moment_number, temp_requirements_arr)
