@@ -19,8 +19,6 @@ class TempGraphRequirementsCalculator:
         self._temp_graph = temp_graph
 
     def get_temp_requirements_for_weather_temp(self, weather_temp):
-        self._logger.debug(f"Requested temp requirements for weather temp {weather_temp}")
-
         weather_temp = arithmetic_round(weather_temp)
         available_temp = self._temp_graph[self._temp_graph[column_names.WEATHER_TEMP] <= weather_temp]
         if not available_temp.empty:

@@ -1,9 +1,7 @@
 import logging
-from datetime import datetime
 from typing import Optional
 
 from dateutil.tz import gettz
-import pandas as pd
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
@@ -11,7 +9,7 @@ from fastapi.responses import JSONResponse
 from constants import column_names
 from containers.core import Core
 from containers.services import Services
-from constants import time_tick
+from endpoints.dependencies import InputDatetimeRange
 from services.boiler_temp_prediction_service.boiler_temp_prediction_service import BoilerTempPredictionService
 
 api_router = APIRouter(prefix="/api/v2")
@@ -20,8 +18,7 @@ api_router = APIRouter(prefix="/api/v2")
 @api_router.get("/getPredictedBoilerT", response_class=JSONResponse)
 @inject
 def get_predicted_boiler_t(
-        start_datetime: Optional[datetime] = None,
-        end_datetime: Optional[datetime] = None,
+        datetime_range: InputDatetimeRange = Depends(),
         timezone_name: Optional[str] = None,
         datetime_processing_params=Depends(Provide[Core.config.datetime_processing]),
         boiler_t_predictor: BoilerTempPredictionService = Depends(
@@ -58,28 +55,18 @@ def get_predicted_boiler_t(
 
     _logger = logging.getLogger(__name__)
     _logger.debug(f"Requested predicted boiler t for dates range "
-                  f"from {start_datetime} to {end_datetime} "
+                  f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                   f"with timezone_name {timezone_name}")
 
     if timezone_name is None:
         timezone_name = datetime_processing_params.get("default_timezone")
     work_timezone = gettz(timezone_name)
 
-    if start_datetime is None:
-        start_datetime = pd.Timestamp.now(tz=work_timezone)
-    else:
-        start_datetime = pd.Timestamp(start_datetime)
-    if start_datetime.tz is None:
-        start_datetime = start_datetime.tz_localize(tz=work_timezone)
-
-    if end_datetime is None:
-        end_datetime = start_datetime + time_tick.TIME_TICK
-    else:
-        end_datetime = pd.Timestamp(end_datetime)
-    if end_datetime.tz is None:
-        end_datetime = end_datetime.tz_localize(tz=work_timezone)
-
-    predicted_boiler_temp_df = boiler_t_predictor.get_need_boiler_temp(start_datetime, end_datetime)
+    # noinspection PyTypeChecker
+    predicted_boiler_temp_df = boiler_t_predictor.get_need_boiler_temp(
+        datetime_range.start_datetime,
+        datetime_range.end_datetime
+    )
 
     datetimes = predicted_boiler_temp_df[column_names.TIMESTAMP]
     datetimes = datetimes.dt.tz_convert(work_timezone)
