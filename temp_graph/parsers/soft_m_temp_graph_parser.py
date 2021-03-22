@@ -2,8 +2,7 @@ import logging
 
 import pandas as pd
 
-from constants import column_names
-from temp_graph.constants import soft_m_column_names
+from ..constants import soft_m_column_names_equals
 from .temp_graph_parser import TempGraphParser
 
 
@@ -13,15 +12,17 @@ class SoftMTempGraphParser(TempGraphParser):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
 
+        self._column_names_equals = soft_m_column_names_equals.DICT
+
     def parse_temp_graph(self, temp_graph_as_text):
         self._logger.debug("Parsing temp graph")
 
         df = pd.read_json(temp_graph_as_text)
-        df.rename(
-            columns={
-                soft_m_column_names.SOFT_M_TEMP_GRAPH_WEATHER_TEMP: column_names.WEATHER_TEMP,
-                soft_m_column_names.SOFT_M_TEMP_GRAPH_TEMP_AT_HOME_IN: column_names.FORWARD_PIPE_COOLANT_TEMP,
-                soft_m_column_names.SOFT_M_TEMP_GRAPH_TEMP_AT_HOME_OUT: column_names.BACKWARD_PIPE_COOLANT_TEMP
-            },
-            inplace=True)
+        self._rename_columns(df)
+
         return df
+
+    def _rename_columns(self, df):
+        self._logger.debug("Renaming column")
+
+        df.rename(columns=self._column_names_equals, inplace=True)
