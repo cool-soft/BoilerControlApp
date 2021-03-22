@@ -38,20 +38,20 @@ def get_predicted_boiler_t(
     # noinspection PyTypeChecker
     predicted_boiler_temp_df = boiler_temp_predictor.get_need_boiler_temp(dates_range.start_date, dates_range.end_date)
 
-    if predicted_boiler_temp_df.empty:
-        return []
-    
-    datetimes = predicted_boiler_temp_df[column_names.TIMESTAMP]
-    datetimes = datetimes.dt.tz_convert(work_timezone.timezone)
-    response_datetime_pattern = datetime_processing_params.get("response_pattern")
-    datetimes = datetimes.dt.strftime(response_datetime_pattern)
-    datetimes = datetimes.to_list()
-
-    boiler_out_temps = predicted_boiler_temp_df[column_names.FORWARD_PIPE_COOLANT_TEMP].round(1)
-    boiler_out_temps = boiler_out_temps.to_list()
-
     predicted_boiler_temp_list = []
-    for datetime_, boiler_out_temp in zip(datetimes, boiler_out_temps):
-        predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
+    if not predicted_boiler_temp_df.empty:
+
+        datetimes = predicted_boiler_temp_df[column_names.TIMESTAMP]
+        datetimes = datetimes.dt.tz_convert(work_timezone.timezone)
+        response_datetime_pattern = datetime_processing_params.get("response_pattern")
+        datetimes = datetimes.dt.strftime(response_datetime_pattern)
+        datetimes = datetimes.to_list()
+
+        boiler_out_temps = predicted_boiler_temp_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
+        boiler_out_temps = boiler_out_temps.round(1)
+        boiler_out_temps = boiler_out_temps.to_list()
+
+        for datetime_, boiler_out_temp in zip(datetimes, boiler_out_temps):
+            predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
 
     return predicted_boiler_temp_list
