@@ -81,16 +81,16 @@ def get_predicted_boiler_t(
     if end_datetime.tzname() is None:
         end_datetime = end_datetime.replace(tzinfo=work_timezone)
 
-    predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_temp(start_datetime, end_datetime)
+    predicted_boiler_temp_df = boiler_t_predictor.get_need_boiler_temp(start_datetime, end_datetime)
 
-    predicted_boiler_t_ds = []
-    for _, row in predicted_boiler_t_df.iterrows():
+    predicted_boiler_temp_ds = []
+    for _, row in predicted_boiler_temp_df.iterrows():
         datetime_ = row[column_names.TIMESTAMP]
         datetime_ = datetime_.astimezone(work_timezone)
 
-        boiler_t = row[column_names.TEMP_PREDICTION_BOILER_OUT_TEMP]
-        boiler_t = round(boiler_t, 1)
+        boiler_temp = row[column_names.FORWARD_PIPE_COOLANT_TEMP]
+        boiler_temp = round(boiler_temp, 1)
 
-        predicted_boiler_t_ds.append((datetime_, boiler_t))
+        predicted_boiler_temp_ds.append((datetime_, boiler_temp))
 
-    return predicted_boiler_t_ds
+    return predicted_boiler_temp_ds

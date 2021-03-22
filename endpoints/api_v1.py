@@ -52,9 +52,9 @@ def get_predicted_boiler_t(
         datetime_ = datetime_.astimezone(work_timezone)
         datetime_as_str = datetime_.strftime(response_datetime_pattern)
 
-        boiler_t = row[column_names.TEMP_PREDICTION_BOILER_OUT_TEMP]
-        boiler_t = round(boiler_t, 1)
+        boiler_temp = row[column_names.FORWARD_PIPE_COOLANT_TEMP]
+        boiler_temp = round(boiler_temp, 1)
 
-        predicted_boiler_t_ds.append((datetime_as_str, boiler_t))
+        predicted_boiler_t_ds.append((datetime_as_str, boiler_temp))
 
     return predicted_boiler_t_ds

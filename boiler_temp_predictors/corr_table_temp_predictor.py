@@ -49,7 +49,7 @@ class CorrTableTempPredictor:
         boiler_temp_dates_list = temp_requirements_dates_list[:boiler_temp_count]
         need_boiler_temp_df = pd.DataFrame({
             column_names.TIMESTAMP: boiler_temp_dates_list,
-            column_names.TEMP_PREDICTION_BOILER_OUT_TEMP: boiler_temp_list
+            column_names.FORWARD_PIPE_COOLANT_TEMP: boiler_temp_list
         })
         return need_boiler_temp_df
 
@@ -63,7 +63,7 @@ class CorrTableTempPredictor:
             need_home_temp *= self._home_min_temp_coefficient
             need_temp_condition = self._temp_correlation_table[home_name] >= need_home_temp
             need_boiler_temp_for_home = self._temp_correlation_table[
-                need_temp_condition][column_names.TEMP_PREDICTION_BOILER_OUT_TEMP].min()
+                need_temp_condition][column_names.CORRELATED_BOILER_TEMP].min()
             need_boiler_temp = max(need_boiler_temp, need_boiler_temp_for_home)
 
         return need_boiler_temp
