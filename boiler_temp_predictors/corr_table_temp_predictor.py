@@ -34,8 +34,6 @@ class CorrTableTempPredictor:
         self._home_min_temp_coefficient = min_temp_coefficient
 
     def predict_on_temp_requirements(self, temp_requirements_df: pd.DataFrame):
-        self._logger.debug(f"Requested need boiler temp for temp requirements")
-
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()
         boiler_temp_count = len(temp_requirements_df) - max_home_time_delta
 

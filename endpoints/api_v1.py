@@ -42,19 +42,20 @@ def get_predicted_boiler_t(
     if timezone_name is None:
         timezone_name = datetime_processing_params.get("default_timezone")
 
-    predicted_boiler_t_df = boiler_t_predictor.get_need_boiler_temp(dates_range.start_date, dates_range.end_date)
+    predicted_boiler_temp_df = boiler_t_predictor.get_need_boiler_temp(dates_range.start_date, dates_range.end_date)
 
+    datetimes = predicted_boiler_temp_df[column_names.TIMESTAMP]
     work_timezone = gettz(timezone_name)
+    datetimes = datetimes.dt.tz_convert(work_timezone)
     response_datetime_pattern = datetime_processing_params.get("response_pattern")
-    predicted_boiler_t_ds = []
-    for _, row in predicted_boiler_t_df.iterrows():
-        datetime_ = row[column_names.TIMESTAMP]
-        datetime_ = datetime_.astimezone(work_timezone)
-        datetime_as_str = datetime_.strftime(response_datetime_pattern)
+    datetimes = datetimes.dt.strftime(response_datetime_pattern)
+    datetimes = datetimes.to_list()
 
-        boiler_temp = row[column_names.FORWARD_PIPE_COOLANT_TEMP]
-        boiler_temp = round(boiler_temp, 1)
+    boiler_out_temps = predicted_boiler_temp_df[column_names.FORWARD_PIPE_COOLANT_TEMP].round(1)
+    boiler_out_temps = boiler_out_temps.to_list()
 
-        predicted_boiler_t_ds.append((datetime_as_str, boiler_temp))
+    predicted_boiler_temp_list = []
+    for datetime_, boiler_out_temp in zip(datetimes, boiler_out_temps):
+        predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
 
-    return predicted_boiler_t_ds
+    return predicted_boiler_temp_list
