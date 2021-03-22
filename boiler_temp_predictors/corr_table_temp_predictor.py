@@ -1,7 +1,5 @@
 import logging
 
-import pandas as pd
-
 from constants import column_names
 
 
@@ -33,32 +31,16 @@ class CorrTableTempPredictor:
         logging.debug(f"Set home min temp coefficient to {min_temp_coefficient}")
         self._home_min_temp_coefficient = min_temp_coefficient
 
-    def predict_on_temp_requirements(self, temp_requirements_df: pd.DataFrame):
+    def predict_on_temp_requirements(self, temp_requirements):
         max_home_time_delta = self._homes_time_deltas[column_names.TIME_DELTA].max()
-        boiler_temp_count = len(temp_requirements_df) - max_home_time_delta
+        boiler_temp_count = len(temp_requirements) - max_home_time_delta
 
-        if boiler_temp_count > 0:
-            required_temp_arr = temp_requirements_df[column_names.FORWARD_PIPE_COOLANT_TEMP].to_numpy()
-            boiler_temp_list = []
-            for time_moment_number in range(boiler_temp_count):
-                need_boiler_temp = self._calc_boiler_temp_for_time_moment(time_moment_number, required_temp_arr)
-                boiler_temp_list.append(need_boiler_temp)
-            
-            temp_requirements_dates_list = temp_requirements_df[column_names.TIMESTAMP].to_list()
-            boiler_temp_dates_list = temp_requirements_dates_list[:boiler_temp_count]
+        boiler_temp_list = []
+        for time_moment_number in range(boiler_temp_count):
+            need_boiler_temp = self._calc_boiler_temp_for_time_moment(time_moment_number, temp_requirements)
+            boiler_temp_list.append(need_boiler_temp)
 
-            need_boiler_temp_df = pd.DataFrame({
-                column_names.TIMESTAMP: boiler_temp_dates_list,
-                column_names.FORWARD_PIPE_COOLANT_TEMP: boiler_temp_list
-            })
-
-        else:
-            need_boiler_temp_df = pd.DataFrame({
-                column_names.TIMESTAMP: [],
-                column_names.FORWARD_PIPE_COOLANT_TEMP: []
-            })
-
-        return need_boiler_temp_df
+        return boiler_temp_list
 
     def _calc_boiler_temp_for_time_moment(self, time_moment_number, temp_requirements_arr):
         need_boiler_temp = float("-inf")
