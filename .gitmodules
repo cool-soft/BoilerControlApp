@@ -1,12 +1,12 @@
-[submodule "tests"]
-	path = tests
+[submodule "BoilerControlAppTests"]
+	path = BoilerControlAppTests
 	url = https://github.com/user11336/BoilerControlAppTests.git
-[submodule "weather_data"]
-	path = weather_data
+[submodule "boiler_weater_info"]
+	path = boiler_weater_info
 	url = https://github.com/user11336/boiler_weater_info.git
-[submodule "parsing_utils"]
-	path = parsing_utils
+[submodule "boiler_parsing_utils"]
+	path = boiler_parsing_utils
 	url = https://github.com/user11336/boiler_parsing_utils.git
-[submodule "constants"]
-	path = constants
+[submodule "boiler_constants"]
+	path = boiler_constants
 	url = https://github.com/user11336/boiler_constants.git

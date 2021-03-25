@@ -1,5 +1,5 @@
 from . import soft_m_column_names
-from constants import column_names
+from boiler_constants import column_names
 
 DICT = {
     soft_m_column_names.SOFT_M_TEMP_GRAPH_WEATHER_TEMP: column_names.WEATHER_TEMP,

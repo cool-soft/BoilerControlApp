@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 from dateutil.tz import gettz
 
-from constants import column_names
+from boiler_constants import column_names
 from ..constants import soft_m_column_names, soft_m_column_names_equals
 from .weather_data_parser import WeatherDataParser
 
