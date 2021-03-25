@@ -3,10 +3,10 @@
 	url = https://github.com/user11336/BoilerControlAppTests.git
 [submodule "weather_data"]
 	path = weather_data
-	url = https://github.com/user11336/BoilerWeaterInfo.git
+	url = https://github.com/user11336/boiler_weater_info.git
 [submodule "parsing_utils"]
 	path = parsing_utils
-	url = https://github.com/user11336/parsing_utils.git
+	url = https://github.com/user11336/boiler_parsing_utils.git
 [submodule "constants"]
 	path = constants
-	url = https://github.com/user11336/BoilerConstants.git
+	url = https://github.com/user11336/boiler_constants.git
