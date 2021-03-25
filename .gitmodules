@@ -16,3 +16,6 @@
 [submodule "boiler_temp_predictors"]
 	path = boiler_temp_predictors
 	url = https://github.com/user11336/boiler_temp_predictors.git
+[submodule "boiler_temp_requirements_calculators"]
+	path = boiler_temp_requirements_calculators
+	url = https://github.com/user11336/boiler_temp_requirements_calculators.git
