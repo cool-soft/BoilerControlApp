@@ -2,7 +2,7 @@ import logging
 
 import pandas as pd
 
-from constants import column_names
+from boiler_constants import column_names
 from .temp_requirements_service import TempRequirementsService
 from ..temp_graph_service.temp_graph_service import TempGraphService
 from ..weather_service.weather_service import WeatherService

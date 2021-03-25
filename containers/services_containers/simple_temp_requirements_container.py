@@ -1,7 +1,7 @@
 from dependency_injector import containers, providers
 
 from services.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
-from temp_requirements_calculators.temp_graph_requirements_calculator import \
+from boiler_temp_requirements_calculators.temp_graph_requirements_calculator import \
     TempGraphRequirementsCalculator
 
 

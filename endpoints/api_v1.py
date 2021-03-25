@@ -4,7 +4,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from constants import column_names
+from boiler_constants import column_names
 from containers.core import Core
 from containers.services import Services
 from endpoints.dependencies import InputDatesRange, InputTimezone

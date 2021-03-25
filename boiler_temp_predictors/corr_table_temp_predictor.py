@@ -1,6 +1,6 @@
 import logging
 
-from constants import column_names
+from boiler_constants import column_names
 
 
 class CorrTableTempPredictor:

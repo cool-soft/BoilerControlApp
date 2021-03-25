@@ -3,8 +3,8 @@ import logging
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from constants import column_names
-from weather_data.providers.weather_provider import WeatherProvider
+from boiler_constants import column_names
+from boiler_weater_info.providers.weather_provider import WeatherProvider
 from .weather_service import WeatherService
 
 
