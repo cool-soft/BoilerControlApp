@@ -4,7 +4,7 @@ import pandas as pd
 from dateutil.tz import tzlocal
 
 from services.temp_graph_service.temp_graph_service import TempGraphService
-from boiler_temp_graph.providers.temp_graph_provider import TempGraphProvider
+from boiler.temp_graph.providers.online_soft_m_temp_graph_provider import TempGraphProvider
 
 
 class TempGraphServiceWithCache(TempGraphService):

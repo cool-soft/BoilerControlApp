@@ -1,7 +1,7 @@
 from dependency_injector import containers, providers
 
-from boiler_temp_graph.providers.online_soft_m_temp_graph_provider import OnlineSoftMTempGraphProvider
-from boiler_temp_graph.parsers.soft_m_temp_graph_parser import SoftMTempGraphParser
+from boiler.temp_graph.providers.online_soft_m_temp_graph_provider import OnlineSoftMTempGraphProvider
+from boiler.temp_graph.parsers.soft_m_temp_graph_parser import SoftMTempGraphParser
 from services.temp_graph_service.temp_graph_service_with_cache import TempGraphServiceWithCache
 
 

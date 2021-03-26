@@ -7,9 +7,9 @@ from dateutil.tz import gettz
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 
-from boiler_constants import time_tick
+from boiler.constants import time_tick
+from boiler.parsing_utils.datetime_parsing import parse_datetime
 from containers.core import Core
-from boiler_parsing_utils.datetime_parsing import parse_datetime
 
 
 class InputTimezone:
