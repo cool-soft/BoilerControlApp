@@ -4,9 +4,6 @@
 [submodule "boiler_weater_info"]
 	path = boiler_weater_info
 	url = https://github.com/user11336/boiler_weater_info.git
-[submodule "boiler_parsing_utils"]
-	path = boiler_parsing_utils
-	url = https://github.com/user11336/boiler_parsing_utils.git
 [submodule "boiler_temp_graph"]
 	path = boiler_temp_graph
 	url = https://github.com/user11336/boiler_temp_graph.git
