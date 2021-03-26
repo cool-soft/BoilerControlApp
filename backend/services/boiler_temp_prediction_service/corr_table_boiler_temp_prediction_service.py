@@ -3,9 +3,9 @@ import logging
 import pandas as pd
 
 from boiler.constants import column_names, time_tick
+from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
 from backend.services.boiler_temp_prediction_service.boiler_temp_prediction_service \
     import BoilerTempPredictionService
-from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
 from backend.services.temp_requirements_service.temp_requirements_service import TempRequirementsService
 
 

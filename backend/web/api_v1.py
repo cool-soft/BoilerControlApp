@@ -7,8 +7,8 @@ from fastapi.responses import JSONResponse
 from boiler.constants import column_names
 from backend.containers.core import Core
 from backend.containers.services import Services
-from backend.endpoints.dependencies import InputDatesRange, InputTimezone
 from backend.services.boiler_temp_prediction_service.boiler_temp_prediction_service import BoilerTempPredictionService
+from backend.web.dependencies import InputDatesRange, InputTimezone
 
 api_router = APIRouter(prefix="/api/v1")
 

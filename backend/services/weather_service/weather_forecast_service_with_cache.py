@@ -5,7 +5,7 @@ from dateutil.tz import tzlocal
 
 from boiler.constants import column_names
 from boiler.weater_info.providers.weather_provider import WeatherProvider
-from .weather_service import WeatherService
+from backend.services.weather_service.weather_service import WeatherService
 
 
 class WeatherForecastServiceWithCache(WeatherService):

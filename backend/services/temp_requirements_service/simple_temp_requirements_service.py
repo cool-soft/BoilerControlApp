@@ -3,9 +3,9 @@ import logging
 import pandas as pd
 
 from boiler.constants import column_names
-from .temp_requirements_service import TempRequirementsService
-from ..temp_graph_service.temp_graph_service import TempGraphService
-from ..weather_service.weather_service import WeatherService
+from backend.services.temp_requirements_service.temp_requirements_service import TempRequirementsService
+from backend.services.temp_graph_service.temp_graph_service import TempGraphService
+from backend.services.weather_service.weather_service import WeatherService
 
 
 class SimpleTempRequirementsService(TempRequirementsService):
@@ -33,7 +33,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
         self._logger.debug("Temp graph requirements calculator is set")
         self._temp_graph_requirements_calculator = temp_graph_requirements_calculator
 
-    def get_required_temp(self, start_datetime, end_datetime):
+    def get_required_temp(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp) -> pd.DataFrame:
         self._logger.debug(f"Requested required temp from {start_datetime} to {end_datetime}")
 
         weather_df = self._weather_service.get_weather(start_datetime, end_datetime)

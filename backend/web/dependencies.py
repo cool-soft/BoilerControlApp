@@ -7,9 +7,9 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import Depends, HTTPException
 from starlette import status
 
-from backend.containers.core import Core
 from boiler.constants import time_tick
 from boiler.parsing_utils.datetime_parsing import parse_datetime
+from backend.containers.core import Core
 
 
 class InputTimezone:
@@ -60,7 +60,7 @@ class InputDatesRange:
                 parse_datetime(end_date, request_datetime_patterns, timezone=work_timezone.timezone)
             )
 
-        if start_date <= end_date:
+        if start_date >= end_date:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="start_date must be less than end_date"
@@ -93,7 +93,7 @@ class InputDatetimeRange:
         if end_datetime.tz is None:
             end_datetime = end_datetime.tz_localize(tz=work_timezone.timezone)
 
-        if start_datetime <= end_datetime:
+        if start_datetime >= end_datetime:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="start_datetime must be less than end_datetime"
