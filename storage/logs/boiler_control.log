@@ -8441,3 +8441,195 @@ IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`
 [2021-03-25 22:21:30] [INFO] [uvicorn.error]: Waiting for application startup.
 [2021-03-25 22:21:30] [INFO] [uvicorn.error]: Application startup complete.
 [2021-03-25 22:21:30] [INFO] [uvicorn.error]: Uvicorn running on http://0.0.0.0:270 (Press CTRL+C to quit)
+[2021-03-26 20:12:45] [DEBUG] [TempCorrelationTable]: Loading optimized temp table from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\temp_correlation_table.pickle
+[2021-03-26 20:12:45] [DEBUG] [HomeTimeDeltasResource]: Loading home time deltas from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\homes_time_delta.csv
+[2021-03-26 20:12:45] [DEBUG] [__main__]: Wiring
+[2021-03-26 20:12:45] [DEBUG] [__main__]: Creating FastAPI app
+[2021-03-26 20:12:45] [DEBUG] [__main__]: Starting server at 0.0.0.0:270
+[2021-03-26 20:12:45] [INFO] [uvicorn.error]: Started server process [13548]
+[2021-03-26 20:12:45] [INFO] [uvicorn.error]: Waiting for application startup.
+[2021-03-26 20:12:45] [INFO] [uvicorn.error]: Application startup complete.
+[2021-03-26 20:12:45] [INFO] [uvicorn.error]: Uvicorn running on http://0.0.0.0:270 (Press CTRL+C to quit)
+[2021-03-26 20:12:50] [INFO] [uvicorn.access]: 127.0.0.1:55579 - "GET /docs HTTP/1.1" 200
+[2021-03-26 20:12:51] [INFO] [uvicorn.access]: 127.0.0.1:55579 - "GET /openapi.json HTTP/1.1" 200
+[2021-03-26 20:12:57] [DEBUG] [CorrTableTempPredictor]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [SoftMTempGraphParser]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [OnlineSoftMTempGraphProvider]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [TempGraphServiceWithCache]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [SoftMJSONWeatherDataParser]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [WeatherDataLinearInterpolator]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [OnlineSoftMWeatherForecastProvider]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [WeatherForecastServiceWithCache]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [TempGraphRequirementsCalculator]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [SimpleTempRequirementsService]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [CorrTableBoilerTempPredictionService]: Creating instance of the service
+[2021-03-26 20:12:57] [DEBUG] [backend.endpoints.api_v1]: Requested predicted boiler t for dates range from 2021-03-26 20:12:57.780175+05:00 to 2021-03-26 20:15:57.780175+05:00 with timezone_name Asia/Yekaterinburg
+[2021-03-26 20:12:57] [DEBUG] [CorrTableBoilerTempPredictionService]: Requested predicted boiler t from 2021-03-26 20:12:57.780175+05:00 to 2021-03-26 20:15:57.780175+05:00
+[2021-03-26 20:12:57] [DEBUG] [SimpleTempRequirementsService]: Requested required temp from 2021-03-26 20:12:57.780175+05:00 to 2021-03-26 21:03:57.780175+05:00
+[2021-03-26 20:12:57] [DEBUG] [WeatherForecastServiceWithCache]: Requested weather forecast from 2021-03-26 20:12:57.780175+05:00 to 2021-03-26 21:03:57.780175+05:00
+[2021-03-26 20:12:57] [DEBUG] [WeatherForecastServiceWithCache]: Checking that requested datetime in cache
+[2021-03-26 20:12:57] [DEBUG] [WeatherForecastServiceWithCache]: Max cached datetime is None
+[2021-03-26 20:12:57] [DEBUG] [WeatherForecastServiceWithCache]: Updating weather forecast from server
+[2021-03-26 20:12:57] [DEBUG] [OnlineSoftMWeatherForecastProvider]: Requested weather info from None to None
+[2021-03-26 20:12:57] [DEBUG] [OnlineSoftMWeatherForecastProvider]: Requesting weather forecast from server https://lysva.agt.town/
+[2021-03-26 20:13:01] [DEBUG] [OnlineSoftMWeatherForecastProvider]: Weather forecast is loaded. Response status code is 200
+[2021-03-26 20:13:01] [DEBUG] [SoftMJSONWeatherDataParser]: Parsing weather data
+[2021-03-26 20:13:01] [DEBUG] [SoftMJSONWeatherDataParser]: Renaming columns
+[2021-03-26 20:13:01] [DEBUG] [SoftMJSONWeatherDataParser]: Convering dates ant time to timestamp
+[2021-03-26 20:13:01] [DEBUG] [WeatherDataLinearInterpolator]: Requested weather data interpolating
+[2021-03-26 20:13:01] [DEBUG] [WeatherDataLinearInterpolator]: Rounding datetime
+[2021-03-26 20:13:01] [DEBUG] [WeatherDataLinearInterpolator]: Interpolating border datetime values
+[2021-03-26 20:13:01] [DEBUG] [WeatherDataLinearInterpolator]: Interpolating passes of datetime
+[2021-03-26 20:13:01] [DEBUG] [WeatherDataLinearInterpolator]: Interpolating border data values
+[2021-03-26 20:13:01] [DEBUG] [WeatherDataLinearInterpolator]: Interpolating passes of data
+[2021-03-26 20:13:01] [DEBUG] [WeatherForecastServiceWithCache]: Taking weather forecast from cache
+[2021-03-26 20:13:01] [DEBUG] [TempGraphServiceWithCache]: Requested temp graph
+[2021-03-26 20:13:01] [DEBUG] [TempGraphServiceWithCache]: Checking that cached temp graph is not expired
+[2021-03-26 20:13:01] [DEBUG] [TempGraphServiceWithCache]: Temp graph is never updated
+[2021-03-26 20:13:01] [DEBUG] [TempGraphServiceWithCache]: Requesting new temp graph
+[2021-03-26 20:13:01] [DEBUG] [OnlineSoftMTempGraphProvider]: Requested temp graph
+[2021-03-26 20:13:01] [DEBUG] [OnlineSoftMTempGraphProvider]: Requesting temp graph from server https://lysva.agt.town/
+[2021-03-26 20:13:02] [DEBUG] [OnlineSoftMTempGraphProvider]: Temp graph is loaded from server. Response status code is 200
+[2021-03-26 20:13:02] [DEBUG] [SoftMTempGraphParser]: Parsing temp graph
+[2021-03-26 20:13:02] [DEBUG] [SoftMTempGraphParser]: Renaming column
+[2021-03-26 20:13:02] [DEBUG] [TempGraphRequirementsCalculator]: Temp graph is set
+[2021-03-26 20:13:02] [INFO] [uvicorn.access]: 127.0.0.1:55580 - "GET /api/v1/getPredictedBoilerT HTTP/1.1" 200
+[2021-03-26 20:13:13] [DEBUG] [backend.endpoints.api_v2]: Requested predicted boiler t for dates range from 2021-03-26 20:13:13.436435+05:00 to 2021-03-26 20:16:13.436435+05:00 with timezone_name Asia/Yekaterinburg
+[2021-03-26 20:13:13] [DEBUG] [CorrTableBoilerTempPredictionService]: Requested predicted boiler t from 2021-03-26 20:13:13.436435+05:00 to 2021-03-26 20:16:13.436435+05:00
+[2021-03-26 20:13:13] [DEBUG] [SimpleTempRequirementsService]: Requested required temp from 2021-03-26 20:13:13.436435+05:00 to 2021-03-26 21:04:13.436435+05:00
+[2021-03-26 20:13:13] [DEBUG] [WeatherForecastServiceWithCache]: Requested weather forecast from 2021-03-26 20:13:13.436435+05:00 to 2021-03-26 21:04:13.436435+05:00
+[2021-03-26 20:13:13] [DEBUG] [WeatherForecastServiceWithCache]: Checking that requested datetime in cache
+[2021-03-26 20:13:13] [DEBUG] [WeatherForecastServiceWithCache]: Requested datetime in cache
+[2021-03-26 20:13:13] [DEBUG] [WeatherForecastServiceWithCache]: Checking that cached weather forecast is not expired
+[2021-03-26 20:13:13] [DEBUG] [WeatherForecastServiceWithCache]: Cached weather forecast is not expired
+[2021-03-26 20:13:13] [DEBUG] [WeatherForecastServiceWithCache]: Taking weather forecast from cache
+[2021-03-26 20:13:13] [DEBUG] [TempGraphServiceWithCache]: Requested temp graph
+[2021-03-26 20:13:13] [DEBUG] [TempGraphServiceWithCache]: Checking that cached temp graph is not expired
+[2021-03-26 20:13:13] [DEBUG] [TempGraphServiceWithCache]: Cached temp graph is not expired
+[2021-03-26 20:13:13] [DEBUG] [TempGraphRequirementsCalculator]: Temp graph is set
+[2021-03-26 20:13:13] [INFO] [uvicorn.access]: 127.0.0.1:55581 - "GET /api/v2/getPredictedBoilerT HTTP/1.1" 200
+[2021-03-26 22:20:43] [DEBUG] [HomeTimeDeltasResource]: Loading home time deltas from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\homes_time_delta.csv
+[2021-03-26 22:20:43] [DEBUG] [TempCorrelationTable]: Loading optimized temp table from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\temp_correlation_table.pickle
+[2021-03-26 22:20:43] [DEBUG] [__main__]: Wiring
+[2021-03-26 22:20:43] [DEBUG] [__main__]: Creating FastAPI app
+[2021-03-26 22:20:43] [DEBUG] [__main__]: Starting server at 0.0.0.0:270
+[2021-03-26 22:20:44] [INFO] [uvicorn.error]: Started server process [13812]
+[2021-03-26 22:20:44] [INFO] [uvicorn.error]: Waiting for application startup.
+[2021-03-26 22:20:44] [INFO] [uvicorn.error]: Application startup complete.
+[2021-03-26 22:20:44] [INFO] [uvicorn.error]: Uvicorn running on http://0.0.0.0:270 (Press CTRL+C to quit)
+[2021-03-26 22:20:47] [INFO] [uvicorn.access]: 127.0.0.1:59196 - "GET /docs HTTP/1.1" 200
+[2021-03-26 22:20:48] [INFO] [uvicorn.access]: 127.0.0.1:59196 - "GET /openapi.json HTTP/1.1" 200
+[2021-03-26 22:20:59] [INFO] [uvicorn.access]: 127.0.0.1:59197 - "GET /api/v2/getPredictedBoilerT?timezone_name=incorrect HTTP/1.1" 500
+[2021-03-26 22:20:59] [ERROR] [uvicorn.error]: Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 396, in run_asgi
+    result = await app(self.scope, self.receive, self.send)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\uvicorn\middleware\proxy_headers.py", line 45, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\fastapi\applications.py", line 199, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\applications.py", line 111, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\middleware\errors.py", line 181, in __call__
+    raise exc from None
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\middleware\errors.py", line 159, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\exceptions.py", line 82, in __call__
+    raise exc from None
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\exceptions.py", line 71, in __call__
+    await self.app(scope, receive, sender)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\routing.py", line 566, in __call__
+    await route.handle(scope, receive, send)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\routing.py", line 227, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\routing.py", line 41, in app
+    response = await func(request)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\fastapi\routing.py", line 191, in app
+    solved_result = await solve_dependencies(
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\fastapi\dependencies\utils.py", line 516, in solve_dependencies
+    solved_result = await solve_dependencies(
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\fastapi\dependencies\utils.py", line 550, in solve_dependencies
+    solved = await run_in_threadpool(call, **sub_values)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await loop.run_in_executor(None, func, *args)
+  File "C:\Program Files\Python38\lib\concurrent\futures\thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\venv\lib\site-packages\dependency_injector\wiring.py", line 591, in _patched
+    result = fn(*args, **to_inject)
+  File "C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\backend\endpoints\dependencies.py", line 29, in __init__
+    raise ValueError(f"Incorrect timezone_name {timezone_name}")
+ValueError: Incorrect timezone_name incorrect
+[2021-03-26 22:29:39] [DEBUG] [HomeTimeDeltasResource]: Loading home time deltas from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\homes_time_delta.csv
+[2021-03-26 22:29:39] [DEBUG] [TempCorrelationTable]: Loading optimized temp table from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\temp_correlation_table.pickle
+[2021-03-26 22:29:39] [DEBUG] [__main__]: Wiring
+[2021-03-26 22:29:39] [DEBUG] [__main__]: Creating FastAPI app
+[2021-03-26 22:29:39] [DEBUG] [__main__]: Starting server at 0.0.0.0:270
+[2021-03-26 22:29:39] [INFO] [uvicorn.error]: Started server process [32348]
+[2021-03-26 22:29:39] [INFO] [uvicorn.error]: Waiting for application startup.
+[2021-03-26 22:29:39] [INFO] [uvicorn.error]: Application startup complete.
+[2021-03-26 22:29:39] [INFO] [uvicorn.error]: Uvicorn running on http://0.0.0.0:270 (Press CTRL+C to quit)
+[2021-03-26 22:29:46] [INFO] [uvicorn.access]: 127.0.0.1:59532 - "GET /api/v2/getPredictedBoilerT?timezone_name=incorrect HTTP/1.1" 422
+[2021-03-26 22:32:30] [DEBUG] [HomeTimeDeltasResource]: Loading home time deltas from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\homes_time_delta.csv
+[2021-03-26 22:32:30] [DEBUG] [TempCorrelationTable]: Loading optimized temp table from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\temp_correlation_table.pickle
+[2021-03-26 22:32:30] [DEBUG] [__main__]: Wiring
+[2021-03-26 22:32:30] [DEBUG] [__main__]: Creating FastAPI app
+[2021-03-26 22:32:30] [DEBUG] [__main__]: Starting server at 0.0.0.0:270
+[2021-03-26 22:32:30] [INFO] [uvicorn.error]: Started server process [23744]
+[2021-03-26 22:32:30] [INFO] [uvicorn.error]: Waiting for application startup.
+[2021-03-26 22:32:30] [INFO] [uvicorn.error]: Application startup complete.
+[2021-03-26 22:32:30] [INFO] [uvicorn.error]: Uvicorn running on http://0.0.0.0:270 (Press CTRL+C to quit)
+[2021-03-26 22:32:35] [DEBUG] [CorrTableTempPredictor]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [SoftMTempGraphParser]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [OnlineSoftMTempGraphProvider]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [TempGraphServiceWithCache]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [SoftMJSONWeatherDataParser]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [WeatherDataLinearInterpolator]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [OnlineSoftMWeatherForecastProvider]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [WeatherForecastServiceWithCache]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [TempGraphRequirementsCalculator]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [SimpleTempRequirementsService]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [CorrTableBoilerTempPredictionService]: Creating instance of the service
+[2021-03-26 22:32:35] [DEBUG] [backend.endpoints.api_v2]: Requested predicted boiler t for dates range from 2021-03-26 22:32:35.282332+05:00 to 2021-03-26 22:35:35.282332+05:00 with timezone_name Asia/Yekaterinburg
+[2021-03-26 22:32:35] [DEBUG] [CorrTableBoilerTempPredictionService]: Requested predicted boiler t from 2021-03-26 22:32:35.282332+05:00 to 2021-03-26 22:35:35.282332+05:00
+[2021-03-26 22:32:35] [DEBUG] [SimpleTempRequirementsService]: Requested required temp from 2021-03-26 22:32:35.282332+05:00 to 2021-03-26 23:23:35.282332+05:00
+[2021-03-26 22:32:35] [DEBUG] [WeatherForecastServiceWithCache]: Requested weather forecast from 2021-03-26 22:32:35.282332+05:00 to 2021-03-26 23:23:35.282332+05:00
+[2021-03-26 22:32:35] [DEBUG] [WeatherForecastServiceWithCache]: Checking that requested datetime in cache
+[2021-03-26 22:32:35] [DEBUG] [WeatherForecastServiceWithCache]: Max cached datetime is None
+[2021-03-26 22:32:35] [DEBUG] [WeatherForecastServiceWithCache]: Updating weather forecast from server
+[2021-03-26 22:32:35] [DEBUG] [OnlineSoftMWeatherForecastProvider]: Requested weather info from None to None
+[2021-03-26 22:32:35] [DEBUG] [OnlineSoftMWeatherForecastProvider]: Requesting weather forecast from server https://lysva.agt.town/
+[2021-03-26 22:32:36] [DEBUG] [OnlineSoftMWeatherForecastProvider]: Weather forecast is loaded. Response status code is 200
+[2021-03-26 22:32:36] [DEBUG] [SoftMJSONWeatherDataParser]: Parsing weather data
+[2021-03-26 22:32:36] [DEBUG] [SoftMJSONWeatherDataParser]: Renaming columns
+[2021-03-26 22:32:36] [DEBUG] [SoftMJSONWeatherDataParser]: Convering dates ant time to timestamp
+[2021-03-26 22:32:36] [DEBUG] [WeatherDataLinearInterpolator]: Requested weather data interpolating
+[2021-03-26 22:32:36] [DEBUG] [WeatherDataLinearInterpolator]: Rounding datetime
+[2021-03-26 22:32:36] [DEBUG] [WeatherDataLinearInterpolator]: Interpolating border datetime values
+[2021-03-26 22:32:36] [DEBUG] [WeatherDataLinearInterpolator]: Interpolating passes of datetime
+[2021-03-26 22:32:36] [DEBUG] [WeatherDataLinearInterpolator]: Interpolating border data values
+[2021-03-26 22:32:36] [DEBUG] [WeatherDataLinearInterpolator]: Interpolating passes of data
+[2021-03-26 22:32:36] [DEBUG] [WeatherForecastServiceWithCache]: Taking weather forecast from cache
+[2021-03-26 22:32:36] [DEBUG] [TempGraphServiceWithCache]: Requested temp graph
+[2021-03-26 22:32:36] [DEBUG] [TempGraphServiceWithCache]: Checking that cached temp graph is not expired
+[2021-03-26 22:32:36] [DEBUG] [TempGraphServiceWithCache]: Temp graph is never updated
+[2021-03-26 22:32:36] [DEBUG] [TempGraphServiceWithCache]: Requesting new temp graph
+[2021-03-26 22:32:36] [DEBUG] [OnlineSoftMTempGraphProvider]: Requested temp graph
+[2021-03-26 22:32:36] [DEBUG] [OnlineSoftMTempGraphProvider]: Requesting temp graph from server https://lysva.agt.town/
+[2021-03-26 22:32:36] [DEBUG] [OnlineSoftMTempGraphProvider]: Temp graph is loaded from server. Response status code is 200
+[2021-03-26 22:32:36] [DEBUG] [SoftMTempGraphParser]: Parsing temp graph
+[2021-03-26 22:32:36] [DEBUG] [SoftMTempGraphParser]: Renaming column
+[2021-03-26 22:32:36] [DEBUG] [TempGraphRequirementsCalculator]: Temp graph is set
+[2021-03-26 22:32:36] [INFO] [uvicorn.access]: 127.0.0.1:59684 - "GET /api/v2/getPredictedBoilerT HTTP/1.1" 200
+[2021-03-26 22:32:36] [INFO] [uvicorn.access]: 127.0.0.1:59684 - "GET /favicon.ico HTTP/1.1" 404
+[2021-03-26 22:32:53] [INFO] [uvicorn.access]: 127.0.0.1:59685 - "GET /api/v2/getPredictedBoilerT?start_datetime=aaaa HTTP/1.1" 422
+[2021-03-26 22:33:42] [DEBUG] [HomeTimeDeltasResource]: Loading home time deltas from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\homes_time_delta.csv
+[2021-03-26 22:33:42] [DEBUG] [TempCorrelationTable]: Loading optimized temp table from C:\Users\Georgij\Desktop\Lysva\BoilerControlApp\storage\models\temp_correlation_table.pickle
+[2021-03-26 22:33:42] [DEBUG] [__main__]: Wiring
+[2021-03-26 22:33:42] [DEBUG] [__main__]: Creating FastAPI app
+[2021-03-26 22:33:42] [DEBUG] [__main__]: Starting server at 0.0.0.0:270
+[2021-03-26 22:33:42] [INFO] [uvicorn.error]: Started server process [26304]
+[2021-03-26 22:33:42] [INFO] [uvicorn.error]: Waiting for application startup.
+[2021-03-26 22:33:42] [INFO] [uvicorn.error]: Application startup complete.
+[2021-03-26 22:33:42] [INFO] [uvicorn.error]: Uvicorn running on http://0.0.0.0:270 (Press CTRL+C to quit)
+[2021-03-26 22:33:52] [INFO] [uvicorn.access]: 127.0.0.1:59719 - "GET /api/v2/getPredictedBoilerT?timezone_name=incorrect HTTP/1.1" 400
+[2021-03-26 22:34:13] [INFO] [uvicorn.access]: 127.0.0.1:59720 - "GET /api/v2/getPredictedBoilerT?timezone_name=incorrect%27 HTTP/1.1" 400
