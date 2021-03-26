@@ -1,9 +1,9 @@
 from dependency_injector import containers, providers
 
 from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
-from resources.home_time_deltas_resource import HomeTimeDeltasResource
-from resources.optimized_t_table_resource import TempCorrelationTable
-from services.boiler_temp_prediction_service.corr_table_boiler_temp_prediction_service import \
+from backend.resources.home_time_deltas_resource import HomeTimeDeltasResource
+from backend.resources.optimized_t_table_resource import TempCorrelationTable
+from backend.services.boiler_temp_prediction_service.corr_table_boiler_temp_prediction_service import \
     CorrTableBoilerTempPredictionService
 
 

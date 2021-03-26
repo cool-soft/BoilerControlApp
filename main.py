@@ -4,8 +4,9 @@ import logging
 from dependency_injector import providers
 from fastapi import FastAPI
 
-from containers.application import Application
-from endpoints import api_v1, api_v2
+from backend.containers.application import Application
+from backend.endpoints import api_v2
+from backend.endpoints import api_v1
 
 
 def create_fast_api_app():

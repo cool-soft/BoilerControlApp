@@ -9,7 +9,7 @@ from fastapi import Depends
 
 from boiler.constants import time_tick
 from boiler.parsing_utils.datetime_parsing import parse_datetime
-from containers.core import Core
+from backend.containers.core import Core
 
 
 class InputTimezone:

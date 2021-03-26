@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from services.temp_graph_service.temp_graph_service import TempGraphService
+from backend.services.temp_graph_service.temp_graph_service import TempGraphService
 from boiler.temp_graph.providers.online_soft_m_temp_graph_provider import TempGraphProvider
 
 

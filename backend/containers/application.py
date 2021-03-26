@@ -1,8 +1,8 @@
 from dependency_injector import containers, providers
 
-from containers.core import Core
-from containers.services import Services
-from containers.server import Server
+from backend.containers.core import Core
+from backend.containers.services import Services
+from backend.containers.server import Server
 
 
 class Application(containers.DeclarativeContainer):
