@@ -28,7 +28,7 @@ def init_resources(application_container):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Control boiler')
-    parser.add_argument('--config', default="../storage/config/boiler_config.yaml", help='path to config file')
+    parser.add_argument('--config', default="../storage/config/config.yaml", help='path to config file')
     args = parser.parse_args()
 
     application = Application()
