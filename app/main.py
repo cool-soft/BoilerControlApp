@@ -33,7 +33,6 @@ if __name__ == '__main__':
 
     application = Application()
     application.config.from_yaml(args.config)
-    
     init_resources(application)
 
     logger = logging.getLogger(__name__)  # Must be placed after core.init_resources()
