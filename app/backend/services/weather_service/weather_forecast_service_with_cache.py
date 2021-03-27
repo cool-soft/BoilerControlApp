@@ -4,14 +4,14 @@ import pandas as pd
 from dateutil.tz import tzlocal
 
 from boiler.constants import column_names
-from boiler.weater_info.providers.weather_provider import WeatherProvider
+from boiler.weater_info.repository.weather_repository import WeatherRepository
 from backend.services.weather_service.weather_service import WeatherService
 
 
 class WeatherForecastServiceWithCache(WeatherService):
 
     def __init__(self,
-                 weather_forecast_provider: WeatherProvider = None,
+                 weather_forecast_provider: WeatherRepository = None,
                  update_interval=1800):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
@@ -25,7 +25,7 @@ class WeatherForecastServiceWithCache(WeatherService):
         self._logger.debug(f"Weather update interval is set to {update_interval}")
         self._weather_cache_update_interval = update_interval
 
-    def set_weather_provider(self, weather_provider: WeatherProvider):
+    def set_weather_provider(self, weather_provider: WeatherRepository):
         self._logger.debug("Weather provider is set")
         self._weather_forecast_provider = weather_provider
 
@@ -78,7 +78,7 @@ class WeatherForecastServiceWithCache(WeatherService):
     def _update_cache_from_server(self):
         self._logger.debug("Updating weather forecast from server")
 
-        weather_df = self._weather_forecast_provider.get_weather()
+        weather_df = self._weather_forecast_provider.get_weather_info()
         self._weather_cache_df = weather_df
         self._weather_cache_last_update = pd.Timestamp.now(tz=tzlocal())
 

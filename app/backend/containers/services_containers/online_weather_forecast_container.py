@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 from backend.services.weather_service.weather_forecast_service_with_cache import WeatherForecastServiceWithCache
 from boiler.weater_info.interpolators.weather_data_linear_interpolator import WeatherDataLinearInterpolator
 from boiler.weater_info.parsers.soft_m_json_weather_data_parser import SoftMJSONWeatherDataParser
-from boiler.weater_info.providers.online_soft_m_weather_forecast_provider import OnlineSoftMWeatherForecastProvider
+from boiler.weater_info.repository.online_soft_m_weather_forecast_repository import OnlineSoftMWeatherForecastRepository
 
 
 class OnlinerWeatherForecastContainer(containers.DeclarativeContainer):
@@ -17,7 +17,7 @@ class OnlinerWeatherForecastContainer(containers.DeclarativeContainer):
     weather_data_interpolator = providers.Singleton(WeatherDataLinearInterpolator)
 
     weather_forecast_provider = providers.Singleton(
-        OnlineSoftMWeatherForecastProvider,
+        OnlineSoftMWeatherForecastRepository,
         weather_data_parser=weather_data_parser,
         weather_data_interpolator=weather_data_interpolator
     )
