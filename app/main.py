@@ -1,19 +1,9 @@
 import argparse
 import logging
 
-from dependency_injector import providers
-from fastapi import FastAPI
-
 from backend.containers.application import Application
-from backend.web import api_v2
 from backend.web import api_v1
-
-
-def create_fast_api_app():
-    fast_api_app = FastAPI()
-    fast_api_app.include_router(api_v1.api_router)
-    fast_api_app.include_router(api_v2.api_router)
-    return fast_api_app
+from backend.web import api_v2
 
 
 def wire(application_container):
@@ -35,15 +25,12 @@ if __name__ == '__main__':
     application.config.from_yaml(args.config)
     init_resources(application)
 
-    logger = logging.getLogger(__name__)  # Must be placed after core.init_resources()
+    # Must be placed after core.init_resources()
+    logger = logging.getLogger(__name__)
 
     logger.debug("Wiring")
     wire(application)
 
-    logger.debug("Creating FastAPI app")
-    app = create_fast_api_app()
-    application.server.app.override(providers.Object(app))
-
-    server = application.server.server()
+    server = application.wsgi.server()
     logger.debug(f"Starting server at {server.config.host}:{server.config.port}")
     server.run()
