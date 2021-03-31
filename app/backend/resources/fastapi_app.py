@@ -4,8 +4,6 @@ import pandas as pd
 from dependency_injector import resources
 from fastapi import FastAPI
 
-from backend.web import api_v1, api_v2
-
 
 class FastAPIApp(resources.Resource):
 
@@ -13,12 +11,12 @@ class FastAPIApp(resources.Resource):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of Resource")
 
-    def init(self) -> FastAPI:
+    def init(self, api_routers: list) -> FastAPI:
         self._logger.debug("Initialization of FastAPI app")
 
         app = FastAPI()
-        app.include_router(api_v1.api_router)
-        app.include_router(api_v2.api_router)
+        for router in api_routers:
+            app.include_router(router)
 
         return app
 

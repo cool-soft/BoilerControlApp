@@ -2,8 +2,7 @@ import argparse
 import logging
 
 from backend.containers.application import Application
-from backend.web import api_v1
-from backend.web import api_v2
+from backend.web import api_v1, api_v2
 
 
 def wire(application_container):
