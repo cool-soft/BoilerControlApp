@@ -2,7 +2,7 @@ from dependency_injector import containers, providers
 
 from backend.containers.core import Core
 from backend.containers.services import Services
-from backend.containers.server import Server
+from backend.containers.wsgi import WSGI
 
 
 class Application(containers.DeclarativeContainer):
@@ -18,7 +18,7 @@ class Application(containers.DeclarativeContainer):
         config=config.core
     )
 
-    server = providers.Container(
-        Server,
+    wsgi = providers.Container(
+        WSGI,
         config=config.server
     )
