@@ -14,7 +14,7 @@ api_router = APIRouter(prefix="/api/v2")
 
 @api_router.get("/getPredictedBoilerT", response_class=JSONResponse)
 @inject
-def get_predicted_boiler_t(
+async def get_predicted_boiler_t(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         boiler_temp_predictor: BoilerTempPredictionService = Depends(
@@ -55,7 +55,7 @@ def get_predicted_boiler_t(
                   f"with timezone_name {work_timezone.name}")
 
     # noinspection PyTypeChecker
-    predicted_boiler_temp_df = boiler_temp_predictor.get_need_boiler_temp(
+    predicted_boiler_temp_df = await boiler_temp_predictor.get_need_boiler_temp(
         datetime_range.start_datetime,
         datetime_range.end_datetime
     )

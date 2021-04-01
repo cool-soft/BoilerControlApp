@@ -33,13 +33,13 @@ class SimpleTempRequirementsService(TempRequirementsService):
         self._logger.debug("Temp graph requirements calculator is set")
         self._temp_graph_requirements_calculator = temp_graph_requirements_calculator
 
-    def get_required_temp(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp) -> pd.DataFrame:
+    async def get_required_temp(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp) -> pd.DataFrame:
         self._logger.debug(f"Requested required temp from {start_datetime} to {end_datetime}")
 
-        weather_df = self._weather_service.get_weather(start_datetime, end_datetime)
+        weather_df = await self._weather_service.get_weather(start_datetime, end_datetime)
         weather_temp_arr = weather_df[column_names.WEATHER_TEMP].to_numpy()
 
-        temp_graph = self._temp_graph_service.get_temp_graph()
+        temp_graph = await self._temp_graph_service.get_temp_graph()
         self._temp_graph_requirements_calculator.set_temp_graph(temp_graph)
 
         required_temp_at_home_in_list = []

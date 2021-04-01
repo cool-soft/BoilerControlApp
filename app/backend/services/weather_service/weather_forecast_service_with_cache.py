@@ -1,17 +1,18 @@
+import asyncio
 import logging
 
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from boiler.constants import column_names
-from boiler.weater_info.repository.weather_repository import WeatherRepository
 from backend.services.weather_service.weather_service import WeatherService
+from boiler.constants import column_names
+from boiler.weater_info.repository.async_weather_repository import AsyncWeatherRepository
 
 
-class WeatherForecastServiceWithCache(WeatherService):
+class AsyncWeatherForecastServiceWithCache(WeatherService):
 
     def __init__(self,
-                 weather_forecast_provider: WeatherRepository = None,
+                 weather_forecast_provider: AsyncWeatherRepository = None,
                  update_interval=1800):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
@@ -20,23 +21,26 @@ class WeatherForecastServiceWithCache(WeatherService):
         self._weather_cache_update_interval = update_interval
         self._weather_cache_df = pd.DataFrame()
         self._weather_cache_last_update = None
+        self._weather_cache_access_mutex = asyncio.Lock()
 
     def set_update_interval(self, update_interval):
         self._logger.debug(f"Weather update interval is set to {update_interval}")
         self._weather_cache_update_interval = update_interval
 
-    def set_weather_provider(self, weather_provider: WeatherRepository):
+    def set_weather_provider(self, weather_provider: AsyncWeatherRepository):
         self._logger.debug("Weather provider is set")
         self._weather_forecast_provider = weather_provider
 
-    def get_weather(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp) -> pd.DataFrame:
+    async def get_weather(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp) -> pd.DataFrame:
         self._logger.debug(f"Requested weather forecast from {start_datetime} to {end_datetime}")
 
-        if self._is_datetime_not_in_cache(end_datetime) or \
-                self._is_cached_forecast_expired():
-            self._update_cache_from_server()
+        async with self._weather_cache_access_mutex:
+            if self._is_datetime_not_in_cache(end_datetime) or \
+                    self._is_cached_forecast_expired():
+                await self._update_cache_from_server()
+            weather_df = self._get_from_cache(start_datetime, end_datetime)
 
-        return self._get_from_cache(start_datetime, end_datetime)
+        return weather_df
 
     def _is_datetime_not_in_cache(self, datetime_):
         self._logger.debug("Checking that requested datetime in cache")
@@ -75,7 +79,7 @@ class WeatherForecastServiceWithCache(WeatherService):
         self._logger.debug("Cached weather forecast is not expired")
         return False
 
-    def _update_cache_from_server(self):
+    async def _update_cache_from_server(self):
         self._logger.debug("Updating weather forecast from server")
 
         weather_df = self._weather_forecast_provider.get_weather_info()

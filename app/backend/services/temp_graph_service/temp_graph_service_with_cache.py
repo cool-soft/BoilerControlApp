@@ -1,9 +1,10 @@
+import asyncio
 import logging
 
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from boiler.temp_graph.providers.online_soft_m_temp_graph_provider import TempGraphProvider
+from boiler.temp_graph.repository.online_soft_m_temp_graph_repository import TempGraphProvider
 from backend.services.temp_graph_service.temp_graph_service import TempGraphService
 
 
@@ -19,6 +20,7 @@ class TempGraphServiceWithCache(TempGraphService):
         self._temp_graph_update_interval = update_interval
         self._temp_graph_last_update = None
         self._temp_graph_cache = pd.DataFrame()
+        self._temp_graph_cache_lock = asyncio.Lock()
 
     def set_temp_graph_provider(self, temp_graph_provider: TempGraphProvider):
         self._temp_graph_provider = temp_graph_provider
@@ -27,11 +29,14 @@ class TempGraphServiceWithCache(TempGraphService):
         self._logger.debug(f"Temp graph update interval is set to {update_interval}")
         self._temp_graph_update_interval = update_interval
 
-    def get_temp_graph(self) -> pd.DataFrame:
-        self._logger.debug(f"Requested temp graph")
-        if self._is_cached_temp_graph_expired():
-            self._update_temp_graph()
-        return self._temp_graph_cache.copy()
+    async def get_temp_graph(self) -> pd.DataFrame:
+        async with self._temp_graph_cache_lock:
+            self._logger.debug(f"Requested temp graph")
+            if self._is_cached_temp_graph_expired():
+                self._update_temp_graph()
+            temp_graph = self._temp_graph_cache.copy()
+
+        return temp_graph
 
     def _is_cached_temp_graph_expired(self):
         self._logger.debug("Checking that cached temp graph is not expired")

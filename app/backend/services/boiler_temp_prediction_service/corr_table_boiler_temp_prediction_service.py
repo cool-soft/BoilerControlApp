@@ -28,11 +28,11 @@ class CorrTableBoilerTempPredictionService(BoilerTempPredictionService):
         logging.debug("Set temp predictor")
         self._temp_predictor = temp_predictor
 
-    def get_need_boiler_temp(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp):
+    async def get_need_boiler_temp(self, start_datetime: pd.Timestamp, end_datetime: pd.Timestamp):
         self._logger.debug(f"Requested predicted boiler t from {start_datetime} to {end_datetime}")
 
         temp_requirements_end_datetime = self._calc_temp_requirements_end_datetime(end_datetime)
-        temp_requirements_df = self._temp_requirements_service.get_required_temp(
+        temp_requirements_df = await self._temp_requirements_service.get_required_temp(
             start_datetime, temp_requirements_end_datetime
         )
 
