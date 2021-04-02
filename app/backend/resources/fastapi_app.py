@@ -1,6 +1,5 @@
 import logging
 
-import pandas as pd
 from dependency_injector import resources
 from fastapi import FastAPI
 
@@ -20,5 +19,5 @@ class FastAPIApp(resources.Resource):
 
         return app
 
-    def shutdown(self, temp_graph: pd.DataFrame):
+    def shutdown(self, *args, **kwargs):
         pass
