@@ -24,17 +24,19 @@ async def get_predicted_boiler_t(
         datetime_processing_params=Depends(Provide[Core.config.datetime_processing])
 ):
     """
-    Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
-    Принимает 3 **опциональных** параметра.
-    - **start_date**: Дата время начала управляющего воздействия (формат см. в конфигах).
-    - **end_date**: Дата время окончания управляющего воздействия (формат см. в конфигах).
-    - **timezone_name**: Имя временной зоны для обработки запроса и генерации ответа.
-    По-умолчанию берется из конфигов.
+        Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
+        Принимает 3 **опциональных** параметра.
+        - **start_datetime**: Дата время начала управляющего воздействия (формат см. в конфигах).
+        - **end_datetime**: Дата время окончания управляющего воздействия (формат см. в конфигах).
+        - **timezone_name**: Имя временной зоны для обработки запроса и генерации ответа.
+        Если не указан - используется временная зона из конфигов.
     """
+
     _logger = logging.getLogger(__name__)
-    _logger.debug(f"Requested predicted boiler t for dates range "
+    _logger.debug(f"Requested predicted boiler temp for dates range "
                   f"from {dates_range.start_date} to {dates_range.end_date} "
                   f"with timezone_name {work_timezone.name}")
+
     # noinspection PyTypeChecker
     predicted_boiler_temp_df = await boiler_temp_predictor.get_need_boiler_temp(
         dates_range.start_date,
