@@ -3,8 +3,8 @@ from dependency_injector import containers, providers
 from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
 from backend.resources.home_time_deltas_resource import HomeTimeDeltasResource
 from backend.resources.temp_correlation_table import TempCorrelationTable
-from backend.services.boiler_temp_prediction_service.corr_table_boiler_temp_prediction_service import \
-    CorrTableBoilerTempPredictionService
+from backend.services.boiler_temp_prediction_service.corr_table_control_action_prediction_service import \
+    CorrTableControlActionPredictionService
 
 
 class CorrTableBoilerTempPredictionContainer(containers.DeclarativeContainer):
@@ -30,7 +30,7 @@ class CorrTableBoilerTempPredictionContainer(containers.DeclarativeContainer):
     )
 
     boiler_temp_prediction_service = providers.Singleton(
-        CorrTableBoilerTempPredictionService,
+        CorrTableControlActionPredictionService,
         temp_predictor=corr_table_temp_predictor,
         temp_requirements_service=temp_requirements_service
     )

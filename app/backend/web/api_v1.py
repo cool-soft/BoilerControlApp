@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from boiler.constants import column_names
 from backend.containers.core import Core
 from backend.containers.services import Services
-from backend.services.boiler_temp_prediction_service.boiler_temp_prediction_service import BoilerTempPredictionService
+from backend.services.boiler_temp_prediction_service.control_action_prediction_service import ControlActionPredictionService
 from backend.web.dependencies import InputDatesRange, InputTimezone
 
 api_router = APIRouter(prefix="/api/v1")
@@ -18,7 +18,7 @@ api_router = APIRouter(prefix="/api/v1")
 async def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
         work_timezone: InputTimezone = Depends(),
-        boiler_temp_predictor: BoilerTempPredictionService = Depends(
+        boiler_temp_predictor: ControlActionPredictionService = Depends(
             Provide[Services.boiler_temp_prediction.boiler_temp_prediction_service]
         ),
         datetime_processing_params=Depends(Provide[Core.config.datetime_processing])
@@ -38,7 +38,7 @@ async def get_predicted_boiler_t(
                   f"with timezone_name {work_timezone.name}")
 
     # noinspection PyTypeChecker
-    predicted_boiler_temp_df = await boiler_temp_predictor.get_need_boiler_temp(
+    predicted_boiler_temp_df = await boiler_temp_predictor.update_control_actions(
         dates_range.start_date,
         dates_range.end_date
     )
