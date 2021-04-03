@@ -66,10 +66,10 @@ class SimpleUpdaterService(UpdaterService):
 
     async def run_async_one_cycle(self, force=False):
         async with self._async_update_lock:
-            if force or self._get_control_action_next_update() <= 0:
-                await self._update_control_action()
             if force or self._get_temp_graph_next_update() <= 0:
                 await self._update_temp_graph()
+            if force or self._get_control_action_next_update() <= 0:
+                await self._update_control_action()
 
     def _get_control_action_next_update(self):
         next_update = self._get_next_update(self._control_action_last_update,
