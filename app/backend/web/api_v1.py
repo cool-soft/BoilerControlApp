@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from boiler.constants import column_names
 from backend.containers.core import Core
 from backend.containers.services import Services
-from backend.services.boiler_temp_prediction_service.control_action_prediction_service import ControlActionPredictionService
+from backend.services.control_action_prediction_service.control_action_prediction_service import ControlActionPredictionService
 from backend.web.dependencies import InputDatesRange, InputTimezone
 
 api_router = APIRouter(prefix="/api/v1")
@@ -19,7 +19,7 @@ async def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         boiler_temp_predictor: ControlActionPredictionService = Depends(
-            Provide[Services.boiler_temp_prediction.boiler_temp_prediction_service]
+            Provide[Services.boiler_temp_prediction.temp_prediction_service]
         ),
         datetime_processing_params=Depends(Provide[Core.config.datetime_processing])
 ):
@@ -28,14 +28,14 @@ async def get_predicted_boiler_t(
         Принимает 3 **опциональных** параметра.
         - **start_datetime**: Дата время начала управляющего воздействия (формат см. в конфигах).
         - **end_datetime**: Дата время окончания управляющего воздействия (формат см. в конфигах).
-        - **timezone_name**: Имя временной зоны для обработки запроса и генерации ответа.
+        - **timezone**: Имя временной зоны для обработки запроса и генерации ответа.
         Если не указан - используется временная зона из конфигов.
     """
 
     _logger = logging.getLogger(__name__)
     _logger.debug(f"Requested predicted boiler temp for dates range "
                   f"from {dates_range.start_date} to {dates_range.end_date} "
-                  f"with timezone_name {work_timezone.name}")
+                  f"with timezone {work_timezone.name}")
 
     # noinspection PyTypeChecker
     predicted_boiler_temp_df = await boiler_temp_predictor.update_control_actions(

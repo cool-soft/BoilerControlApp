@@ -5,7 +5,7 @@ import pandas as pd
 from boiler.constants import column_names
 
 
-class AsyncControlActionsRepository:
+class ControlActionsCacheRepository:
 
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)

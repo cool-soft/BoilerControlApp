@@ -6,7 +6,7 @@ import pandas as pd
 from boiler.constants import column_names
 
 
-class AsyncTempRequirementsRepository:
+class TempRequirementsCacheRepository:
 
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
@@ -51,7 +51,7 @@ class AsyncTempRequirementsRepository:
 
         self._cache = self._cache[self._cache[column_names.TIMESTAMP] >= datetime].copy()
 
-    async def get_max_timestamp(self):
+    async def get_max_timestamp(self) -> pd.Timestamp:
         self._logger.debug("Requested max timestamp")
 
         max_timestamp = None
