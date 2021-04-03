@@ -28,7 +28,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
         self._temp_requirements_repository = temp_requirements_repository
         self._temp_graph_repository = temp_graph_repository
 
-        self._temp_graph_requirements_calculator = temp_graph_requirements_calculator
+        self._temp_requirements_calculator = temp_graph_requirements_calculator
 
     def set_temp_graph_repository(self, temp_graph_repository):
         self._logger.debug("Temp graph repository is set")
@@ -44,7 +44,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
 
     def set_temp_graph_requirements_calculator(self, temp_graph_requirements_calculator):
         self._logger.debug("Temp graph requirements calculator is set")
-        self._temp_graph_requirements_calculator = temp_graph_requirements_calculator
+        self._temp_requirements_calculator = temp_graph_requirements_calculator
 
     async def update_temp_requirements(self):
         self._logger.debug("Requested temp requirements update")
@@ -57,7 +57,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
         self._logger.debug("Calculating temp requirements")
 
         temp_graph = await self._temp_graph_repository.get_temp_graph()
-        self._temp_graph_requirements_calculator.set_temp_graph(temp_graph)
+        self._temp_requirements_calculator.set_temp_graph(temp_graph)
 
         start_datetime = pd.Timestamp.now(tz=tzlocal())
         weather_df = await self._weather_repository.get_weather_info(start_datetime)
@@ -66,8 +66,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
         temp_requirements_datetime_list = weather_df[column_names.TIMESTAMP].to_list()
         temp_requirements = []
         for weather_temp, datetime_ in zip(weather_temp_arr, temp_requirements_datetime_list):
-            required_temp = self._temp_graph_requirements_calculator.\
-                get_temp_requirements_for_weather_temp(weather_temp)
+            required_temp = self._temp_requirements_calculator.get_temp_requirements_for_weather_temp(weather_temp)
             temp_requirements.append({
                 column_names.TIMESTAMP: datetime_,
                 column_names.FORWARD_PIPE_COOLANT_TEMP: required_temp[column_names.FORWARD_PIPE_COOLANT_TEMP],
