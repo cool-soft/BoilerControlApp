@@ -31,6 +31,7 @@ async def get_predicted_boiler_t(
         Если не указан - используется временная зона из конфигов.
 
         ISO 8601: https://en.wikipedia.org/wiki/ISO_8601
+
         Временные зоны: см. «TZ database name» https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
 
         ---
