@@ -67,9 +67,9 @@ class SimpleUpdaterService(UpdaterService):
     async def run_async_one_cycle(self, force=False):
         async with self._async_update_lock:
             if force or self._get_control_action_next_update() <= 0:
-                self._update_control_action()
+                await self._update_control_action()
             if force or self._get_temp_graph_next_update() <= 0:
-                self._update_temp_graph()
+                await self._update_temp_graph()
 
     def _get_control_action_next_update(self):
         next_update = self._get_next_update(self._control_action_last_update,
@@ -90,14 +90,14 @@ class SimpleUpdaterService(UpdaterService):
             next_update = update_interval - lifetime
         return next_update
 
-    def _update_control_action(self):
+    async def _update_control_action(self):
         temp_requirements_calculator: TempRequirementsService = self._temp_requirements_calculator_provider()
-        temp_requirements_calculator.update_temp_requirements()
+        await temp_requirements_calculator.update_temp_requirements()
         control_action_predictor: ControlActionPredictionService = self._control_action_predictor_provider()
-        control_action_predictor.update_control_actions()
+        await control_action_predictor.update_control_actions()
         self._control_action_last_update = pd.Timestamp.now(tz=tzlocal())
 
-    def _update_temp_graph(self):
+    async def _update_temp_graph(self):
         temp_graph_updater: TempGraphUpdateService = self._temp_graph_updater_provider()
-        temp_graph_updater.update_temp_graph()
+        await temp_graph_updater.update_temp_graph()
         self._temp_graph_last_update = pd.Timestamp.now(tz=tzlocal())

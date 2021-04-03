@@ -37,7 +37,7 @@ if __name__ == '__main__':
     async def start_updater():
         logger.debug("Staring Updater service")
         updater_service = application.services.updater_pkg.updater_service()
-        asyncio.create_task(updater_service.run_async)
+        asyncio.create_task(updater_service.run_async())
 
     server = application.wsgi.server()
     logger.debug(f"Starting server at {server.config.host}:{server.config.port}")
