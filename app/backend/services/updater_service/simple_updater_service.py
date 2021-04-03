@@ -61,6 +61,7 @@ class SimpleUpdaterService(UpdaterService):
             control_action_next_update = self._get_control_action_next_update()
             sleep_time = min(temp_graph_next_update, control_action_next_update)
             sleep_time = max(sleep_time, 0)
+            self._logger.debug(f"Sleeping {sleep_time} secodns")
             await asyncio.sleep(sleep_time)
             await self.run_async_one_cycle()
 
