@@ -48,12 +48,14 @@ class SimpleTempRequirementsService(TempRequirementsService):
 
     async def update_temp_requirements(self):
         self._logger.debug("Requested temp requirements update")
-
         async with self._service_lock:
-            await self._calc_temp_requirements()
+            temp_requirements_df = await self._calc_temp_requirements()
+            await self._temp_requirements_repository.update_temp_requirements(temp_requirements_df)
             await self._drop_expired_temp_requirements()
 
     async def _calc_temp_requirements(self):
+        self._logger.debug("Calculating temp requirements")
+
         temp_graph = await self._temp_graph_repository.get_temp_graph()
         self._temp_graph_requirements_calculator.set_temp_graph(temp_graph)
 
@@ -73,8 +75,10 @@ class SimpleTempRequirementsService(TempRequirementsService):
             })
         temp_requirements_df = pd.DataFrame(temp_requirements)
 
-        await self._temp_requirements_repository.update_temp_requirements(temp_requirements_df)
+        self._logger.debug("Temp requirements are calculated")
+        return temp_requirements_df
 
     async def _drop_expired_temp_requirements(self):
         datetime_now = pd.Timestamp.now(tz=tzlocal())
+        self._logger.debug(f"Droping expiried temp requirements, that older than {datetime_now}")
         await self._temp_requirements_repository.delete_temp_requirements_older_than(datetime_now)

@@ -91,13 +91,22 @@ class SimpleUpdaterService(UpdaterService):
         return next_update
 
     async def _update_control_action(self):
+        self._logger.debug("Updating temp requirements")
         temp_requirements_calculator: TempRequirementsService = self._temp_requirements_calculator_provider()
         await temp_requirements_calculator.update_temp_requirements()
+        self._logger.debug("Temp requirements are udpated")
+
+        self._logger.debug("Updating control actions")
         control_action_predictor: ControlActionPredictionService = self._control_action_predictor_provider()
         await control_action_predictor.update_control_actions()
+        self._logger.debug("Control actions are updated")
+
         self._control_action_last_update = pd.Timestamp.now(tz=tzlocal())
 
     async def _update_temp_graph(self):
+        self._logger.debug("Updating temp graph")
         temp_graph_updater: TempGraphUpdateService = self._temp_graph_updater_provider()
         await temp_graph_updater.update_temp_graph()
+        self._logger.debug("Temp graph is updated")
+
         self._temp_graph_last_update = pd.Timestamp.now(tz=tzlocal())
