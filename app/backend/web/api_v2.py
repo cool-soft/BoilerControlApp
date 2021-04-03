@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from boiler.constants import column_names
+from backend.repositories.control_action_cache_repository import ControlActionsCacheRepository
 from backend.containers.services import Services
-from backend.services.control_action_prediction_service.control_action_prediction_service import ControlActionPredictionService
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 
 api_router = APIRouter(prefix="/api/v2")
@@ -17,8 +17,8 @@ api_router = APIRouter(prefix="/api/v2")
 async def get_predicted_boiler_t(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
-        boiler_temp_predictor: ControlActionPredictionService = Depends(
-            Provide[Services.control_action_pkg.temp_prediction_service]
+        control_action_repository: ControlActionsCacheRepository = Depends(
+            Provide[Services.control_action_pkg.control_actions_repository]
         )
 ):
     # noinspection SpellCheckingInspection
@@ -56,20 +56,19 @@ async def get_predicted_boiler_t(
                   f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                   f"with timezone {work_timezone.name}")
 
-    # noinspection PyTypeChecker
-    predicted_boiler_temp_df = await boiler_temp_predictor.update_control_actions(
+    boiler_control_actions_df = await control_action_repository.get_control_action(
         datetime_range.start_datetime,
         datetime_range.end_datetime
     )
 
     predicted_boiler_temp_list = []
-    if not predicted_boiler_temp_df.empty:
+    if not boiler_control_actions_df.empty:
 
-        datetimes = predicted_boiler_temp_df[column_names.TIMESTAMP]
+        datetimes = boiler_control_actions_df[column_names.TIMESTAMP]
         datetimes = datetimes.dt.tz_convert(work_timezone.timezone)
         datetimes = datetimes.to_list()
 
-        boiler_out_temps = predicted_boiler_temp_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
+        boiler_out_temps = boiler_control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
         boiler_out_temps = boiler_out_temps.round(1)
         boiler_out_temps = boiler_out_temps.to_list()
 

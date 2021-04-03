@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 
 from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
+from backend.repositories.control_action_cache_repository import ControlActionsCacheRepository
 from backend.resources.home_time_deltas_resource import HomeTimeDeltasResource
 from backend.resources.temp_correlation_table import TempCorrelationTable
 from backend.services.control_action_prediction_service.corr_table_control_action_prediction_service import \
@@ -11,6 +12,7 @@ class ControlActionContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
 
     temp_requirements_repository = providers.Dependency()
+    control_actions_repository = providers.Singleton(ControlActionsCacheRepository)
 
     temp_correlation_table = providers.Resource(
         TempCorrelationTable,
@@ -32,5 +34,6 @@ class ControlActionContainer(containers.DeclarativeContainer):
     temp_prediction_service = providers.Singleton(
         CorrTableControlActionPredictionService,
         temp_predictor=temp_predictor,
-        temp_requirements_repository=temp_requirements_repository
+        temp_requirements_repository=temp_requirements_repository,
+        control_actions_repository=control_actions_repository
     )
