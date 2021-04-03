@@ -19,7 +19,7 @@ async def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         boiler_temp_predictor: ControlActionPredictionService = Depends(
-            Provide[Services.boiler_temp_prediction.temp_prediction_service]
+            Provide[Services.control_action_pkg.temp_prediction_service]
         ),
         datetime_processing_params=Depends(Provide[Core.config.datetime_processing])
 ):

@@ -14,18 +14,18 @@ from backend.services.updater_service.updater_service import UpdaterService
 class SimpleUpdaterService(UpdaterService):
 
     def __init__(self,
-                 control_action_predictor_factory=None,
-                 temp_graph_updater_factory=None,
-                 temp_requirements_calculator_factory=None,
+                 control_action_predictor_provider=None,
+                 temp_graph_updater_provider=None,
+                 temp_requirements_calculator_provider=None,
                  temp_graph_update_interval=86400,
                  control_action_update_interval=600):
 
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
 
-        self._control_action_predictor_factory = control_action_predictor_factory
-        self._temp_graph_updater_factory = temp_graph_updater_factory
-        self._temp_requirements_calculator_factory = temp_requirements_calculator_factory
+        self._control_action_predictor_provider = control_action_predictor_provider
+        self._temp_graph_updater_provider = temp_graph_updater_provider
+        self._temp_requirements_calculator_provider = temp_requirements_calculator_provider
 
         self._temp_graph_update_interval = temp_graph_update_interval
         self._control_action_update_interval = control_action_update_interval
@@ -35,17 +35,17 @@ class SimpleUpdaterService(UpdaterService):
 
         self._async_update_lock = asyncio.Lock()
 
-    def set_control_action_predictor_factory(self, factory):
-        self._logger.debug("Control action predictor factory is set")
-        self._control_action_predictor_factory = factory
+    def set_control_action_predictor_provider(self, provider):
+        self._logger.debug("Control action predictor provider is set")
+        self._control_action_predictor_provider = provider
 
-    def set_temp_graph_updater_factory(self, factory):
-        self._logger.debug("Temp graph updater factory is set")
-        self._temp_graph_updater_factory = factory
+    def set_temp_graph_updater_provider(self, provider):
+        self._logger.debug("Temp graph updater provider is set")
+        self._temp_graph_updater_provider = provider
 
-    def set_temp_requirements_calculator_factory(self, factory):
-        self._logger.debug("Temp requirements calculator factory is set")
-        self._temp_requirements_calculator_factory = factory
+    def set_temp_requirements_calculator_provider(self, provider):
+        self._logger.debug("Temp requirements calculator provider is set")
+        self._temp_requirements_calculator_provider = provider
 
     def set_temp_graph_update_interval(self, update_interval):
         self._logger.debug(f"Temp graph update interval is set to {update_interval}")
@@ -91,13 +91,13 @@ class SimpleUpdaterService(UpdaterService):
         return next_update
 
     def _update_control_action(self):
-        temp_requirements_calculator: TempRequirementsService = self._temp_requirements_calculator_factory()
+        temp_requirements_calculator: TempRequirementsService = self._temp_requirements_calculator_provider()
         temp_requirements_calculator.update_temp_requirements()
-        control_action_predictor: ControlActionPredictionService = self._control_action_predictor_factory()
+        control_action_predictor: ControlActionPredictionService = self._control_action_predictor_provider()
         control_action_predictor.update_control_actions()
         self._control_action_last_update = pd.Timestamp.now(tz=tzlocal())
 
     def _update_temp_graph(self):
-        temp_graph_updater: TempGraphUpdateService = self._temp_graph_updater_factory()
+        temp_graph_updater: TempGraphUpdateService = self._temp_graph_updater_provider()
         temp_graph_updater.update_temp_graph()
         self._temp_graph_last_update = pd.Timestamp.now(tz=tzlocal())
