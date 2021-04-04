@@ -4,10 +4,9 @@ import asyncio
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from backend.services.control_action_prediction_service.control_action_prediction_service import \
-    ControlActionPredictionService
-from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
-from backend.services.temp_requirements_service.temp_requirements_service import TempRequirementsService
+from backend.services.corr_table_control_action_prediction_service import CorrTableControlActionPredictionService
+from backend.services.simple_temp_graph_update_service import SimpleTempGraphUpdateService
+from backend.services.simple_temp_requirements_service import SimpleTempRequirementsService
 from backend.services.updater_service.updater_service import UpdaterService
 
 
@@ -93,21 +92,21 @@ class SimpleUpdaterService(UpdaterService):
 
     async def _update_control_action(self):
         self._logger.debug("Updating temp requirements")
-        temp_requirements_calculator: TempRequirementsService = self._temp_requirements_calculator_provider()
-        await temp_requirements_calculator.update_temp_requirements()
+        temp_requirements_calculator: SimpleTempRequirementsService = self._temp_requirements_calculator_provider()
+        await temp_requirements_calculator.update_async()
         self._logger.debug("Temp requirements are udpated")
 
         self._logger.debug("Updating control actions")
-        control_action_predictor: ControlActionPredictionService = self._control_action_predictor_provider()
-        await control_action_predictor.update_control_actions()
+        control_action_predictor: CorrTableControlActionPredictionService = self._control_action_predictor_provider()
+        await control_action_predictor.update_async()
         self._logger.debug("Control actions are updated")
 
         self._control_action_last_update = pd.Timestamp.now(tz=tzlocal())
 
     async def _update_temp_graph(self):
         self._logger.debug("Updating temp graph")
-        temp_graph_updater: TempGraphUpdateService = self._temp_graph_updater_provider()
-        await temp_graph_updater.update_temp_graph()
+        temp_graph_updater: SimpleTempGraphUpdateService = self._temp_graph_updater_provider()
+        await temp_graph_updater.update_async()
         self._logger.debug("Temp graph is updated")
 
         self._temp_graph_last_update = pd.Timestamp.now(tz=tzlocal())
