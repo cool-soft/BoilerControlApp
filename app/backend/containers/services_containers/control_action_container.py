@@ -4,7 +4,7 @@ from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredic
 from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
 from backend.resources.home_time_deltas_resource import HomeTimeDeltasResource
 from backend.resources.temp_correlation_table import TempCorrelationTable
-from backend.services.corr_table_control_action_prediction_service import \
+from backend.services.control_action_prediction_service.corr_table_control_action_prediction_service import \
     CorrTableControlActionPredictionService
 
 

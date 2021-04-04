@@ -6,12 +6,13 @@ from dateutil.tz import tzlocal
 
 from boiler.constants import column_names
 from boiler.temp_graph.repository.temp_graph_repository import TempGraphRepository
-from boiler.weater_info.repository.weather_repository import WeatherRepository
 from boiler.temp_requirements.repository.temp_requirements_simple_repository import TempRequirementsSimpleRepository
-from backend.services.updater_service.updatable_service import UpdatableService
+from boiler.weater_info.repository.weather_repository import WeatherRepository
+from backend.services.temp_requirements_update_service.temp_requirements_update_service import \
+    TempRequirementsUpdateService
 
 
-class SimpleTempRequirementsService(UpdatableService):
+class SimpleTempRequirementsService(TempRequirementsUpdateService):
 
     def __init__(self,
                  temp_graph_repository: TempGraphRepository = None,

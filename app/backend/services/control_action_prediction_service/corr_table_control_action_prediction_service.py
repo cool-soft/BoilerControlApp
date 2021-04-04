@@ -4,14 +4,15 @@ import logging
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
 from boiler.constants import column_names
-from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
 from boiler.temp_requirements.repository.temp_requirements_simple_repository import TempRequirementsSimpleRepository
-from backend.services.updater_service.updatable_service import UpdatableService
+from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
+from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
+from backend.services.control_action_prediction_service.control_actions_prediction_service import \
+    ControlActionPredictionService
 
 
-class CorrTableControlActionPredictionService(UpdatableService):
+class CorrTableControlActionPredictionService(ControlActionPredictionService):
 
     def __init__(self,
                  temp_predictor: CorrTableTempPredictor = None,

@@ -7,7 +7,7 @@ from boiler.weater_info.parsers.soft_m_json_weather_data_parser import SoftMJSON
 from boiler.weater_info.repository.online_soft_m_weather_forecast_repository import \
     OnlineSoftMWeatherForecastRepository
 from boiler.temp_requirements.repository.temp_requirements_simple_repository import TempRequirementsSimpleRepository
-from backend.services.simple_temp_requirements_service import SimpleTempRequirementsService
+from backend.services.temp_requirements_update_service.simple_temp_requirements_service import SimpleTempRequirementsService
 
 
 class TempRequirementsContainer(containers.DeclarativeContainer):

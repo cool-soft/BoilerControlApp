@@ -1,11 +1,11 @@
 import asyncio
 import logging
 
+from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
 from boiler.temp_graph.repository.online_soft_m_temp_graph_repository import TempGraphRepository
-from backend.services.updater_service.updatable_service import UpdatableService
 
 
-class SimpleTempGraphUpdateService(UpdatableService):
+class SimpleTempGraphUpdateService(TempGraphUpdateService):
 
     def __init__(self,
                  temp_graph_src_repository: TempGraphRepository = None,
