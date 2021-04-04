@@ -7,7 +7,7 @@ from dateutil.tz import tzlocal
 from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
 from boiler.constants import column_names
 from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
-from backend.repositories.temp_requirements_simple_repository import TempRequirementsSimpleRepository
+from boiler.temp_requirements.repository.temp_requirements_simple_repository import TempRequirementsSimpleRepository
 from backend.services.updater_service.updatable_service import UpdatableService
 
 
@@ -50,7 +50,8 @@ class CorrTableControlActionPredictionService(UpdatableService):
 
         start_datetime = pd.Timestamp.now(tz=tzlocal())
         self._logger.debug(f"Requesting temp requirements from {start_datetime}")
-        temp_requirements_df = await self._temp_requirements_repository.get_temp_requirements(start_datetime)
+        temp_requirements_df: pd.DataFrame = \
+            await self._temp_requirements_repository.get_temp_requirements(start_datetime)
         self._logger.debug(f"Gathered {len(temp_requirements_df)} temp requirements")
 
         self._logger.debug("Prediting control actions on temp reuirements")

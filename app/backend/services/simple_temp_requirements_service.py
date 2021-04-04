@@ -7,7 +7,7 @@ from dateutil.tz import tzlocal
 from boiler.constants import column_names
 from boiler.temp_graph.repository.temp_graph_repository import TempGraphRepository
 from boiler.weater_info.repository.weather_repository import WeatherRepository
-from backend.repositories.temp_requirements_simple_repository import TempRequirementsSimpleRepository
+from boiler.temp_requirements.repository.temp_requirements_simple_repository import TempRequirementsSimpleRepository
 from backend.services.updater_service.updatable_service import UpdatableService
 
 
