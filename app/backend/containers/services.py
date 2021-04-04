@@ -1,32 +1,35 @@
 from dependency_injector import containers, providers
 
-from .services_containers.corr_table_boiler_temp_prediction_container import CorrTableBoilerTempPredictionContainer
-from .services_containers.online_temp_graph_container import OnlineTempGraphContainer
-from .services_containers.online_weather_forecast_container import OnlinerWeatherForecastContainer
-from .services_containers.simple_temp_requirements_container import SimpleTempRequirementsContainer
+from .services_containers.control_action_container import ControlActionContainer
+from .services_containers.temp_graph_container import TempGraphContainer
+from .services_containers.temp_requirements_container import TempRequirementsContainer
+from .services_containers.updater_container import UpdateContainer
 
 
 class Services(containers.DeclarativeContainer):
     config = providers.Configuration()
 
-    weather_information_providing = providers.Container(
-        OnlinerWeatherForecastContainer,
-        config=config.weather_information_providing
-    )
-
-    temp_graph_providing = providers.Container(
-        OnlineTempGraphContainer,
+    temp_graph_pkg = providers.Container(
+        TempGraphContainer,
         config=config.temp_graph_providing
     )
 
-    temp_requirements_calculation = providers.Container(
-        SimpleTempRequirementsContainer,
-        temp_graph_service=temp_graph_providing.temp_graph_service,
-        weather_service=weather_information_providing.weather_forecast_service
+    temp_requirements_pkg = providers.Container(
+        TempRequirementsContainer,
+        config=config.temp_requirements_calculation,
+        temp_graph_repository=temp_graph_pkg.temp_graph_repository
     )
 
-    boiler_temp_prediction = providers.Container(
-        CorrTableBoilerTempPredictionContainer,
+    control_action_pkg = providers.Container(
+        ControlActionContainer,
         config=config.boiler_temp_prediction,
-        temp_requirements_service=temp_requirements_calculation.temp_requirements_service
+        temp_requirements_repository=temp_requirements_pkg.temp_requirements_repository
+    )
+
+    updater_pkg = providers.Container(
+        UpdateContainer,
+        config=config.updater,
+        control_actions_predictor=control_action_pkg.temp_prediction_service,
+        temp_graph_updater=temp_graph_pkg.temp_graph_update_service,
+        temp_requirements_calculator=temp_requirements_pkg.temp_requirements_service,
     )
