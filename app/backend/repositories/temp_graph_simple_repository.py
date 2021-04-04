@@ -6,7 +6,7 @@ from boiler.constants import column_names
 from boiler.temp_graph.repository.temp_graph_repository import TempGraphRepository
 
 
-class TempGraphCacheRepository(TempGraphRepository):
+class TempGraphSimpleRepository(TempGraphRepository):
 
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)

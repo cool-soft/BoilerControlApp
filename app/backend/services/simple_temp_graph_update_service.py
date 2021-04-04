@@ -1,11 +1,11 @@
 import asyncio
 import logging
 
-from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
 from boiler.temp_graph.repository.online_soft_m_temp_graph_repository import TempGraphRepository
+from backend.services.updater_service.updatable_service import UpdatableService
 
 
-class SimpleTempGraphUpdateService(TempGraphUpdateService):
+class SimpleTempGraphUpdateService(UpdatableService):
 
     def __init__(self,
                  temp_graph_src_repository: TempGraphRepository = None,
@@ -14,7 +14,7 @@ class SimpleTempGraphUpdateService(TempGraphUpdateService):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the service")
 
-        self._temp_graph_service_lock = asyncio.Lock()
+        self._service_lock = asyncio.Lock()
 
         self._temp_graph_src_repository = temp_graph_src_repository
         self._temp_graph_repository = temp_graph_repository
@@ -27,10 +27,10 @@ class SimpleTempGraphUpdateService(TempGraphUpdateService):
         self._logger.debug("Temp graph src repository is set")
         self._temp_graph_repository = temp_graph_repository
 
-    async def update_temp_graph(self):
+    async def update_async(self):
         self._logger.debug("Requested temp graph update")
 
-        async with self._temp_graph_service_lock:
+        async with self._service_lock:
             temp_graph = await self._temp_graph_src_repository.get_temp_graph()
             await self._temp_graph_repository.set_temp_graph(temp_graph)
 

@@ -1,4 +1,3 @@
-import asyncio
 import logging
 
 import pandas as pd
@@ -6,7 +5,7 @@ import pandas as pd
 from boiler.constants import column_names
 
 
-class TempRequirementsCacheRepository:
+class TempRequirementsSimpleRepository:
 
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)

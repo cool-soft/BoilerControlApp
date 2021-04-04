@@ -6,8 +6,8 @@ from boiler.weater_info.interpolators.weather_data_linear_interpolator import We
 from boiler.weater_info.parsers.soft_m_json_weather_data_parser import SoftMJSONWeatherDataParser
 from boiler.weater_info.repository.online_soft_m_weather_forecast_repository import \
     OnlineSoftMWeatherForecastRepository
-from backend.repositories.temp_requirements_cache_repository import TempRequirementsCacheRepository
-from backend.services.temp_requirements_service.simple_temp_requirements_service import SimpleTempRequirementsService
+from backend.repositories.temp_requirements_simple_repository import TempRequirementsSimpleRepository
+from backend.services.simple_temp_requirements_service import SimpleTempRequirementsService
 
 
 class TempRequirementsContainer(containers.DeclarativeContainer):
@@ -25,7 +25,7 @@ class TempRequirementsContainer(containers.DeclarativeContainer):
                                              weather_data_parser=weather_data_parser,
                                              weather_data_interpolator=weather_data_interpolator)
 
-    temp_requirements_repository = providers.Singleton(TempRequirementsCacheRepository)
+    temp_requirements_repository = providers.Singleton(TempRequirementsSimpleRepository)
 
     temp_requirements_service = providers.Singleton(SimpleTempRequirementsService,
                                                     temp_graph_repository=temp_graph_repository,

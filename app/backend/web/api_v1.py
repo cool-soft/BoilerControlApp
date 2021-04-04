@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 
 from backend.containers.core import Core
 from backend.containers.services import Services
-from backend.repositories.control_action_cache_repository import ControlActionsCacheRepository
+from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
 from backend.web.dependencies import InputDatesRange, InputTimezone
 from boiler.constants import column_names
 
@@ -18,7 +18,7 @@ api_router = APIRouter(prefix="/api/v1")
 async def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
         work_timezone: InputTimezone = Depends(),
-        control_action_repository: ControlActionsCacheRepository = Depends(
+        control_action_repository: ControlActionsSimpleRepository = Depends(
             Provide[Services.control_action_pkg.control_actions_repository]
         ),
         datetime_processing_params=Depends(Provide[Core.config.datetime_processing])

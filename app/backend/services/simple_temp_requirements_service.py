@@ -7,16 +7,16 @@ from dateutil.tz import tzlocal
 from boiler.constants import column_names
 from boiler.temp_graph.repository.temp_graph_repository import TempGraphRepository
 from boiler.weater_info.repository.weather_repository import WeatherRepository
-from backend.repositories.temp_requirements_cache_repository import TempRequirementsCacheRepository
-from backend.services.temp_requirements_service.temp_requirements_service import TempRequirementsService
+from backend.repositories.temp_requirements_simple_repository import TempRequirementsSimpleRepository
+from backend.services.updater_service.updatable_service import UpdatableService
 
 
-class SimpleTempRequirementsService(TempRequirementsService):
+class SimpleTempRequirementsService(UpdatableService):
 
     def __init__(self,
                  temp_graph_repository: TempGraphRepository = None,
                  weather_repository: WeatherRepository = None,
-                 temp_requirements_repository: TempRequirementsCacheRepository = None,
+                 temp_requirements_repository: TempRequirementsSimpleRepository = None,
                  temp_graph_requirements_calculator=None):
 
         self._logger = logging.getLogger(self.__class__.__name__)
@@ -38,7 +38,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
         self._logger.debug("Weather repository is set")
         self._weather_repository = weather_repository
 
-    def set_temp_requirements_repository(self, temp_requirements_repository: TempRequirementsCacheRepository):
+    def set_temp_requirements_repository(self, temp_requirements_repository: TempRequirementsSimpleRepository):
         self._logger.debug("Temp requirements repository is set")
         self._temp_requirements_repository = temp_requirements_repository
 
@@ -46,7 +46,7 @@ class SimpleTempRequirementsService(TempRequirementsService):
         self._logger.debug("Temp graph requirements calculator is set")
         self._temp_requirements_calculator = temp_graph_requirements_calculator
 
-    async def update_temp_requirements(self):
+    async def update_async(self):
         self._logger.debug("Requested temp requirements update")
         async with self._service_lock:
             temp_requirements_df = await self._calc_temp_requirements()
