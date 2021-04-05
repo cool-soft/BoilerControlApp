@@ -9,7 +9,7 @@ class ControlActionsSimpleRepository:
 
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
-        self._logger.debug("Creating instance of service")
+        self._logger.debug("Creating instance of provider")
 
         # TODO: вынести создание пустого DataFrame с заданными колонками куда-нибудь
         self._cache = pd.DataFrame(

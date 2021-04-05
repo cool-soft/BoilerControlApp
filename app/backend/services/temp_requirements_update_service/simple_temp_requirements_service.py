@@ -21,7 +21,7 @@ class SimpleTempRequirementsService(TempRequirementsUpdateService):
                  temp_graph_requirements_calculator=None):
 
         self._logger = logging.getLogger(self.__class__.__name__)
-        self._logger.debug("Creating instance of the service")
+        self._logger.debug("Creating instance of the provider")
 
         self._service_lock = asyncio.Lock()
 

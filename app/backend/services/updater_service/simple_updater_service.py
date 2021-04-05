@@ -1,124 +1,87 @@
 import asyncio
 import logging
+from typing import List, Optional
 
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from backend.services.control_action_prediction_service.control_actions_prediction_service import \
-    ControlActionPredictionService
-from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
-from backend.services.temp_requirements_update_service.temp_requirements_update_service import \
-    TempRequirementsUpdateService
+from backend.services.updater_service.updatable_item.updatable_item import UpdatableItem
 from backend.services.updater_service.updater_service import UpdaterService
 
 
 class SimpleUpdaterService(UpdaterService):
 
     def __init__(self,
-                 control_action_predictor_provider=None,
-                 temp_graph_updater_provider=None,
-                 temp_requirements_calculator_provider=None,
-                 temp_graph_update_interval: pd.Timedelta = pd.Timedelta(seconds=86400),
-                 control_action_update_interval:  pd.Timedelta = pd.Timedelta(seconds=600)):
+                 items_to_update: Optional[List[UpdatableItem]] = None):
 
         self._logger = logging.getLogger(self.__class__.__name__)
-        self._logger.debug("Creating instance of the service")
+        self._logger.debug("Creating instance")
 
-        self._control_action_predictor_provider = control_action_predictor_provider
-        self._temp_graph_updater_provider = temp_graph_updater_provider
-        self._temp_requirements_calculator_provider = temp_requirements_calculator_provider
+        if items_to_update is None:
+            items_to_update = []
+        self._items_to_update = items_to_update
 
-        self._temp_graph_update_interval = temp_graph_update_interval
-        self._control_action_update_interval = control_action_update_interval
+        self._logger.debug(f"Items to update count {len(items_to_update)}")
 
-        self._temp_graph_last_update = None
-        self._control_action_last_update = None
+    def set_items_to_update(self, items_to_update: List[UpdatableItem]):
+        self._logger.debug(f"Items list to update is set; Found {len(items_to_update)} items to update")
+        self._items_to_update = items_to_update
 
-        self._async_update_lock = asyncio.Lock()
-
-    def set_control_action_predictor_provider(self, provider):
-        self._logger.debug("Control action predictor provider is set")
-        self._control_action_predictor_provider = provider
-
-    def set_temp_graph_updater_provider(self, provider):
-        self._logger.debug("Temp graph updater provider is set")
-        self._temp_graph_updater_provider = provider
-
-    def set_temp_requirements_calculator_provider(self, provider):
-        self._logger.debug("Temp requirements calculator provider is set")
-        self._temp_requirements_calculator_provider = provider
-
-    def set_temp_graph_update_interval(self, update_interval: pd.Timedelta):
-        self._logger.debug(f"Temp graph update interval is set to {update_interval}")
-        self._temp_graph_update_interval = update_interval
-
-    def set_control_action_update_interval(self, update_interval: pd.Timedelta):
-        self._logger.debug(f"Control action update interval is set to {update_interval}")
-        self._control_action_update_interval = update_interval
-
-    async def run_async(self):
-        self._logger.debug("Updater service is started")
+    async def run_updater_service_async(self):
+        self._logger.debug(f"Service is started")
 
         while True:
-            temp_graph_next_update = self._get_temp_graph_next_update().total_seconds()
-            control_action_next_update = self._get_control_action_next_update().total_seconds()
-            sleep_time = min(temp_graph_next_update, control_action_next_update)
-            sleep_time = max(sleep_time, 0)
-            self._logger.debug(f"Sleeping {sleep_time} secodns")
-            await asyncio.sleep(sleep_time)
-            await self.run_async_one_cycle()
+            self._logger.debug("Running updating cycle")
+            await self._update_items()
+            await self._sleep_to_next_update()
 
-    async def run_async_one_cycle(self, force=False):
-        self._logger.debug("Update cycle is started")
+    async def _update_items(self):
+        self._logger.debug("Requested items to update unpacked graph")
 
-        async with self._async_update_lock:
-            if force or self._get_temp_graph_next_update().total_seconds() <= 0:
-                await self._update_temp_graph()
-            if force or self._get_control_action_next_update().total_seconds() <= 0:
-                await self._update_control_action()
+        for item in self._get_unpacked_dependencies_graph():
+            if item.is_need_update():
+                self._logger.debug(f"Updating item {item}")
+                await item.update_async()
 
-    def _get_control_action_next_update(self):
-        self._logger.debug("Control action next update is requested")
+    def _get_unpacked_dependencies_graph(self):
+        self._logger.debug("Unpacked dependencies graph is requested")
 
-        next_update = self._get_next_update(self._control_action_last_update, self._control_action_update_interval)
-        self._logger.debug(f"Control action next update is {next_update}")
+        unpacked_graph = []
+        items_to_process = self._items_to_update.copy()
+        while len(items_to_process) > 0:
+            item = items_to_process.pop(0)
+            for dependency in item.get_dependencies():
+                if dependency not in unpacked_graph:
+                    items_to_process.append(item)
+                    break
+            else:
+                self._logger.debug(f"Unpacked item {item}")
+                unpacked_graph.append(item)
 
-        return next_update
+        self._logger.debug(f"Found {len(unpacked_graph)} items with dependencies")
+        return unpacked_graph
 
-    def _get_temp_graph_next_update(self):
-        self._logger.debug("Temp graph next update is requested")
+    async def _sleep_to_next_update(self):
+        next_update_datetime = self._get_next_update_datetime()
+        datetime_now = pd.Timestamp.now(tz=tzlocal())
 
-        next_update = self._get_next_update(self._temp_graph_last_update, self._temp_graph_update_interval)
-        self._logger.debug(f"Temp graph next update is {next_update}")
+        timedelta_to_next_update = next_update_datetime - datetime_now
+        zero_timedelta = pd.Timedelta(seconds=0)
+        timedelta_to_next_update = max(timedelta_to_next_update, zero_timedelta)
 
-        return next_update
+        self._logger.debug(f"Sleeping {timedelta_to_next_update}")
+        await asyncio.sleep(timedelta_to_next_update.total_seconds())
 
-    # noinspection PyMethodMayBeStatic
-    def _get_next_update(self, last_update, update_interval):
-        next_update = pd.Timedelta(seconds=0)
-        if last_update is not None:
-            time_now = pd.Timestamp.now(tz=tzlocal())
-            lifetime = time_now - last_update
-            next_update = update_interval - lifetime
-        return next_update
+    def _get_next_update_datetime(self):
+        self._logger.debug("Requested next update datetime")
 
-    async def _update_control_action(self):
-        self._logger.debug("Updating temp requirements")
-        temp_requirements_calculator: TempRequirementsUpdateService = self._temp_requirements_calculator_provider()
-        await temp_requirements_calculator.update_temp_requirements_async()
-        self._logger.debug("Temp requirements are udpated")
+        next_update_datetime = None
+        for item in self._get_unpacked_dependencies_graph():
+            item_next_update_datetime = item.get_next_update_datetime()
+            if next_update_datetime is None:
+                next_update_datetime = item_next_update_datetime
+            elif item_next_update_datetime is not None:
+                next_update_datetime = min(next_update_datetime, item_next_update_datetime)
 
-        self._logger.debug("Updating control actions")
-        control_action_predictor: ControlActionPredictionService = self._control_action_predictor_provider()
-        await control_action_predictor.predict_control_actions_async()
-        self._logger.debug("Control actions are updated")
-
-        self._control_action_last_update = pd.Timestamp.now(tz=tzlocal())
-
-    async def _update_temp_graph(self):
-        self._logger.debug("Updating temp graph")
-        temp_graph_updater: TempGraphUpdateService = self._temp_graph_updater_provider()
-        await temp_graph_updater.update_temp_graph_async()
-        self._logger.debug("Temp graph is updated")
-
-        self._temp_graph_last_update = pd.Timestamp.now(tz=tzlocal())
+        self._logger.debug(f"Next update datetime is {next_update_datetime}")
+        return next_update_datetime

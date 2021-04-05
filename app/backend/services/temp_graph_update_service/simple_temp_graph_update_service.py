@@ -12,7 +12,7 @@ class SimpleTempGraphUpdateService(TempGraphUpdateService):
                  temp_graph_repository: TempGraphRepository = None):
 
         self._logger = logging.getLogger(self.__class__.__name__)
-        self._logger.debug("Creating instance of the service")
+        self._logger.debug("Creating instance of the provider")
 
         self._service_lock = asyncio.Lock()
 

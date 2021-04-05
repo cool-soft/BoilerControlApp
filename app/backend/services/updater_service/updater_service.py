@@ -1,4 +1,4 @@
 class UpdaterService:
 
-    def run_async(self):
+    async def run_updater_service_async(self):
         raise NotImplementedError
