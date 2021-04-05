@@ -40,7 +40,7 @@ class SimpleUpdaterService(UpdaterService):
 
         for item in self._get_unpacked_dependencies_graph():
             if item.is_need_update():
-                self._logger.debug(f"Updating item {item}")
+                self._logger.debug(f"Updating item {item.__class__.__name__}")
                 await item.update_async()
 
     def _get_unpacked_dependencies_graph(self):
@@ -50,13 +50,20 @@ class SimpleUpdaterService(UpdaterService):
         items_to_process = self._items_to_update.copy()
         while len(items_to_process) > 0:
             item = items_to_process.pop(0)
+
+            need_to_process_again = False
             for dependency in item.get_dependencies():
                 if dependency not in unpacked_graph:
                     items_to_process.append(dependency)
-                    break
-            else:
-                self._logger.debug(f"Unpacked item {item}")
+                    need_to_process_again = True
+
+            if not need_to_process_again:
                 unpacked_graph.append(item)
+                self._logger.debug(f"Unpacked item {item.__class__.__name__}")
+
+            else:
+                self._logger.debug(f"Need to process again {item.__class__.__name__}")
+                items_to_process.append(item)
 
         self._logger.debug(f"Found {len(unpacked_graph)} items with dependencies")
         return unpacked_graph

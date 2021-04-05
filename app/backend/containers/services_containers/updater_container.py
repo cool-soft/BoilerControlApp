@@ -31,7 +31,7 @@ class UpdateContainer(containers.DeclarativeContainer):
                                                         provider=control_actions_predictor.provider,
                                                         dependencies=providers.List(
                                                             temp_graph_updatable_item,
-                                                            temp_graph_updatable_item
+                                                            temp_requirements_updatable_item
                                                         ))
 
     updater_service = providers.Singleton(SimpleUpdaterService,
