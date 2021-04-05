@@ -52,7 +52,7 @@ class SimpleUpdaterService(UpdaterService):
             item = items_to_process.pop(0)
             for dependency in item.get_dependencies():
                 if dependency not in unpacked_graph:
-                    items_to_process.append(item)
+                    items_to_process.append(dependency)
                     break
             else:
                 self._logger.debug(f"Unpacked item {item}")
