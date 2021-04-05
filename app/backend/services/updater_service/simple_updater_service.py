@@ -4,7 +4,11 @@ import logging
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from backend.services.updater_service.updatable_service import UpdatableService
+from backend.services.control_action_prediction_service.control_actions_prediction_service import \
+    ControlActionPredictionService
+from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
+from backend.services.temp_requirements_update_service.temp_requirements_update_service import \
+    TempRequirementsUpdateService
 from backend.services.updater_service.updater_service import UpdaterService
 
 
@@ -100,21 +104,21 @@ class SimpleUpdaterService(UpdaterService):
 
     async def _update_control_action(self):
         self._logger.debug("Updating temp requirements")
-        temp_requirements_calculator: UpdatableService = self._temp_requirements_calculator_provider()
-        await temp_requirements_calculator.update_async()
+        temp_requirements_calculator: TempRequirementsUpdateService = self._temp_requirements_calculator_provider()
+        await temp_requirements_calculator.update_temp_requirements_async()
         self._logger.debug("Temp requirements are udpated")
 
         self._logger.debug("Updating control actions")
-        control_action_predictor: UpdatableService = self._control_action_predictor_provider()
-        await control_action_predictor.update_async()
+        control_action_predictor: ControlActionPredictionService = self._control_action_predictor_provider()
+        await control_action_predictor.predict_control_actions_async()
         self._logger.debug("Control actions are updated")
 
         self._control_action_last_update = pd.Timestamp.now(tz=tzlocal())
 
     async def _update_temp_graph(self):
         self._logger.debug("Updating temp graph")
-        temp_graph_updater: UpdatableService = self._temp_graph_updater_provider()
-        await temp_graph_updater.update_async()
+        temp_graph_updater: TempGraphUpdateService = self._temp_graph_updater_provider()
+        await temp_graph_updater.update_temp_graph_async()
         self._logger.debug("Temp graph is updated")
 
         self._temp_graph_last_update = pd.Timestamp.now(tz=tzlocal())

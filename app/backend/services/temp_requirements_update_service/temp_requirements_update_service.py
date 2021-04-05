@@ -1,7 +1,4 @@
-from backend.services.updater_service.updatable_service import UpdatableService
+class TempRequirementsUpdateService:
 
-
-class TempRequirementsUpdateService(UpdatableService):
-
-    async def update_async(self):
+    async def update_temp_requirements_async(self):
         raise NotImplementedError

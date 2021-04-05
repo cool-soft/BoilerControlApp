@@ -27,7 +27,7 @@ class SimpleTempGraphUpdateService(TempGraphUpdateService):
         self._logger.debug("Temp graph src repository is set")
         self._temp_graph_repository = temp_graph_repository
 
-    async def update_async(self):
+    async def update_temp_graph_async(self):
         self._logger.debug("Requested temp graph update")
 
         async with self._service_lock:

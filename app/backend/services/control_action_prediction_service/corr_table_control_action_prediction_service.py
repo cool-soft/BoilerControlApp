@@ -38,7 +38,7 @@ class CorrTableControlActionPredictionService(ControlActionPredictionService):
         logging.debug("Set temp predictor")
         self._temp_predictor = temp_predictor
 
-    async def update_async(self):
+    async def predict_control_actions_async(self):
         self._logger.debug("Requested updating control actions")
 
         async with self._service_lock:

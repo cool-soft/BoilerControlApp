@@ -47,7 +47,7 @@ class SimpleTempRequirementsService(TempRequirementsUpdateService):
         self._logger.debug("Temp graph requirements calculator is set")
         self._temp_requirements_calculator = temp_graph_requirements_calculator
 
-    async def update_async(self):
+    async def update_temp_requirements_async(self):
         self._logger.debug("Requested temp requirements update")
         async with self._service_lock:
             temp_requirements_df = await self._calc_temp_requirements()
