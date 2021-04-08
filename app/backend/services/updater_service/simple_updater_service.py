@@ -35,7 +35,7 @@ class SimpleUpdaterService(UpdaterService):
         self._logger.debug("Requested items to update unpacked graph")
 
         update_start_datetime = pd.Timestamp.now(tz=tzlocal())
-        for item in self._item_to_update.get_unpacked_dependencies_graph():
+        for item in self._get_unpacked_dependencies_graph(self._item_to_update):
             if self._is_need_update_item(item, update_start_datetime):
                 self._logger.debug(f"Updating item {item.__class__.__name__}")
                 await item.update_async()
@@ -47,25 +47,34 @@ class SimpleUpdaterService(UpdaterService):
     def _is_need_update_item(self, item: UpdatableItem, update_start_datetime: pd.Timestamp) -> bool:
         self._logger.debug("Check need update item")
 
-        need_update = False
-        item_last_update_datetime = item.get_last_updated_datetime()
-        if item_last_update_datetime is None:
+        if item.get_last_updated_datetime() is None:
             need_update = True
         elif item.get_next_update_datetime() <= update_start_datetime:
             need_update = True
         else:
-            item_dependencies: List[UpdatableItem] = item.get_unpacked_dependencies_graph()
-            for dependency in item_dependencies:
-                dependency_last_update_datetime = dependency.get_last_updated_datetime()
-                if dependency_last_update_datetime is None:
-                    raise RuntimeError(f"Dependent item should not be updated before the dependency;"
-                                       f"Dependency that need update is {dependency.__class__.__name__}")
-                if dependency_last_update_datetime >= item_last_update_datetime:
-                    need_update = True
-                    break
+            need_update = self._is_item_dependencies_are_updated(item)
 
         self._logger.debug(f"Item need update status is {need_update}")
         return need_update
+
+    def _is_item_dependencies_are_updated(self, item) -> bool:
+        self._logger.debug(f"Check that item dependencies are updated for {item}")
+
+        item_last_update_datetime = item.get_last_updated_datetime()
+        item_dependencies = self._get_unpacked_dependencies_graph(item)
+
+        dependencies_updated = False
+        for dependency in item_dependencies:
+            dependency_last_update_datetime = dependency.get_last_updated_datetime()
+            if dependency_last_update_datetime is None:
+                raise RuntimeError(f"Dependent item should not be updated before the dependency;"
+                                   f"Dependency that need update is {dependency.__class__.__name__}")
+            if dependency_last_update_datetime >= item_last_update_datetime:
+                dependencies_updated = True
+                break
+
+        self._logger.debug(f"Item dependecies update status is {dependencies_updated}")
+        return dependencies_updated
 
     async def _sleep_to_next_update(self) -> None:
         next_update_datetime = self._get_next_update_datetime()
@@ -82,7 +91,7 @@ class SimpleUpdaterService(UpdaterService):
         self._logger.debug("Requested next update datetime")
 
         next_update_datetime = self._item_to_update.get_next_update_datetime()
-        for item in self._item_to_update.get_unpacked_dependencies_graph():
+        for item in self._get_unpacked_dependencies_graph(self._item_to_update):
             item_next_update_datetime = item.get_next_update_datetime()
             if next_update_datetime is None:
                 next_update_datetime = item_next_update_datetime
@@ -91,3 +100,17 @@ class SimpleUpdaterService(UpdaterService):
 
         self._logger.debug(f"Next update datetime is {next_update_datetime}")
         return next_update_datetime
+
+    def _get_unpacked_dependencies_graph(self, item: UpdatableItem) -> List[UpdatableItem]:
+        self._logger.debug("Unpacked dependencies graph is requested")
+
+        unpacked_graph = []
+        for dependency in item.get_dependencies():
+            sub_graph = self._get_unpacked_dependencies_graph(dependency)
+            for sub_item in sub_graph:
+                if sub_item not in unpacked_graph:
+                    unpacked_graph.append(sub_item)
+            unpacked_graph.append(dependency)
+
+        self._logger.debug(f"Dependency count of {item.__class__.__name__}: {len(unpacked_graph)}")
+        return unpacked_graph

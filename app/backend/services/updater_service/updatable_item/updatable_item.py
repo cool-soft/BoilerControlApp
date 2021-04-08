@@ -29,34 +29,22 @@ class UpdatableItem:
 
         self._dependencies = dependencies
 
+    def get_dependencies(self) -> List[__qualname__]:
+        self._logger.debug(f"Dependencies list is requesed")
+
+        return self._dependencies.copy()
+
     def set_update_interval(self, update_interval: Union[pd.Timedelta, None]):
         self._logger.debug(f"Update interval is set to {update_interval}")
 
         self._update_interval = update_interval
-
-    def get_unpacked_dependencies_graph(self) -> List[__qualname__]:
-        self._logger.debug("Unpacked dependencies graph is requested")
-
-        unpacked_graph = []
-        for dependency in self._dependencies:
-            sub_graph = dependency.get_unpacked_dependencies_graph()
-            for item in sub_graph:
-                if item not in unpacked_graph:
-                    unpacked_graph.append(item)
-            unpacked_graph.append(dependency)
-
-        self._logger.debug(f"Dependency count: {len(unpacked_graph)}")
-        return unpacked_graph
 
     def get_next_update_datetime(self) -> Optional[pd.Timestamp]:
         self._logger.debug("Requested next update datetime")
 
         next_update_datetime = None
         if self._update_interval is not None:
-            if self._last_update_datetime is None:
-                next_update_datetime = pd.Timestamp.now(tz=tzlocal())
-            else:
-                next_update_datetime = self._last_update_datetime + self._update_interval
+            next_update_datetime = self._last_update_datetime + self._update_interval
 
         self._logger.debug(f"Next update datetime is {next_update_datetime}")
         return next_update_datetime
