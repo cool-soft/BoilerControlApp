@@ -1,7 +1,7 @@
 from dependency_injector.providers import Provider
 
 from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
-from backend.services.updater_service.updatable_item.updatable_item import UpdatableItem
+from updater_service.updatable_item.updatable_item import UpdatableItem
 
 
 class TempGraphUpdatableItem(UpdatableItem):

@@ -1,10 +1,10 @@
 import pandas as pd
 from dependency_injector import containers, providers
 
-from backend.services.updater_service.simple_updater_service import SimpleUpdaterService
-from backend.services.updater_service.updatable_item.control_action_updatable_item import ControlActionUpdatableItem
-from backend.services.updater_service.updatable_item.temp_graph_updatable_item import TempGraphUpdatableItem
-from backend.services.updater_service.updatable_item.temp_requirements_updatable_item import \
+from updater_service.simple_updater_service import SimpleUpdaterService
+from backend.services.control_action_prediction_service.control_action_updatable_item import ControlActionUpdatableItem
+from backend.services.temp_graph_update_service.temp_graph_updatable_item import TempGraphUpdatableItem
+from backend.services.temp_requirements_update_service.temp_requirements_updatable_item import \
     TempRequirementsUpdatableItem
 
 

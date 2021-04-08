@@ -5,8 +5,8 @@ from typing import List, Optional
 import pandas as pd
 from dateutil.tz import tzlocal
 
-from backend.services.updater_service.updatable_item.updatable_item import UpdatableItem
-from backend.services.updater_service.updater_service import UpdaterService
+from updater_service.updatable_item.updatable_item import UpdatableItem
+from updater_service.updater_service import UpdaterService
 
 
 class SimpleUpdaterService(UpdaterService):
