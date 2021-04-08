@@ -12,7 +12,7 @@ class SimpleTempGraphUpdateService(TempGraphUpdateService):
                  temp_graph_repository: TempGraphRepository = None):
 
         self._logger = logging.getLogger(self.__class__.__name__)
-        self._logger.debug("Creating instance of the service")
+        self._logger.debug("Creating instance of the provider")
 
         self._service_lock = asyncio.Lock()
 
@@ -27,7 +27,7 @@ class SimpleTempGraphUpdateService(TempGraphUpdateService):
         self._logger.debug("Temp graph src repository is set")
         self._temp_graph_repository = temp_graph_repository
 
-    async def update_async(self):
+    async def update_temp_graph_async(self):
         self._logger.debug("Requested temp graph update")
 
         async with self._service_lock:

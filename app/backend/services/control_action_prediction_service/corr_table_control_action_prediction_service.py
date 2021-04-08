@@ -19,7 +19,7 @@ class CorrTableControlActionPredictionService(ControlActionPredictionService):
                  temp_requirements_repository: TempRequirementsSimpleRepository = None,
                  control_actions_repository: ControlActionsSimpleRepository = None):
         self._logger = logging.getLogger(self.__class__.__name__)
-        self._logger.debug("Creating instance of the service")
+        self._logger.debug("Creating instance of the provider")
 
         self._service_lock = asyncio.Lock()
         self._temp_predictor = temp_predictor
@@ -38,7 +38,7 @@ class CorrTableControlActionPredictionService(ControlActionPredictionService):
         logging.debug("Set temp predictor")
         self._temp_predictor = temp_predictor
 
-    async def update_async(self):
+    async def predict_control_actions_async(self):
         self._logger.debug("Requested updating control actions")
 
         async with self._service_lock:
