@@ -11,23 +11,19 @@ from backend.services.updater_service.updater_service import UpdaterService
 
 class SimpleUpdaterService(UpdaterService):
 
-    def __init__(self,
-                 items_to_update: Optional[List[UpdatableItem]] = None):
-
+    def __init__(self, item_to_update: Optional[UpdatableItem] = None):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance")
 
-        if items_to_update is None:
-            items_to_update = []
-        self._items_to_update = items_to_update
+        self._item_to_update = item_to_update
 
-        self._logger.debug(f"Items to update count {len(items_to_update)}")
+        self._logger.debug(f"Item to update is {item_to_update}")
 
-    def set_items_to_update(self, items_to_update: List[UpdatableItem]):
-        self._logger.debug(f"Items list to update is set; Found {len(items_to_update)} items to update")
-        self._items_to_update = items_to_update
+    def set_item_to_update(self, item_to_update: UpdatableItem) -> None:
+        self._logger.debug(f"Item to update is set to {item_to_update}")
+        self._item_to_update = item_to_update
 
-    async def run_updater_service_async(self):
+    async def run_updater_service_async(self) -> None:
         self._logger.debug(f"Service is started")
 
         while True:
@@ -35,40 +31,43 @@ class SimpleUpdaterService(UpdaterService):
             await self._update_items()
             await self._sleep_to_next_update()
 
-    async def _update_items(self):
+    async def _update_items(self) -> None:
         self._logger.debug("Requested items to update unpacked graph")
 
-        for item in self._get_unpacked_dependencies_graph():
-            if item.is_need_update():
+        update_start_datetime = pd.Timestamp.now(tz=tzlocal())
+        for item in self._item_to_update.get_unpacked_dependencies_graph():
+            if self._is_need_update_item(item, update_start_datetime):
                 self._logger.debug(f"Updating item {item.__class__.__name__}")
                 await item.update_async()
+        if self._is_need_update_item(self._item_to_update, update_start_datetime):
+            await self._item_to_update.update_async()
 
-    def _get_unpacked_dependencies_graph(self):
-        self._logger.debug("Unpacked dependencies graph is requested")
+        self._logger.debug("Items are updated")
 
-        unpacked_graph = []
-        items_to_process = self._items_to_update.copy()
-        while len(items_to_process) > 0:
-            item = items_to_process.pop(0)
+    def _is_need_update_item(self, item: UpdatableItem, update_start_datetime: pd.Timestamp) -> bool:
+        self._logger.debug("Check need update item")
 
-            need_to_process_again = False
-            for dependency in item.get_dependencies():
-                if dependency not in unpacked_graph:
-                    items_to_process.append(dependency)
-                    need_to_process_again = True
+        need_update = False
+        item_last_update_datetime = item.get_last_updated_datetime()
+        if item_last_update_datetime is None:
+            need_update = True
+        elif item.get_next_update_datetime() <= update_start_datetime:
+            need_update = True
+        else:
+            item_dependencies: List[UpdatableItem] = item.get_unpacked_dependencies_graph()
+            for dependency in item_dependencies:
+                dependency_last_update_datetime = dependency.get_last_updated_datetime()
+                if dependency_last_update_datetime is None:
+                    raise RuntimeError(f"Dependent item should not be updated before the dependency;"
+                                       f"Dependency that need update is {dependency.__class__.__name__}")
+                if dependency_last_update_datetime >= item_last_update_datetime:
+                    need_update = True
+                    break
 
-            if not need_to_process_again:
-                unpacked_graph.append(item)
-                self._logger.debug(f"Unpacked item {item.__class__.__name__}")
+        self._logger.debug(f"Item need update status is {need_update}")
+        return need_update
 
-            else:
-                self._logger.debug(f"Need to process again {item.__class__.__name__}")
-                items_to_process.append(item)
-
-        self._logger.debug(f"Found {len(unpacked_graph)} items with dependencies")
-        return unpacked_graph
-
-    async def _sleep_to_next_update(self):
+    async def _sleep_to_next_update(self) -> None:
         next_update_datetime = self._get_next_update_datetime()
         datetime_now = pd.Timestamp.now(tz=tzlocal())
 
@@ -79,11 +78,11 @@ class SimpleUpdaterService(UpdaterService):
         self._logger.debug(f"Sleeping {timedelta_to_next_update}")
         await asyncio.sleep(timedelta_to_next_update.total_seconds())
 
-    def _get_next_update_datetime(self):
+    def _get_next_update_datetime(self) -> pd.Timestamp:
         self._logger.debug("Requested next update datetime")
 
-        next_update_datetime = None
-        for item in self._get_unpacked_dependencies_graph():
+        next_update_datetime = self._item_to_update.get_next_update_datetime()
+        for item in self._item_to_update.get_unpacked_dependencies_graph():
             item_next_update_datetime = item.get_next_update_datetime()
             if next_update_datetime is None:
                 next_update_datetime = item_next_update_datetime

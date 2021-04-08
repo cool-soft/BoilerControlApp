@@ -35,4 +35,4 @@ class UpdateContainer(containers.DeclarativeContainer):
                                                         ))
 
     updater_service = providers.Singleton(SimpleUpdaterService,
-                                          items_to_update=providers.List(control_action_updatable_item))
+                                          item_to_update=control_action_updatable_item)
