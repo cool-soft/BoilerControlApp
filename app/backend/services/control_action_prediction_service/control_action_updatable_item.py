@@ -1,6 +1,6 @@
 from backend.services.control_action_prediction_service.control_actions_prediction_service \
     import ControlActionPredictionService
-from updater_service.updatable_item.updatable_item import UpdatableItem
+from updater.updatable_item.updatable_item import UpdatableItem
 from dependency_injector.providers import Provider
 
 
