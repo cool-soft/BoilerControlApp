@@ -1,5 +1,6 @@
 -e git+https://github.com/cool-soft/updater.git#egg=updater
 -e git+https://github.com/cool-soft/boiler.git#egg=boiler
+-e git+https://github.com/cool-soft/dyn_settings.git#egg=dynamic_settings
 aiohttp==3.7.4.post0
 async-timeout==3.0.1
 attrs==20.3.0
