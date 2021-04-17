@@ -1,6 +1,7 @@
 import argparse
-import asyncio
 import logging
+
+from updater.updater_service.updater_service import UpdaterService
 
 from backend.containers.application import Application
 from backend.web import api_v1, api_v2
@@ -36,9 +37,8 @@ if __name__ == '__main__':
     @app.on_event("startup")
     async def start_updater():
         logger.debug("Staring Updater provider")
-        print(application.services.updater_pkg.temp_requirements_update_interval())
-        updater_service = application.services.updater_pkg.updater_service()
-        asyncio.create_task(updater_service.run_updater_service_async())
+        updater_service: UpdaterService = application.services.updater_pkg.updater_service()
+        await updater_service.start_service()
 
     server = application.wsgi.server()
     logger.debug(f"Starting server at {server.config.host}:{server.config.port}")
