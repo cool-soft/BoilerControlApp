@@ -1,6 +1,7 @@
 import argparse
 import logging
 
+from fastapi import FastAPI
 from updater.updater_service.updater_service import UpdaterService
 
 from backend.containers.application import Application
@@ -32,12 +33,12 @@ if __name__ == '__main__':
     logger.debug("Wiring")
     wire(application)
 
-    app = application.wsgi.app()
+    app: FastAPI = application.wsgi.app()
 
-    @app.on_event("startup")
     async def start_updater():
         updater_service: UpdaterService = application.services.updater_pkg.updater_service()
         await updater_service.start_service()
+    app.add_event_handler("startup", start_updater)
 
     server = application.wsgi.server()
     logger.debug(f"Starting server at {server.config.host}:{server.config.port}")
