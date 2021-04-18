@@ -36,8 +36,7 @@ if __name__ == '__main__':
     app: FastAPI = application.wsgi.app()
 
     async def start_updater():
-        updater_service_future = application.services.updater_pkg.updater_service()
-        updater_service: UpdaterService = await updater_service_future
+        updater_service: UpdaterService = await application.services.updater_pkg.updater_service()
         await updater_service.start_service()
     app.add_event_handler("startup", start_updater)
 
