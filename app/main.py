@@ -28,8 +28,8 @@ async def main(cmd_args):
 
     # Must be placed after core.init_resources()
     logger = logging.getLogger(__name__)
-    logger.debug("Wiring")
 
+    logger.debug("Wiring")
     wire(application)
 
     logger.debug(f"Initialization of dynamic config")

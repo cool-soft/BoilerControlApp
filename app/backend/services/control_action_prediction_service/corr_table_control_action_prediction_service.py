@@ -46,33 +46,53 @@ class CorrTableControlActionPredictionService(ControlActionPredictionService):
         self._logger.debug("Requested updating control actions")
 
         async with self._service_lock:
-            control_action_df = await self._calc_control_actions()
+            control_action_df = await self._get_control_actions()
             await self._control_action_repository.set_control_action(control_action_df)
             await self._drop_expired_control_actions()
 
-    async def _calc_control_actions(self):
+    async def _get_control_actions(self):
         self._logger.debug("Requested calculating control actions")
 
-        start_datetime = pd.Timestamp.now(tz=tzlocal())
-        self._logger.debug(f"Requesting temp requirements from {start_datetime}")
-        temp_requirements_df: pd.DataFrame = \
-            await self._temp_requirements_repository.get_temp_requirements(start_datetime)
-        self._logger.debug(f"Gathered {len(temp_requirements_df)} temp requirements")
+        temp_requirements_df = await self._get_temp_requirements()
+        control_action_df = await self._calc_control_actions(temp_requirements_df)
 
+        return control_action_df
+
+    async def _calc_control_actions(self, temp_requirements_df):
         self._logger.debug("Predicting control actions on temp requirements")
         required_temp_arr = temp_requirements_df[column_names.FORWARD_PIPE_COOLANT_TEMP].to_numpy()
-        need_temp_list = self._temp_predictor.predict_on_temp_requirements(required_temp_arr)
-        control_actions_count = len(need_temp_list)
+        control_temp_list = await self._calc_control_actions_in_executor(required_temp_arr)
+        control_actions_count = len(control_temp_list)
         self._logger.debug(f"Calculated {control_actions_count} actions")
 
         temp_requirements_dates_list = temp_requirements_df[column_names.TIMESTAMP].to_list()
         control_actions_dates_list = temp_requirements_dates_list[:control_actions_count]
         control_action_df = pd.DataFrame({
             column_names.TIMESTAMP: control_actions_dates_list,
-            column_names.FORWARD_PIPE_COOLANT_TEMP: need_temp_list
+            column_names.FORWARD_PIPE_COOLANT_TEMP: control_temp_list
         })
 
         return control_action_df
+
+    async def _calc_control_actions_in_executor(self, required_temp_arr):
+        loop = asyncio.get_running_loop()
+        control_actions_list = await loop.run_in_executor(
+            None,
+            self._temp_predictor.predict_on_temp_requirements,
+            required_temp_arr
+        )
+
+        return control_actions_list
+
+    async def _get_temp_requirements(self):
+        start_datetime = pd.Timestamp.now(tz=tzlocal())
+        self._logger.debug(f"Requesting temp requirements from {start_datetime}")
+
+        temp_requirements_df: pd.DataFrame = \
+            await self._temp_requirements_repository.get_temp_requirements(start_datetime)
+        self._logger.debug(f"Gathered {len(temp_requirements_df)} temp requirements")
+
+        return temp_requirements_df
 
     async def _drop_expired_control_actions(self):
         datetime_now = pd.Timestamp.now(tz=tzlocal())
