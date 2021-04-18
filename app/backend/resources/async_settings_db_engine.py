@@ -16,7 +16,6 @@ class AsyncSettingsDBEngine(resources.AsyncResource):
 
         db_engine = create_async_engine(db_url)
         async with db_engine.begin() as conn:
-            await conn.run_sync(Setting.metadata.drop_all)
             await conn.run_sync(Setting.metadata.create_all)
 
         return db_engine
