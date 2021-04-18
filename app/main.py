@@ -37,6 +37,8 @@ if __name__ == '__main__':
     @app.on_event("startup")
     async def start_updater():
         logger.debug("Staring Updater provider")
+        print(application.services.dynamic_settings_pkg.dynamic_config())
+        print(application.services.dynamic_settings_pkg.config())
         updater_service: UpdaterService = application.services.updater_pkg.updater_service()
         await updater_service.start_service()
 

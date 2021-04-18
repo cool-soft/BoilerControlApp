@@ -10,6 +10,7 @@ from backend.services.temp_requirements_update_service.temp_requirements_updatab
 
 class UpdateContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
+    dynamic_config_rwlock = providers.Dependency()
 
     control_actions_predictor = providers.Dependency()
     temp_graph_updater = providers.Dependency()
@@ -29,6 +30,7 @@ class UpdateContainer(containers.DeclarativeContainer):
 
     control_action_updatable_item = providers.Singleton(ControlActionUpdatableItem,
                                                         provider=control_actions_predictor.provider,
+                                                        dynamic_config_lock=dynamic_config_rwlock,
                                                         dependencies=providers.List(
                                                             temp_graph_updatable_item,
                                                             temp_requirements_updatable_item

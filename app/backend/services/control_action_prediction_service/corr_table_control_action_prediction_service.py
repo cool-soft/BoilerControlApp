@@ -26,6 +26,10 @@ class CorrTableControlActionPredictionService(ControlActionPredictionService):
         self._temp_requirements_repository = temp_requirements_repository
         self._control_action_repository = control_actions_repository
 
+        self._logger.debug(f"Temp predictor is {temp_predictor}")
+        self._logger.debug(f"Temp requirements repository is {temp_requirements_repository}")
+        self._logger.debug(f"Control actions repository is {control_actions_repository}")
+
     def set_temp_requirements_repository(self, temp_requirements_repository: TempRequirementsSimpleRepository):
         self._logger.debug("Set temp requirements repository")
         self._temp_requirements_repository = temp_requirements_repository
@@ -55,7 +59,7 @@ class CorrTableControlActionPredictionService(ControlActionPredictionService):
             await self._temp_requirements_repository.get_temp_requirements(start_datetime)
         self._logger.debug(f"Gathered {len(temp_requirements_df)} temp requirements")
 
-        self._logger.debug("Prediting control actions on temp reuirements")
+        self._logger.debug("Predicting control actions on temp requirements")
         required_temp_arr = temp_requirements_df[column_names.FORWARD_PIPE_COOLANT_TEMP].to_numpy()
         need_temp_list = self._temp_predictor.predict_on_temp_requirements(required_temp_arr)
         control_actions_count = len(need_temp_list)
@@ -72,5 +76,5 @@ class CorrTableControlActionPredictionService(ControlActionPredictionService):
 
     async def _drop_expired_control_actions(self):
         datetime_now = pd.Timestamp.now(tz=tzlocal())
-        self._logger.debug(f"Droping expiried control actions, that older than {datetime_now}")
+        self._logger.debug(f"Dropping expired control actions, that older than {datetime_now}")
         await self._control_action_repository.delete_control_action_older_than(datetime_now)
