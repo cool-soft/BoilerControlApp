@@ -50,20 +50,37 @@ class SimpleTempRequirementsService(TempRequirementsUpdateService):
     async def update_temp_requirements_async(self):
         self._logger.debug("Requested temp requirements update")
         async with self._service_lock:
-            temp_requirements_df = await self._calc_temp_requirements()
+            weather_df = await self._get_weather_forecast()
+            temp_graph = await self._get_temp_graph()
+            temp_requirements_df = await self._calc_temp_requirements_in_executor(weather_df, temp_graph)
             await self._temp_requirements_repository.update_temp_requirements(temp_requirements_df)
             await self._drop_expired_temp_requirements()
 
-    async def _calc_temp_requirements(self):
-        self._logger.debug("Calculating temp requirements")
-
-        temp_graph = await self._temp_graph_repository.get_temp_graph()
-        self._temp_requirements_calculator.set_temp_graph(temp_graph)
-
+    async def _get_weather_forecast(self):
         start_datetime = pd.Timestamp.now(tz=tzlocal())
         weather_df = await self._weather_repository.get_weather_info(start_datetime)
-        weather_temp_arr = weather_df[column_names.WEATHER_TEMP].to_numpy()
+        return weather_df
 
+    async def _get_temp_graph(self):
+        temp_graph = await self._temp_graph_repository.get_temp_graph()
+        return temp_graph
+
+    async def _calc_temp_requirements_in_executor(self, weather_df, temp_graph):
+        loop = asyncio.get_running_loop()
+        temp_requirements = await loop.run_in_executor(
+            None,
+            self._calc_temp_requirements,
+            weather_df,
+            temp_graph
+        )
+        return temp_requirements
+
+    def _calc_temp_requirements(self, weather_df, temp_graph):
+        self._logger.debug("Calculating temp requirements")
+
+        self._temp_requirements_calculator.set_temp_graph(temp_graph)
+
+        weather_temp_arr = weather_df[column_names.WEATHER_TEMP].to_numpy()
         temp_requirements_datetime_list = weather_df[column_names.TIMESTAMP].to_list()
         temp_requirements = []
         for weather_temp, datetime_ in zip(weather_temp_arr, temp_requirements_datetime_list):
