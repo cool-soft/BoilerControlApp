@@ -10,7 +10,6 @@ class FastAPIApp(resources.Resource):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of Resource")
 
-    # TODO: startup, shutdown event handlers
     def init(self, api_routers: list) -> FastAPI:
         self._logger.debug("Initialization of FastAPI app")
 
