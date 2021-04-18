@@ -1,6 +1,7 @@
 import logging
 
 from dependency_injector.wiring import Provide, inject
+from dynamic_settings.di_service.async_dynamic_settings_di_service import AsyncDynamicSettingsDIService
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
@@ -77,3 +78,12 @@ async def get_predicted_boiler_t(
             predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
 
     return predicted_boiler_temp_list
+
+
+@api_router.post("/set_min_home_temp_coefficient")
+@inject
+async def set_min_home_temp_coefficient(coefficient: float,
+                                        dynamic_settings_service: AsyncDynamicSettingsDIService = Depends(
+                                            Provide[Services.dynamic_settings_pkg.settings_service]
+                                        )):
+    await dynamic_settings_service.set_settings({"home_min_temp_coefficient": coefficient})
