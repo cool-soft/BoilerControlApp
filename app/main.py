@@ -1,6 +1,9 @@
 import argparse
+import asyncio
 import logging
 
+import uvicorn
+from dynamic_settings.di_service.async_dynamic_settings_di_service import AsyncDynamicSettingsDIService
 from fastapi import FastAPI
 from updater.updater_service.updater_service import UpdaterService
 
@@ -33,13 +36,19 @@ if __name__ == '__main__':
     logger.debug("Wiring")
     wire(application)
 
+    # TODO: Переместить в создание ресурса FastAPI app, как зависимости
     app: FastAPI = application.wsgi.app()
 
     async def start_updater():
+        dynamic_settings_service: AsyncDynamicSettingsDIService = \
+            await application.services.dynamic_settings_pkg.settings_service()
+        await dynamic_settings_service.initialize_repository_and_config()
         updater_service: UpdaterService = await application.services.updater_pkg.updater_service()
         await updater_service.start_service()
     app.add_event_handler("startup", start_updater)
 
-    server = application.wsgi.server()
+    server: uvicorn.Server = application.wsgi.server()
     logger.debug(f"Starting server at {server.config.host}:{server.config.port}")
-    server.run()
+    loop = asyncio.get_event_loop()
+    loop.set_debug(True)
+    loop.run_until_complete(server.serve(sockets=None))

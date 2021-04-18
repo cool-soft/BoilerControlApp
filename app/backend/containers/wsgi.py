@@ -24,7 +24,7 @@ class WSGI(containers.DeclarativeContainer):
         app=app,
         host=config.host,
         port=config.port,
-        log_config=None
+        # log_config=None
     )
 
     server = providers.Singleton(
