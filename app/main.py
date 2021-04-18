@@ -32,9 +32,12 @@ async def main(cmd_args):
 
     wire(application)
 
+    logger.debug(f"Initialization of dynamic config")
     dynamic_settings_service: AsyncDynamicSettingsDIService = \
         await application.services.dynamic_settings_pkg.settings_service()
     await dynamic_settings_service.initialize_repository_and_config()
+
+    logger.debug(f"Starting updater service")
     updater_service: UpdaterService = await application.services.updater_pkg.updater_service()
     await updater_service.start_service()
 
