@@ -3,7 +3,7 @@ import asyncio
 import logging
 
 import uvicorn
-from dynamic_settings.di_service.async_dynamic_settings_di_service import AsyncDynamicSettingsDIService
+from dynamic_settings.service.settings_service import SettingsService
 from updater.updater_service.updater_service import UpdaterService
 
 from backend.containers.application import Application
@@ -33,12 +33,12 @@ async def main(cmd_args):
     wire(application)
 
     logger.debug(f"Initialization of dynamic config")
-    dynamic_settings_service: AsyncDynamicSettingsDIService = \
+    dynamic_settings_service: SettingsService = \
         await application.services.dynamic_settings_pkg.settings_service()
-    await dynamic_settings_service.initialize_repository_and_config()
+    await dynamic_settings_service.initialize_service()
 
     logger.debug(f"Starting updater service")
-    updater_service: UpdaterService = await application.services.updater_pkg.updater_service()
+    updater_service: UpdaterService = application.services.updater_pkg.updater_service()
     await updater_service.start_service()
 
     server: uvicorn.Server = application.wsgi.server()

@@ -9,14 +9,10 @@ from .services_containers.updater_container import UpdateContainer
 
 class Services(containers.DeclarativeContainer):
     config = providers.Configuration()
-    dynamic_config = providers.Dependency()
-    dynamic_config_rwlock = providers.Dependency()
 
     dynamic_settings_pkg = providers.Container(
         DynamicSettingsContainer,
-        config=config.dynamic_settings,
-        dynamic_config=dynamic_config,
-        dynamic_config_rwlock=dynamic_config_rwlock
+        config=config.dynamic_settings
     )
 
     temp_graph_pkg = providers.Container(
@@ -33,14 +29,13 @@ class Services(containers.DeclarativeContainer):
     control_action_pkg = providers.Container(
         ControlActionContainer,
         config=config.boiler_temp_prediction,
-        dynamic_config=dynamic_config,
+        settings_service=dynamic_settings_pkg.settings_service,
         temp_requirements_repository=temp_requirements_pkg.temp_requirements_repository
     )
 
     updater_pkg = providers.Container(
         UpdateContainer,
         config=config.updater,
-        dynamic_config_rwlock=dynamic_settings_pkg.dynamic_config_rwlock,
         control_actions_predictor=control_action_pkg.temp_prediction_service,
         temp_graph_updater=temp_graph_pkg.temp_graph_update_service,
         temp_requirements_calculator=temp_requirements_pkg.temp_requirements_service,

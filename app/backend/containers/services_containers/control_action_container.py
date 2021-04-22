@@ -10,11 +10,12 @@ from backend.services.control_action_prediction_service.corr_table_control_actio
 
 class ControlActionContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
-    dynamic_config = providers.Configuration()
+    settings_service = providers.Dependency()
 
     temp_requirements_repository = providers.Dependency()
-    control_actions_repository = providers.Singleton(ControlActionsSimpleRepository)
-    dynamic_settings_repository = providers.Dependency()
+    control_actions_repository = providers.Singleton(
+        ControlActionsSimpleRepository
+    )
 
     temp_correlation_table = providers.Resource(
         TempCorrelationTable,
@@ -28,9 +29,9 @@ class ControlActionContainer(containers.DeclarativeContainer):
 
     temp_predictor = providers.Factory(
         CorrTableTempPredictor,
-        home_min_temp_coefficient=dynamic_config.home_min_temp_coefficient,
         temp_correlation_table=temp_correlation_table,
-        home_time_deltas=homes_time_deltas
+        home_time_deltas=homes_time_deltas,
+        home_min_temp_coefficient=settings_service.provided.get_one_setting_sync.call("home_min_temp_coefficient")
     )
 
     temp_prediction_service = providers.Factory(

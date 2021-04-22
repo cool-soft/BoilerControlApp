@@ -4,7 +4,7 @@ from aiorwlock import RWLock
 from dependency_injector import resources
 
 
-class DynamicConfigRWLock(resources.AsyncResource):
+class DynamicSettingsRWLock(resources.AsyncResource):
 
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
