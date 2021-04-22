@@ -24,5 +24,5 @@ class ControlActionUpdatableItem(UpdatableItem):
 
     async def _run_update_async(self):
         self._logger.debug("Run update")
-        service: ControlActionPredictionService = self._provider()
+        service: ControlActionPredictionService = await self._provider()
         await service.predict_control_actions_async()
