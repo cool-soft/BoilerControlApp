@@ -1,5 +1,6 @@
 -e git+https://github.com/cool-soft/updater.git#egg=updater
 -e git+https://github.com/cool-soft/boiler.git#egg=boiler
+-e git+https://github.com/cool-soft/boiler-softm.git#egg=boiler-softm
 -e git+https://github.com/cool-soft/dynamic-settings.git#egg=dynamic-settings
 aiohttp==3.7.4.post0
 aiorwlock==1.0.0

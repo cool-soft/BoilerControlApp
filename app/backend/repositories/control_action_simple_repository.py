@@ -41,6 +41,6 @@ class ControlActionsSimpleRepository:
         self._cache = cache_df
 
     async def delete_control_action_older_than(self, datetime: pd.Timestamp):
-        self._logger.debug(f"Requested deleting boiler contreol data older than {datetime}")
+        self._logger.debug(f"Requested deleting boiler control data older than {datetime}")
 
         self._cache = self._cache[self._cache[column_names.TIMESTAMP] >= datetime].copy()
