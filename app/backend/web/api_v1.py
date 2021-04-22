@@ -45,17 +45,17 @@ async def get_predicted_boiler_t(
     predicted_boiler_temp_list = []
     if not boiler_control_actions_df.empty:
 
-        datetimes = boiler_control_actions_df[column_names.TIMESTAMP]
-        datetimes = datetimes.dt.tz_convert(work_timezone.timezone)
+        datetime_column = boiler_control_actions_df[column_names.TIMESTAMP]
+        datetime_column = datetime_column.dt.tz_convert(work_timezone.timezone)
         response_datetime_pattern = datetime_processing_params.get("response_pattern")
-        datetimes = datetimes.dt.strftime(response_datetime_pattern)
-        datetimes = datetimes.to_list()
+        datetime_column = datetime_column.dt.strftime(response_datetime_pattern)
+        datetime_column = datetime_column.to_list()
 
         boiler_out_temps = boiler_control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
         boiler_out_temps = boiler_out_temps.round(1)
         boiler_out_temps = boiler_out_temps.to_list()
 
-        for datetime_, boiler_out_temp in zip(datetimes, boiler_out_temps):
+        for datetime_, boiler_out_temp in zip(datetime_column, boiler_out_temps):
             predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
 
     return predicted_boiler_temp_list

@@ -97,5 +97,5 @@ class SimpleTempRequirementsService(TempRequirementsUpdateService):
 
     async def _drop_expired_temp_requirements(self):
         datetime_now = pd.Timestamp.now(tz=tzlocal())
-        self._logger.debug(f"Droping expiried temp requirements, that older than {datetime_now}")
+        self._logger.debug(f"Dropping expired temp requirements, that older than {datetime_now}")
         await self._temp_requirements_repository.delete_temp_requirements_older_than(datetime_now)
