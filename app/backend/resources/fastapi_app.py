@@ -19,5 +19,5 @@ class FastAPIApp(resources.Resource):
 
         return app
 
-    def shutdown(self, *args, **kwargs):
+    def shutdown(self, app: FastAPI) -> None:
         pass

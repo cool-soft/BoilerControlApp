@@ -1,6 +1,7 @@
 import logging
 
 from dependency_injector.wiring import Provide, inject
+from dynamic_settings.service.simple_settings_service import SimpleSettingsService
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
@@ -65,15 +66,24 @@ async def get_predicted_boiler_t(
     predicted_boiler_temp_list = []
     if not boiler_control_actions_df.empty:
 
-        datetimes = boiler_control_actions_df[column_names.TIMESTAMP]
-        datetimes = datetimes.dt.tz_convert(work_timezone.timezone)
-        datetimes = datetimes.to_list()
+        datetime = boiler_control_actions_df[column_names.TIMESTAMP]
+        datetime = datetime.dt.tz_convert(work_timezone.timezone)
+        datetime = datetime.to_list()
 
         boiler_out_temps = boiler_control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
         boiler_out_temps = boiler_out_temps.round(1)
         boiler_out_temps = boiler_out_temps.to_list()
 
-        for datetime_, boiler_out_temp in zip(datetimes, boiler_out_temps):
+        for datetime_, boiler_out_temp in zip(datetime, boiler_out_temps):
             predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
 
     return predicted_boiler_temp_list
+
+
+@api_router.post("/set_min_home_temp_coefficient")
+@inject
+async def set_min_home_temp_coefficient(coefficient: float,
+                                        dynamic_settings_service: SimpleSettingsService = Depends(
+                                            Provide[Services.dynamic_settings_pkg.settings_service]
+                                        )):
+    await dynamic_settings_service.set_one_setting_async("home_min_temp_coefficient", coefficient)

@@ -1,6 +1,9 @@
 import argparse
+import asyncio
 import logging
 
+import uvicorn
+from dynamic_settings.service.settings_service import SettingsService
 from updater.updater_service.updater_service import UpdaterService
 
 from backend.containers.application import Application
@@ -17,13 +20,10 @@ def init_resources(application_container):
     application_container.services.control_action_pkg.init_resources()
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Control boiler')
-    parser.add_argument('--config', default="../storage/config/config.yaml", help='path to config file')
-    args = parser.parse_args()
-
+async def main(cmd_args):
     application = Application()
-    application.config.from_yaml(args.config)
+    application.config.from_yaml(cmd_args.config)
+
     init_resources(application)
 
     # Must be placed after core.init_resources()
@@ -32,14 +32,25 @@ if __name__ == '__main__':
     logger.debug("Wiring")
     wire(application)
 
-    app = application.wsgi.app()
+    logger.debug(f"Initialization of dynamic config")
+    dynamic_settings_service: SettingsService = \
+        await application.services.dynamic_settings_pkg.settings_service()
+    await dynamic_settings_service.initialize_service()
 
-    @app.on_event("startup")
-    async def start_updater():
-        logger.debug("Staring Updater provider")
-        updater_service: UpdaterService = application.services.updater_pkg.updater_service()
-        await updater_service.start_service()
+    logger.debug(f"Starting updater service")
+    updater_service: UpdaterService = application.services.updater_pkg.updater_service()
+    await updater_service.start_service()
 
-    server = application.wsgi.server()
+    server: uvicorn.Server = application.wsgi.server()
     logger.debug(f"Starting server at {server.config.host}:{server.config.port}")
-    server.run()
+    await server.serve(sockets=None)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Control boiler')
+    parser.add_argument('--config', default="../storage/config/config.yaml", help='path to config file')
+    args = parser.parse_args()
+
+    loop = asyncio.get_event_loop()
+    loop.set_debug(True)
+    loop.run_until_complete(main(args))

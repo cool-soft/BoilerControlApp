@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 
 from .services_containers.control_action_container import ControlActionContainer
+from .services_containers.dynamic_settings_container import DynamicSettingsContainer
 from .services_containers.temp_graph_container import TempGraphContainer
 from .services_containers.temp_requirements_container import TempRequirementsContainer
 from .services_containers.updater_container import UpdateContainer
@@ -8,6 +9,11 @@ from .services_containers.updater_container import UpdateContainer
 
 class Services(containers.DeclarativeContainer):
     config = providers.Configuration()
+
+    dynamic_settings_pkg = providers.Container(
+        DynamicSettingsContainer,
+        config=config.dynamic_settings
+    )
 
     temp_graph_pkg = providers.Container(
         TempGraphContainer,
@@ -23,6 +29,7 @@ class Services(containers.DeclarativeContainer):
     control_action_pkg = providers.Container(
         ControlActionContainer,
         config=config.boiler_temp_prediction,
+        settings_service=dynamic_settings_pkg.settings_service,
         temp_requirements_repository=temp_requirements_pkg.temp_requirements_repository
     )
 

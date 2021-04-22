@@ -10,7 +10,7 @@ from backend.services.temp_requirements_update_service.temp_requirements_updatab
 
 class UpdateContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
-
+    
     control_actions_predictor = providers.Dependency()
     temp_graph_updater = providers.Dependency()
     temp_requirements_calculator = providers.Dependency()
