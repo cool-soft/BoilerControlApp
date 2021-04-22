@@ -1,11 +1,10 @@
 from typing import Optional
 
-from aiorwlock import RWLock
 from dependency_injector.providers import Provider
+from updater.updatable_item.updatable_item import UpdatableItem
 
 from backend.services.temp_requirements_update_service.temp_requirements_update_service import \
     TempRequirementsUpdateService
-from updater.updatable_item.updatable_item import UpdatableItem
 
 
 class TempRequirementsUpdatableItem(UpdatableItem):

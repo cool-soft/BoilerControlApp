@@ -1,10 +1,9 @@
 from dependency_injector import containers, providers
-from dynamic_settings.service.simple_settings_service import SimpleSettingsService
 from dynamic_settings.repository.db_settings_repository import dtype_converters, DBSettingsRepository
+from dynamic_settings.service.simple_settings_service import SimpleSettingsService
 
 from backend.resources.async_settings_db_engine import AsyncSettingsDBEngine
 from backend.resources.async_settings_db_session_factory import AsyncSettingsDBSessionFactory
-from backend.resources.dynamic_settings_rwlock import DynamicSettingsRWLock
 
 
 class DynamicSettingsContainer(containers.DeclarativeContainer):
