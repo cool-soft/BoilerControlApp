@@ -1,4 +1,4 @@
-from typing import Optional, Awaitable, Callable
+from typing import Optional
 
 from dependency_injector.providers import Provider
 from updater.updatable_item.updatable_item import UpdatableItem
