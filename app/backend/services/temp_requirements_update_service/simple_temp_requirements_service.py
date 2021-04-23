@@ -5,9 +5,12 @@ import pandas as pd
 from dateutil.tz import tzlocal
 
 from boiler.constants import column_names
-from boiler.temp_graph.repository.temp_graph_repository import TempGraphRepository
-from boiler.temp_requirements.repository.temp_requirements_simple_repository import TempRequirementsSimpleRepository
-from boiler.weater_info.repository.weather_repository import WeatherRepository
+from boiler.temp_graph.repository.stream.async_.temp_graph_stream_async_repository \
+    import TempGraphStreamAsyncRepository
+from boiler.temp_requirements.repository.db.async_.temp_requirements_db_async_repository \
+    import TempRequirementsDBAsyncRepository
+from boiler.weater_info.repository.stream.async_.weather_stream_async_repository \
+    import WeatherStreamAsyncRepository
 from backend.services.temp_requirements_update_service.temp_requirements_update_service import \
     TempRequirementsUpdateService
 
@@ -15,9 +18,9 @@ from backend.services.temp_requirements_update_service.temp_requirements_update_
 class SimpleTempRequirementsService(TempRequirementsUpdateService):
 
     def __init__(self,
-                 temp_graph_repository: TempGraphRepository = None,
-                 weather_repository: WeatherRepository = None,
-                 temp_requirements_repository: TempRequirementsSimpleRepository = None,
+                 temp_graph_repository: TempGraphStreamAsyncRepository = None,
+                 weather_repository: WeatherStreamAsyncRepository = None,
+                 temp_requirements_repository: TempRequirementsDBAsyncRepository = None,
                  temp_graph_requirements_calculator=None):
 
         self._logger = logging.getLogger(self.__class__.__name__)
@@ -35,11 +38,11 @@ class SimpleTempRequirementsService(TempRequirementsUpdateService):
         self._logger.debug("Temp graph repository is set")
         self._temp_graph_repository = temp_graph_repository
 
-    def set_weather_repository(self, weather_repository: WeatherRepository):
+    def set_weather_repository(self, weather_repository: WeatherStreamAsyncRepository):
         self._logger.debug("Weather repository is set")
         self._weather_repository = weather_repository
 
-    def set_temp_requirements_repository(self, temp_requirements_repository: TempRequirementsSimpleRepository):
+    def set_temp_requirements_repository(self, temp_requirements_repository: TempRequirementsDBAsyncRepository):
         self._logger.debug("Temp requirements repository is set")
         self._temp_requirements_repository = temp_requirements_repository
 
