@@ -2,14 +2,15 @@ import asyncio
 import logging
 
 from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
-from boiler_softm.temp_graph.repository.online_soft_m_temp_graph_repository import TempGraphRepository
+from boiler.temp_graph.repository.stream.async_.temp_graph_stream_async_repository \
+    import TempGraphStreamAsyncRepository
 
 
 class SimpleTempGraphUpdateService(TempGraphUpdateService):
 
     def __init__(self,
-                 temp_graph_src_repository: TempGraphRepository = None,
-                 temp_graph_repository: TempGraphRepository = None):
+                 temp_graph_src_repository: TempGraphStreamAsyncRepository = None,
+                 temp_graph_repository: TempGraphStreamAsyncRepository = None) -> None:
 
         self._logger = logging.getLogger(self.__class__.__name__)
         self._logger.debug("Creating instance of the provider")
@@ -19,11 +20,12 @@ class SimpleTempGraphUpdateService(TempGraphUpdateService):
         self._temp_graph_src_repository = temp_graph_src_repository
         self._temp_graph_repository = temp_graph_repository
 
-    def set_temp_graph_src_repository(self, temp_graph_src_repository: TempGraphRepository):
+    def set_temp_graph_src_repository(self,
+                                      temp_graph_src_repository: TempGraphStreamAsyncRepository) -> None:
         self._logger.debug("Temp graph src repository is set")
         self._temp_graph_src_repository = temp_graph_src_repository
 
-    def set_temp_graph_repository(self, temp_graph_repository: TempGraphRepository):
+    def set_temp_graph_repository(self, temp_graph_repository: TempGraphStreamAsyncRepository) -> None:
         self._logger.debug("Temp graph src repository is set")
         self._temp_graph_repository = temp_graph_repository
 

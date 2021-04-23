@@ -2,8 +2,8 @@
 -e git+https://github.com/cool-soft/boiler.git#egg=boiler
 -e git+https://github.com/cool-soft/boiler-softm.git#egg=boiler-softm
 -e git+https://github.com/cool-soft/dynamic-settings.git#egg=dynamic-settings
+
 aiohttp==3.7.4.post0
-aiorwlock==1.0.0
 aiosqlite==0.17.0
 async-timeout==3.0.1
 attrs==20.3.0
@@ -18,7 +18,7 @@ multidict==5.1.0
 numpy==1.20.2
 pandas==1.2.4
 pydantic==1.8.1
-python-dateutil==2.8.1
+python-dateutil~=2.8.1
 pytz==2021.1
 PyYAML==5.4.1
 six==1.15.0
