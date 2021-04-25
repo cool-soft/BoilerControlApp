@@ -23,7 +23,7 @@ class Services(containers.DeclarativeContainer):
     temp_requirements_pkg = providers.Container(
         TempRequirementsContainer,
         config=config.temp_requirements_calculation,
-        temp_graph_repository=temp_graph_pkg.temp_graph_repository
+        temp_graph_loader=temp_graph_pkg.temp_graph_dumper_loader
     )
 
     control_action_pkg = providers.Container(
