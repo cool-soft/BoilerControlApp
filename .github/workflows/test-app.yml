@@ -1,4 +1,4 @@
-name: Test and coverage package
+name: Test and coverage app
 
 on:
   push:
