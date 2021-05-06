@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  test-and-coverage-package:
+  test-and-coverage-app:
     runs-on: [ubuntu-latest]
     steps:
 

@@ -30,7 +30,7 @@ python-dateutil~=2.8.1
 pytz==2021.1
 PyYAML==5.4.1
 six==1.15.0
-starlette==0.14.2
+starlette==0.13.6
 sqlalchemy==1.4.13
 typing-extensions==3.7.4.3
 urllib3==1.26.4
