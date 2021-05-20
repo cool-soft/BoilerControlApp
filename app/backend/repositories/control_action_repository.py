@@ -42,7 +42,7 @@ class ControlActionsRepository:
                 )
         return control_actions_df
 
-    async def set_control_actions(self, control_actions_df: pd.DataFrame) -> None:
+    async def add_control_actions(self, control_actions_df: pd.DataFrame) -> None:
         async with self._get_rwlock().writer_lock:
             self._storage = self._storage.append(control_actions_df)
             self._storage = self._storage.drop_duplicates(

@@ -4,7 +4,7 @@ from dependency_injector.providers import Provider
 from updater.updatable_item.updatable_item import UpdatableItem
 
 from backend.services.control_action_prediction_service.control_actions_prediction_service \
-    import ControlActionPredictionService
+    import AbstractControlActionPredictionService
 
 
 class ControlActionUpdatableItem(UpdatableItem):
@@ -24,5 +24,5 @@ class ControlActionUpdatableItem(UpdatableItem):
 
     async def _run_update_async(self):
         self._logger.debug("Run update")
-        service: ControlActionPredictionService = await self._provider()
+        service: AbstractControlActionPredictionService = await self._provider()
         await service.predict_control_actions_async()

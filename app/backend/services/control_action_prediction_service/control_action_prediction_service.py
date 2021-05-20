@@ -5,15 +5,13 @@ import pandas as pd
 from dateutil.tz import tzlocal
 
 from boiler.constants import column_names
-from boiler.temp_requirements.repository.db.async_.temp_requirements_db_async_repository \
-    import TempRequirementsDBAsyncRepository
-from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
-from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
-from backend.services.control_action_prediction_service.control_actions_prediction_service import \
-    ControlActionPredictionService
+from backend.repositories.weather_forecast_repository import WeatherForecastRepository
+from boiler.heating_system_model.corr_table_heating_system_model import CorrTableHeatingSystemModel
+from backend.repositories.control_action_repository import ControlActionsRepository
 
 
-class CorrTableControlActionPredictionService(ControlActionPredictionService):
+
+class ControlActionPredictionService:
 
     def __init__(self,
                  temp_predictor: CorrTableTempPredictor = None,

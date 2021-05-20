@@ -37,7 +37,7 @@ class TestControlActionsRepository:
 
     @pytest.mark.asyncio
     async def test_set_get(self, control_actions_df, repository):
-        await repository.set_control_actions(control_actions_df)
+        await repository.add_control_actions(control_actions_df)
         loaded_control_actions = await repository.get_control_actions_by_timestamp_range(
             self.start_timestamp,
             self.end_timestamp
@@ -46,7 +46,7 @@ class TestControlActionsRepository:
 
     @pytest.mark.asyncio
     async def test_set_drop_get(self, control_actions_df, repository):
-        await repository.set_control_actions(control_actions_df)
+        await repository.add_control_actions(control_actions_df)
         await repository.drop_control_actions_older_than(self.drop_timestamp)
         loaded_control_actions = await repository.get_control_actions_by_timestamp_range(
             self.start_timestamp,

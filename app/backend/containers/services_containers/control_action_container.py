@@ -5,7 +5,7 @@ from backend.repositories.control_action_simple_repository import ControlActions
 from backend.resources.home_time_deltas_resource import HomeTimeDeltasResource
 from backend.resources.temp_correlation_table import TempCorrelationTable
 from backend.services.control_action_prediction_service.corr_table_control_action_prediction_service import \
-    CorrTableControlActionPredictionService
+    ControlActionPredictionService
 
 
 class ControlActionContainer(containers.DeclarativeContainer):
@@ -35,7 +35,7 @@ class ControlActionContainer(containers.DeclarativeContainer):
     )
 
     temp_prediction_service = providers.Factory(
-        CorrTableControlActionPredictionService,
+        ControlActionPredictionService,
         temp_predictor=temp_predictor,
         temp_requirements_repository=temp_requirements_repository,
         control_actions_repository=control_actions_repository
