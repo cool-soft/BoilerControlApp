@@ -1,14 +1,14 @@
--e git+https://github.com/cool-soft/updater.git#egg=updater
--e git+https://github.com/cool-soft/boiler.git#egg=boiler
--e git+https://github.com/cool-soft/boiler-softm.git#egg=boiler-softm
--e git+https://github.com/cool-soft/dynamic-settings.git#egg=dynamic-settings
+git+https://github.com/cool-soft/updater.git#egg=updater
+git+https://github.com/cool-soft/boiler.git#egg=boiler
+git+https://github.com/cool-soft/boiler-softm.git#egg=boiler-softm
+git+https://github.com/cool-soft/dynamic-settings.git#egg=dynamic-settings
 
 pytest~=6.2.3
 pytest-asyncio~=0.15.0
-pytest-cov~=2.11.1
 pytest-html~=3.1.1
 pytest-pythonpath~=0.7.3
 pytest-timeout~=1.4.2
+coverage~=5.5
 
 aiohttp==3.7.4.post0
 aiorwlock~=1.0.0

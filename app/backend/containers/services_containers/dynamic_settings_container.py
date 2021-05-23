@@ -1,9 +1,9 @@
 from dependency_injector import containers, providers
 from dynamic_settings.repository.db_settings_repository import dtype_converters, DBSettingsRepository
-from dynamic_settings.service.simple_settings_service import SimpleSettingsService
 
 from backend.resources.async_settings_db_engine import AsyncSettingsDBEngine
 from backend.resources.async_settings_db_session_factory import AsyncSettingsDBSessionFactory
+from backend.services.SettingsService import SettingsService
 
 
 class DynamicSettingsContainer(containers.DeclarativeContainer):
@@ -33,7 +33,7 @@ class DynamicSettingsContainer(containers.DeclarativeContainer):
     )
 
     settings_service = providers.Singleton(
-        SimpleSettingsService,
+        SettingsService,
         settings_repository=settings_repository,
         defaults=config.defaults
     )
