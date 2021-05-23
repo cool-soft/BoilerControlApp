@@ -26,7 +26,7 @@ class WeatherForecastContainer(containers.DeclarativeContainer):
         filter_algorithm=FullClosedTimestampFilterAlgorithm()
     )
 
-    weather_preprocess_algorithm =
+    # weather_preprocess_algorithm =
 
     weather_forecast_service = providers.Singleton(
         SimpleWeatherForecastService,
