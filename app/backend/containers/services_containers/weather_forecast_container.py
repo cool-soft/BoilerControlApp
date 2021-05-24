@@ -1,3 +1,4 @@
+import pandas as pd
 from boiler.data_processing.beetween_filter_algorithm import FullClosedTimestampFilterAlgorithm
 from boiler.data_processing.timestamp_interpolator_algorithm import TimestampInterpolationAlgorithm
 from boiler.data_processing.timestamp_round_algorithm import CeilTimestampRoundAlgorithm
@@ -9,15 +10,15 @@ from boiler_softm.weather.io.soft_m_sync_weather_forecast_json_reader import Sof
 from boiler_softm.weather.processing import SoftMWeatherProcessor
 from dateutil.tz import gettz
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Singleton, Factory, Callable, Configuration, Object
-import pandas as pd
+from dependency_injector.providers import Factory, Callable, Configuration, Object, Dependency
 
 from backend.services.weather_forecast_update_service.weather_forecast_service import SimpleWeatherForecastService
-from backend.repositories.weather_forecast_repository import WeatherForecastRepository
 
 
 class WeatherForecastContainer(DeclarativeContainer):
     config = Configuration()
+
+    weather_forecast_repository = Dependency()
 
     weather_forecast_timezone = Callable(gettz, config.weather_server_timezone)
     weather_forecast_reader = Factory(
@@ -27,11 +28,6 @@ class WeatherForecastContainer(DeclarativeContainer):
     weather_forecast_loader = Factory(
         SoftMAsyncWeatherForecastOnlineLoader,
         reader=weather_forecast_reader
-    )
-
-    weather_forecast_repository = Singleton(
-        WeatherForecastRepository,
-        filter_algorithm=FullClosedTimestampFilterAlgorithm()
     )
 
     timestamp_round_algorithm = Factory(
