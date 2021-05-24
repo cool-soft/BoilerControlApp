@@ -41,7 +41,7 @@ class ControlActionContainer(DeclarativeContainer):
         loader=Factory(
             SyncTimedeltaFileLoader,
             config.heating_objects_timedeldelta_path,
-            Factory(SyncTimedeltaCSVReader())
+            Factory(SyncTimedeltaCSVReader)
         )
     )
 

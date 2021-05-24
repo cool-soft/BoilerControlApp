@@ -11,7 +11,7 @@ from backend.resources.async_settings_db_engine import AsyncSettingsDBEngine
 from backend.resources.async_settings_db_session_factory import AsyncSettingsDBSessionFactory
 
 
-class RepositoriesContainer(DeclarativeContainer):
+class Repositories(DeclarativeContainer):
     config = Configuration()
 
     temp_graph_repository = Singleton(SyncTempGraphInMemoryDumperLoader)
