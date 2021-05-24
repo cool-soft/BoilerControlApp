@@ -21,7 +21,7 @@ class UpdateContainer(DeclarativeContainer):
         provider=temp_graph_updater.provider,
         update_interval=Callable(
             pd.Timedelta,
-            seconds=config.update_itervals.temp_graph
+            seconds=config.update_intervals.temp_graph
         )
     )
 
@@ -30,7 +30,7 @@ class UpdateContainer(DeclarativeContainer):
         provider=weather_forecast_updater.provider,
         update_interval=Callable(
             pd.Timedelta,
-            seconds=config.update_itervals.weather_forecast
+            seconds=config.update_intervals.weather_forecast
         )
     )
 
