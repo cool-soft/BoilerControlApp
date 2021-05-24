@@ -32,7 +32,7 @@ class Services(DeclarativeContainer):
     )
     control_action_pkg = Container(
         ControlActionContainer,
-        config=config.boiler_temp_prediction,
+        config=config.control_action_predictor,
         temp_graph_repository=temp_graph_repository,
         weather_forecast_repository=weather_forecast_repository,
         control_actions_repository=control_actions_repository
