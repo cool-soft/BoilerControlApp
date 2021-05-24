@@ -4,7 +4,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import pandas as pd
 from boiler.weather.io.abstract_async_weather_loader import AbstractAsyncWeatherLoader
 from boiler.weather.processing import AbstractWeatherProcessor
-from dateutil.tz import UTC
+from dateutil.tz import tzlocal, gettz
 
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
 
@@ -30,7 +30,7 @@ class SimpleWeatherForecastService:
         await self._weather_forecast_repository.set_weather_forecast(weather_forecast_df)
 
     async def _process_weather_forecast_in_executor(self, weather_forecast_df: pd.DataFrame) -> pd.DataFrame:
-        start_timestamp = pd.Timestamp.now(tz=UTC)
+        start_timestamp = pd.Timestamp.now(tz=gettz("Asia/Yekaterinburg"))
         end_timestamp = start_timestamp + self._preload_timedelta
         preprocessed_weather_forecast_df = await asyncio.get_running_loop().run_in_executor(
             self._executor,
