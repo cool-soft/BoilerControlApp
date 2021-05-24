@@ -8,11 +8,11 @@ from backend.containers.wsgi import WSGI
 
 
 class Application(DeclarativeContainer):
-    config = Configuration()
+    config = Configuration(strict=True)
 
     repositories = Container(
         Repositories,
-        config=config.reposirories
+        config=config.repositories
     )
 
     services = Container(

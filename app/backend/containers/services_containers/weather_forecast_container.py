@@ -16,7 +16,7 @@ from backend.services.weather_forecast_update_service.weather_forecast_service i
 
 
 class WeatherForecastContainer(DeclarativeContainer):
-    config = Configuration()
+    config = Configuration(strict=True)
 
     weather_forecast_repository = Dependency()
 

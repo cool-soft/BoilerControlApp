@@ -10,7 +10,7 @@ from backend.services.weather_forecast_update_service.weather_forecast_updatable
 
 
 class UpdateContainer(DeclarativeContainer):
-    config = Configuration()
+    config = Configuration(strict=True)
     
     control_actions_predictor = Dependency()
     temp_graph_updater = Dependency()

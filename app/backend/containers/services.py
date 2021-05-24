@@ -9,7 +9,7 @@ from .services_containers.weather_forecast_container import WeatherForecastConta
 
 
 class Services(DeclarativeContainer):
-    config = Configuration()
+    config = Configuration(strict=True)
 
     settings_repository = Dependency()
     temp_graph_repository = Dependency()

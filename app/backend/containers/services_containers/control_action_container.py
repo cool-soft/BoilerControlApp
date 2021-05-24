@@ -23,7 +23,7 @@ from backend.services.control_action_prediction_service.control_action_predictio
 
 
 class ControlActionContainer(DeclarativeContainer):
-    config = Configuration()
+    config = Configuration(strict=True)
 
     temp_graph_repository = Dependency()
     weather_forecast_repository = Dependency()

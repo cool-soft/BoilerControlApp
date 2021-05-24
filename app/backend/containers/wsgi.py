@@ -1,33 +1,30 @@
-from dependency_injector import containers, providers
 # noinspection SpellCheckingInspection
 import uvicorn
+from dependency_injector.containers import DeclarativeContainer
+from dependency_injector.providers import Configuration, Object, Resource, Singleton, Factory
 
 from backend.resources.fastapi_app import FastAPIApp
 from backend.web import api_v1, api_v2
 
 
-class WSGI(containers.DeclarativeContainer):
-    config = providers.Configuration()
+class WSGI(DeclarativeContainer):
+    config = Configuration(strict=True)
 
-    routers = providers.Object([
-        api_v1.api_router,
-        api_v2.api_router
-    ])
-
-    app = providers.Resource(
+    app = Resource(
         FastAPIApp,
-        api_routers=routers
+        api_routers=Object([
+            api_v1.api_router,
+            api_v2.api_router
+        ])
     )
 
-    server_config = providers.Singleton(
-        uvicorn.Config,
-        app=app,
-        host=config.host,
-        port=config.port,
-        # log_config=None
-    )
-
-    server = providers.Singleton(
+    server = Singleton(
         uvicorn.Server,
-        config=server_config
+        config=Factory(
+            uvicorn.Config,
+            app=app,
+            host=config.host,
+            port=config.port,
+            # log_config=None
+        )
     )

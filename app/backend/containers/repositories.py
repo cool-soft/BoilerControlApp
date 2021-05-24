@@ -12,7 +12,7 @@ from backend.resources.async_settings_db_session_factory import AsyncSettingsDBS
 
 
 class Repositories(DeclarativeContainer):
-    config = Configuration()
+    config = Configuration(strict=True)
 
     temp_graph_repository = Singleton(SyncTempGraphInMemoryDumperLoader)
     weather_forecast_repository = Singleton(
@@ -26,7 +26,7 @@ class Repositories(DeclarativeContainer):
             AsyncSettingsDBSessionFactory,
             db_engine=Resource(
                 AsyncSettingsDBEngine,
-                db_url=config.settings_db_url
+                db_url=config.db_settings_url
             )
         ),
         dtype_converters=Object([

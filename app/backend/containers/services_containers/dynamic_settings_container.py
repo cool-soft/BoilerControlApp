@@ -5,7 +5,7 @@ from backend.services.SettingsService import SettingsService
 
 
 class DynamicSettingsContainer(DeclarativeContainer):
-    config = Configuration()
+    config = Configuration(strict=True)
 
     settings_repository = Dependency()
 
