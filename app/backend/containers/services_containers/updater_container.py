@@ -1,8 +1,6 @@
-from collections import Callable
-
 import pandas as pd
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Dependency, Singleton, Configuration, List
+from dependency_injector.providers import Dependency, Singleton, Configuration, List, Callable
 from updater.updater_service.simple_updater_service import SimpleUpdaterService
 
 from backend.services.control_action_prediction_service.control_action_updatable_item import ControlActionUpdatableItem

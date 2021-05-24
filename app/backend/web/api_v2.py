@@ -1,12 +1,12 @@
 import logging
 
 from dependency_injector.wiring import Provide, inject
-from dynamic_settings.service.simple_settings_service import SimpleSettingsService
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-
 from boiler.constants import column_names
-from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
+
+from backend.services.SettingsService import SettingsService
+from backend.repositories.control_action_repository import ControlActionsRepository
 from backend.containers.services import Services
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 
@@ -18,7 +18,7 @@ api_router = APIRouter(prefix="/api/v2")
 async def get_predicted_boiler_t(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
-        control_action_repository: ControlActionsSimpleRepository = Depends(
+        control_action_repository: ControlActionsRepository = Depends(
             Provide[Services.control_action_pkg.control_actions_repository]
         )
 ):
@@ -58,7 +58,7 @@ async def get_predicted_boiler_t(
                   f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                   f"with timezone {work_timezone.name}")
 
-    boiler_control_actions_df = await control_action_repository.get_control_action(
+    boiler_control_actions_df = await control_action_repository.get_control_actions_by_timestamp_range(
         datetime_range.start_datetime,
         datetime_range.end_datetime
     )
@@ -83,7 +83,7 @@ async def get_predicted_boiler_t(
 @api_router.post("/set_min_home_temp_coefficient")
 @inject
 async def set_min_home_temp_coefficient(coefficient: float,
-                                        dynamic_settings_service: SimpleSettingsService = Depends(
+                                        dynamic_settings_service: SettingsService = Depends(
                                             Provide[Services.dynamic_settings_pkg.settings_service]
                                         )):
-    await dynamic_settings_service.set_one_setting_async("home_min_temp_coefficient", coefficient)
+    await dynamic_settings_service.set_setting("home_min_temp_coefficient", coefficient)

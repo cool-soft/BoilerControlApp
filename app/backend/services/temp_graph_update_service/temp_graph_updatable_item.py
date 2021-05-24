@@ -1,12 +1,12 @@
 from typing import Optional
 
 from dependency_injector.providers import Provider
-from updater.updatable_item.updatable_item import UpdatableItem
+from updater.updatable_item.simple_updatable_item import SimpleUpdatableItem
 
 from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
 
 
-class TempGraphUpdatableItem(UpdatableItem):
+class TempGraphUpdatableItem(SimpleUpdatableItem):
 
     def __init__(self,
                  provider: Optional[Provider] = None,
