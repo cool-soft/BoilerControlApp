@@ -5,8 +5,10 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
+from backend.constants import config_names
 from backend.containers.services import Services
 from backend.repositories.control_action_repository import ControlActionsRepository
+from backend.services.SettingsService import SettingsService
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 
 api_router = APIRouter(prefix="/api/v2")
@@ -77,3 +79,50 @@ async def get_predicted_boiler_temp(
             predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
 
     return predicted_boiler_temp_list
+
+
+@api_router.get("/setApartmentHouseMinTempCoefficient")
+@inject
+async def set_apartment_house_min_temp_coefficient(
+        coefficient: float,
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
+
+
+@api_router.get("/setMaxBoilerTemp")
+@inject
+async def set_apartment_house_min_temp_coefficient(
+        temp: float,
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
+
+
+@api_router.get("/setMinBoilerTemp")
+@inject
+async def set_apartment_house_min_temp_coefficient(
+        temp: float,
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
+
+
+@api_router.get("/setModelErrorSize")
+@inject
+async def set_apartment_house_min_temp_coefficient(
+        value: float,
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
+
+
+
