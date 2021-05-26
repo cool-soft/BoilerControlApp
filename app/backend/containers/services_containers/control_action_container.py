@@ -14,8 +14,10 @@ from boiler.temp_requirements.predictors.temp_graph_requirements_predictor \
 from boiler.timedelta.io.sync_timedelta_csv_reader import SyncTimedeltaCSVReader
 from boiler.timedelta.io.sync_timedelta_file_loader import SyncTimedeltaFileLoader
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Configuration, Dependency, Resource, Factory
+from dependency_injector.providers import Configuration, Dependency, Resource, Factory, Coroutine
+from dynamic_settings.di_helpers import get_one_setting
 
+from backend.constants import config_names
 from backend.resources.heating_obj_timedelta_resource import HeatingObjTimedeltaResource
 from backend.resources.temp_correlation_table import TempCorrelationTable
 from backend.services.control_action_prediction_service.control_action_prediction_service import \
@@ -28,6 +30,7 @@ class ControlActionContainer(DeclarativeContainer):
     temp_graph_repository = Dependency()
     weather_forecast_repository = Dependency()
     control_actions_repository = Dependency()
+    dynamic_settings_repository = Dependency()
 
     # TODO: перевести на репозиторий
     temp_correlation_table = Resource(
@@ -63,8 +66,16 @@ class ControlActionContainer(DeclarativeContainer):
             weather_temp_round_algorithm=Factory(ArithmeticFloatRoundAlgorithm)
         ),
         timestamp_round_algo=timestamp_round_algo,
-        temp_requirements_coefficient=0.97,
-        min_model_error=1.0
+        temp_requirements_coefficient=Coroutine(
+            get_one_setting,
+            dynamic_settings_repository,
+            config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT
+        ),
+        min_model_error=Coroutine(
+            get_one_setting,
+            dynamic_settings_repository,
+            config_names.MODEL_ERROR_SIZE
+        )
     )
 
     heating_system_model = Factory(
@@ -77,9 +88,17 @@ class ControlActionContainer(DeclarativeContainer):
         SingleCircuitControlActionPredictor,
         heating_system_model=heating_system_model,
         temp_requirements_constraint=temp_constrains,
-        min_boiler_temp=30,
-        max_boiler_temp=85,
-        min_regulation_step=0.1
+        min_boiler_temp=Coroutine(
+            get_one_setting,
+            dynamic_settings_repository,
+            config_names.MIN_BOILER_TEMP
+        ),
+        max_boiler_temp=Coroutine(
+            get_one_setting,
+            dynamic_settings_repository,
+            config_names.MAX_BOILER_TEMP
+        ),
+        min_regulation_step=0.3
     )
 
     temp_prediction_service = Factory(

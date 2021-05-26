@@ -18,7 +18,7 @@ class Application(DeclarativeContainer):
     services = Container(
         Services,
         config=config.services,
-        settings_repository=repositories.settings_repository,
+        dynamic_settings_repository=repositories.settings_repository,
         temp_graph_repository=repositories.temp_graph_repository,
         weather_forecast_repository=repositories.weather_forecast_repository,
         control_actions_repository=repositories.control_actions_repository

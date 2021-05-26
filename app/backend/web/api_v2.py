@@ -1,13 +1,12 @@
 import logging
 
+from boiler.constants import column_names
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from boiler.constants import column_names
 
-from backend.services.SettingsService import SettingsService
-from backend.repositories.control_action_repository import ControlActionsRepository
 from backend.containers.services import Services
+from backend.repositories.control_action_repository import ControlActionsRepository
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 
 api_router = APIRouter(prefix="/api/v2")
@@ -15,7 +14,7 @@ api_router = APIRouter(prefix="/api/v2")
 
 @api_router.get("/getPredictedBoilerT", response_class=JSONResponse)
 @inject
-async def get_predicted_boiler_t(
+async def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         control_action_repository: ControlActionsRepository = Depends(
@@ -78,12 +77,3 @@ async def get_predicted_boiler_t(
             predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
 
     return predicted_boiler_temp_list
-
-
-@api_router.post("/set_min_home_temp_coefficient")
-@inject
-async def set_min_home_temp_coefficient(coefficient: float,
-                                        dynamic_settings_service: SettingsService = Depends(
-                                            Provide[Services.dynamic_settings_pkg.settings_service]
-                                        )):
-    await dynamic_settings_service.set_setting("home_min_temp_coefficient", coefficient)

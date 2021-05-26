@@ -50,7 +50,7 @@ class ControlActionPredictionService:
     def _calc_control_action_start_end_timestamp(self) -> Tuple[pd.Timestamp, pd.Timestamp]:
         control_action_start_timestamp = pd.Timestamp.now(tzlocal())
         control_action_start_timestamp = self._timestamp_round_algo.round_value(control_action_start_timestamp)
-        control_action_start_timestamp = control_action_start_timestamp + self._timedelta
+        control_action_start_timestamp = control_action_start_timestamp
         control_action_end_timestamp = control_action_start_timestamp + self._timedelta_predict_forward
         return control_action_start_timestamp, control_action_end_timestamp
 
