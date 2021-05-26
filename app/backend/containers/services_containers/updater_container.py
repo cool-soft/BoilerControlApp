@@ -16,6 +16,10 @@ class UpdateContainer(DeclarativeContainer):
     temp_graph_updater = Dependency()
     weather_forecast_updater = Dependency()
 
+    control_actions_predictor.enable_async_mode()
+    temp_graph_updater.enable_async_mode()
+    weather_forecast_updater.enable_async_mode()
+
     temp_graph_updatable_item = Singleton(
         TempGraphUpdatableItem,
         provider=temp_graph_updater.provider,
