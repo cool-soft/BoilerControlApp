@@ -81,7 +81,7 @@ async def get_predicted_boiler_temp(
     return predicted_boiler_temp_list
 
 
-@api_router.get("/setApartmentHouseMinTempCoefficient")
+@api_router.post("/setApartmentHouseMinTempCoefficient")
 @inject
 async def set_apartment_house_min_temp_coefficient(
         coefficient: float,
@@ -92,7 +92,7 @@ async def set_apartment_house_min_temp_coefficient(
     await settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
 
 
-@api_router.get("/setMaxBoilerTemp")
+@api_router.post("/setMaxBoilerTemp")
 @inject
 async def set_apartment_house_min_temp_coefficient(
         temp: float,
@@ -103,7 +103,7 @@ async def set_apartment_house_min_temp_coefficient(
     await settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
 
 
-@api_router.get("/setMinBoilerTemp")
+@api_router.post("/setMinBoilerTemp")
 @inject
 async def set_apartment_house_min_temp_coefficient(
         temp: float,
@@ -114,7 +114,7 @@ async def set_apartment_house_min_temp_coefficient(
     await settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
 
 
-@api_router.get("/setModelErrorSize")
+@api_router.post("/setModelErrorSize")
 @inject
 async def set_apartment_house_min_temp_coefficient(
         value: float,
@@ -125,4 +125,41 @@ async def set_apartment_house_min_temp_coefficient(
     await settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
 
 
+@api_router.get("/getApartmentHouseMinTempCoefficient")
+@inject
+async def get_apartment_house_min_temp_coefficient(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.get_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT)
 
+
+@api_router.get("/setMaxBoilerTemp")
+@inject
+async def get_apartment_house_min_temp_coefficient(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.get_setting(config_names.MAX_BOILER_TEMP)
+
+
+@api_router.get("/setMinBoilerTemp")
+@inject
+async def get_apartment_house_min_temp_coefficient(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.get_setting(config_names.MIN_BOILER_TEMP)
+
+
+@api_router.post("/getModelErrorSize")
+@inject
+async def get_apartment_house_min_temp_coefficient(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.get_setting(config_names.MODEL_ERROR_SIZE)
