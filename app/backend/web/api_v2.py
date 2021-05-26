@@ -1,14 +1,13 @@
 import logging
 
-from boiler.constants import column_names
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from backend.constants import config_names
 from backend.containers.services import Services
-from backend.repositories.control_action_repository import ControlActionsRepository
 from backend.services.SettingsService import SettingsService
+from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 
 api_router = APIRouter(prefix="/api/v2")
@@ -19,8 +18,8 @@ api_router = APIRouter(prefix="/api/v2")
 async def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
-        control_action_repository: ControlActionsRepository = Depends(
-            Provide[Services.control_action_pkg.control_actions_repository]
+        control_action_report_service: ControlActionReportService = Depends(
+            Provide[Services.control_action_report_pkg.control_action_report_service]
         )
 ):
     # noinspection SpellCheckingInspection
@@ -59,26 +58,12 @@ async def get_predicted_boiler_temp(
                   f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                   f"with timezone {work_timezone.name}")
 
-    boiler_control_actions_df = await control_action_repository.get_control_actions_by_timestamp_range(
+    control_action = await control_action_report_service.report_v1(
         datetime_range.start_datetime,
-        datetime_range.end_datetime
+        datetime_range.end_datetime,
+        work_timezone.timezone
     )
-
-    predicted_boiler_temp_list = []
-    if not boiler_control_actions_df.empty:
-
-        datetime = boiler_control_actions_df[column_names.TIMESTAMP]
-        datetime = datetime.dt.tz_convert(work_timezone.timezone)
-        datetime = datetime.to_list()
-
-        boiler_out_temps = boiler_control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
-        boiler_out_temps = boiler_out_temps.round(1)
-        boiler_out_temps = boiler_out_temps.to_list()
-
-        for datetime_, boiler_out_temp in zip(datetime, boiler_out_temps):
-            predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
-
-    return predicted_boiler_temp_list
+    return control_action
 
 
 @api_router.post("/setApartmentHouseMinTempCoefficient")

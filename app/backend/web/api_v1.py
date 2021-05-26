@@ -4,11 +4,9 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from backend.containers.core import Core
 from backend.containers.services import Services
-from backend.repositories.control_action_repository import ControlActionsRepository
+from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
 from backend.web.dependencies import InputDatesRange, InputTimezone
-from boiler.constants import column_names
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -18,10 +16,9 @@ api_router = APIRouter(prefix="/api/v1")
 async def get_predicted_boiler_t(
         dates_range: InputDatesRange = Depends(),
         work_timezone: InputTimezone = Depends(),
-        control_action_repository: ControlActionsRepository = Depends(
-            Provide[Services.control_action_pkg.control_actions_repository]
-        ),
-        datetime_processing_params=Depends(Provide[Core.config.datetime_processing])
+        control_action_report_service: ControlActionReportService = Depends(
+            Provide[Services.control_action_report_pkg.control_action_report_service]
+        )
 ):
     """
         Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
@@ -37,25 +34,9 @@ async def get_predicted_boiler_t(
                   f"from {dates_range.start_date} to {dates_range.end_date} "
                   f"with timezone {work_timezone.name}")
 
-    boiler_control_actions_df = await control_action_repository.get_control_actions_by_timestamp_range(
+    control_action = await control_action_report_service.report_v1(
         dates_range.start_date,
-        dates_range.end_date
+        dates_range.end_date,
+        work_timezone.timezone
     )
-
-    predicted_boiler_temp_list = []
-    if not boiler_control_actions_df.empty:
-
-        datetime_column = boiler_control_actions_df[column_names.TIMESTAMP]
-        datetime_column = datetime_column.dt.tz_convert(work_timezone.timezone)
-        response_datetime_pattern = datetime_processing_params.get("response_pattern")
-        datetime_column = datetime_column.dt.strftime(response_datetime_pattern)
-        datetime_column = datetime_column.to_list()
-
-        boiler_out_temps = boiler_control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
-        boiler_out_temps = boiler_out_temps.round(1)
-        boiler_out_temps = boiler_out_temps.to_list()
-
-        for datetime_, boiler_out_temp in zip(datetime_column, boiler_out_temps):
-            predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
-
-    return predicted_boiler_temp_list
+    return control_action
