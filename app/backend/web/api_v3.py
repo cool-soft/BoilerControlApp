@@ -11,6 +11,17 @@ from backend.services.SettingsService import SettingsService
 api_router = APIRouter(prefix="/api/v3")
 
 
+# noinspection PyTypeChecker
+@api_router.get("/settings", response_model=List[Setting])
+@inject
+async def get_settings(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    return await settings_service.get_all_settings()
+
+
 @api_router.put("/settings/apartmentHouseMinTempCoefficient", status_code=204)
 @inject
 async def put_apartment_house_min_temp_coefficient(
@@ -93,14 +104,3 @@ async def get_model_error_size(
         )
 ):
     return await settings_service.get_setting(config_names.MODEL_ERROR_SIZE)
-
-
-# noinspection PyTypeChecker
-@api_router.get("/settings", response_model=List[Setting])
-@inject
-async def get_settings(
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    return await settings_service.get_all_settings()
