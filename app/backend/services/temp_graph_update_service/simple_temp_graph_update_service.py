@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from boiler.temp_graph.io.abstract_async_temp_graph_loader import AbstractAsyncTempGraphLoader
 from boiler.temp_graph.io.abstract_sync_temp_graph_dumper import AbstractSyncTempGraphDumper
@@ -10,8 +9,8 @@ from backend.services.temp_graph_update_service.temp_graph_update_service import
 class SimpleTempGraphUpdateService(TempGraphUpdateService):
 
     def __init__(self,
-                 temp_graph_loader: Optional[AbstractAsyncTempGraphLoader],
-                 temp_graph_dumper: Optional[AbstractSyncTempGraphDumper]
+                 temp_graph_loader: AbstractAsyncTempGraphLoader,
+                 temp_graph_dumper: AbstractSyncTempGraphDumper
                  ) -> None:
 
         self._logger = logging.getLogger(self.__class__.__name__)

@@ -8,7 +8,7 @@ from boiler.constants import dataset_prototypes
 from boiler.control_action.predictors.abstract_control_action_predictor import AbstractControlActionPredictor
 from boiler.data_processing.timestamp_round_algorithm import AbstractTimestampRoundAlgorithm
 from boiler.heating_system.model_requirements.abstract_model_requirements import AbstractModelRequirements
-from dateutil.tz import tzlocal
+from dateutil.tz import UTC
 
 from backend.repositories.control_action_repository import ControlActionsRepository
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
@@ -48,7 +48,7 @@ class ControlActionPredictionService:
         await self._control_action_repository.drop_control_actions_older_than(control_action_start_timestamp)
 
     def _calc_control_action_start_end_timestamp(self) -> Tuple[pd.Timestamp, pd.Timestamp]:
-        control_action_start_timestamp = pd.Timestamp.now(tzlocal())
+        control_action_start_timestamp = pd.Timestamp.now(UTC)
         control_action_start_timestamp = self._timestamp_round_algo.round_value(control_action_start_timestamp)
         control_action_start_timestamp = control_action_start_timestamp
         control_action_end_timestamp = control_action_start_timestamp + self._timedelta_predict_forward

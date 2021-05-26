@@ -3,12 +3,14 @@ from boiler.temp_graph.io.sync_temp_graph_in_memory_dumper_loader \
     import SyncTempGraphInMemoryDumperLoader
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Singleton, Factory, Resource, Object
-from dynamic_settings.repository.db_settings_repository import dtype_converters, DBSettingsRepository
+from dynamic_settings.repository.db_settings_repository import dtype_converters
 
+from backend.constants import default_config
 from backend.repositories.control_action_repository import ControlActionsRepository
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
 from backend.resources.async_settings_db_engine import AsyncSettingsDBEngine
 from backend.resources.async_settings_db_session_factory import AsyncSettingsDBSessionFactory
+from backend.resources.dynamic_settings_repository_resource import DynamicSettingsRepositoryResource
 
 
 class Repositories(DeclarativeContainer):
@@ -20,8 +22,8 @@ class Repositories(DeclarativeContainer):
         filter_algorithm=Factory(FullClosedTimestampFilterAlgorithm)
     )
     control_actions_repository = Singleton(ControlActionsRepository)
-    settings_repository = Singleton(
-        DBSettingsRepository,
+    settings_repository = Resource(
+        DynamicSettingsRepositoryResource,
         session_factory=Resource(
             AsyncSettingsDBSessionFactory,
             db_engine=Resource(
@@ -37,5 +39,6 @@ class Repositories(DeclarativeContainer):
             dtype_converters.StrDTypeConverter(),
             dtype_converters.NoneDTypeConverter(),
             dtype_converters.TimedeltaDTypeConverter()
-        ])
+        ]),
+        default_settings=Object(default_config.DICT)
     )

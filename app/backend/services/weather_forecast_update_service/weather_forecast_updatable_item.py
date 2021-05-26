@@ -1,5 +1,3 @@
-from typing import Optional
-
 from dependency_injector.providers import Provider
 from updater.updatable_item.simple_updatable_item import SimpleUpdatableItem
 
@@ -9,8 +7,9 @@ from backend.services.weather_forecast_update_service.weather_forecast_service i
 class WeatherForecastUpdatableItem(SimpleUpdatableItem):
 
     def __init__(self,
-                 provider: Optional[Provider] = None,
-                 **kwargs):
+                 provider: Provider,
+                 **kwargs
+                 ) -> None:
 
         super().__init__(**kwargs)
 
