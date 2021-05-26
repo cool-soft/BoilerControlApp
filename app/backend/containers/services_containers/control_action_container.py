@@ -7,8 +7,8 @@ from boiler.data_processing.timestamp_round_algorithm import CeilTimestampRoundA
 from boiler.heating_system.model.corr_table_heating_system_model import CorrTableHeatingSystemModel
 from boiler.heating_system.model_requirements.timedelta_model_requirements_without_history \
     import TimedeltaModelRequirementsWithoutHistory
-from boiler.temp_requirements.constrainst.single_type_heating_obj_constraint \
-    import SingleTypeHeatingObjSimpleConstraint
+from boiler.temp_requirements.constraint.single_type_heating_obj_on_weather_constraint \
+    import SingleTypeHeatingObjOnWeatherConstraint
 from boiler.temp_requirements.predictors.temp_graph_requirements_predictor \
     import TempGraphRequirementsPredictor
 from boiler.timedelta.io.sync_timedelta_csv_reader import SyncTimedeltaCSVReader
@@ -56,7 +56,7 @@ class ControlActionContainer(DeclarativeContainer):
     )
 
     temp_constrains = Factory(
-        SingleTypeHeatingObjSimpleConstraint,
+        SingleTypeHeatingObjOnWeatherConstraint,
         temp_requirements_predictor=Factory(
             TempGraphRequirementsPredictor,
             temp_graph=temp_graph_repository.provided.load_temp_graph.call(),
