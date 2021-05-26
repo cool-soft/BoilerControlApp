@@ -6,12 +6,12 @@ import uvicorn
 from updater.updater_service.abstract_updater_service import AbstractUpdaterService
 
 from backend.containers.application import Application
-from backend.web import api_v1, api_v2
+from backend.web import api_v1, api_v2, api_v3
 
 
 def wire(application_container):
-    application_container.core.wire(modules=(api_v1, api_v2))
-    application_container.services.wire(modules=(api_v1, api_v2))
+    application_container.core.wire(modules=(api_v1, api_v2, api_v3))
+    application_container.services.wire(modules=(api_v1, api_v2, api_v3))
 
 
 async def main(cmd_args):

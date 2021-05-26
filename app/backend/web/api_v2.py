@@ -4,9 +4,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from backend.constants import config_names
 from backend.containers.services import Services
-from backend.services.SettingsService import SettingsService
 from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 
@@ -64,87 +62,3 @@ async def get_predicted_boiler_temp(
         work_timezone.timezone
     )
     return control_action
-
-
-@api_router.post("/setApartmentHouseMinTempCoefficient")
-@inject
-async def set_apartment_house_min_temp_coefficient(
-        coefficient: float,
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    await settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
-
-
-@api_router.post("/setMaxBoilerTemp")
-@inject
-async def set_max_boiler_temp(
-        temp: float,
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    await settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
-
-
-@api_router.post("/setMinBoilerTemp")
-@inject
-async def set_min_boiler_temp(
-        temp: float,
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    await settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
-
-
-@api_router.post("/setModelErrorSize")
-@inject
-async def set_model_error_size(
-        value: float,
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    await settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
-
-
-@api_router.get("/getApartmentHouseMinTempCoefficient")
-@inject
-async def get_apartment_house_min_temp_coefficient(
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    return await settings_service.get_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT)
-
-
-@api_router.get("/getMaxBoilerTemp")
-@inject
-async def get_max_boiler_temp(
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    return await settings_service.get_setting(config_names.MAX_BOILER_TEMP)
-
-
-@api_router.get("/getMinBoilerTemp")
-@inject
-async def get_min_boiler_temp(
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    return await settings_service.get_setting(config_names.MIN_BOILER_TEMP)
-
-
-@api_router.get("/getModelErrorSize")
-@inject
-async def get_model_error_size(
-        settings_service: SettingsService = Depends(
-            Provide[Services.dynamic_settings_pkg.settings_service]
-        )
-):
-    return await settings_service.get_setting(config_names.MODEL_ERROR_SIZE)
