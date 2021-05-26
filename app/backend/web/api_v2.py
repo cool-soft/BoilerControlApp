@@ -56,7 +56,7 @@ async def get_predicted_boiler_temp(
                   f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                   f"with timezone {work_timezone.name}")
 
-    control_action = await control_action_report_service.report_v1(
+    control_action = await control_action_report_service.report_v2(
         datetime_range.start_datetime,
         datetime_range.end_datetime,
         work_timezone.timezone
