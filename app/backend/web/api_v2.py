@@ -155,7 +155,7 @@ async def get_min_boiler_temp(
     await settings_service.get_setting(config_names.MIN_BOILER_TEMP)
 
 
-@api_router.post("/getModelErrorSize")
+@api_router.get("/getModelErrorSize")
 @inject
 async def get_model_error_size(
         settings_service: SettingsService = Depends(
