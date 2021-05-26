@@ -11,7 +11,7 @@ from backend.web.dependencies import InputDatetimeRange, InputTimezone
 api_router = APIRouter(prefix="/api/v2")
 
 
-@api_router.get("/getPredictedBoilerT", response_class=JSONResponse)
+@api_router.get("/getPredictedBoilerT", response_class=JSONResponse, deprecated=True)
 @inject
 async def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
