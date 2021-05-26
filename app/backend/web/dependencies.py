@@ -8,7 +8,7 @@ from fastapi import Depends, HTTPException
 from starlette import status
 
 from boiler.constants import time_tick
-from boiler.parsing_utils.datetime_parsing import parse_datetime
+from boiler.data_processing.other import parse_datetime
 from backend.containers.core import Core
 
 
@@ -66,8 +66,8 @@ class InputDatesRange:
                 detail="start_date must be less than end_date"
             )
 
-        self.start_date = start_date
-        self.end_date = end_date
+        self.start_date: pd.Timestamp = start_date
+        self.end_date: pd.Timestamp = end_date
 
 
 class InputDatetimeRange:
@@ -99,5 +99,5 @@ class InputDatetimeRange:
                 detail="start_datetime must be less than end_datetime"
             )
 
-        self.start_datetime = start_datetime
-        self.end_datetime = end_datetime
+        self.start_datetime: pd.Timestamp = start_datetime
+        self.end_datetime: pd.Timestamp = end_datetime

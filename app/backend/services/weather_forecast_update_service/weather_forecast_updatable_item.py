@@ -3,10 +3,10 @@ from typing import Optional
 from dependency_injector.providers import Provider
 from updater.updatable_item.simple_updatable_item import SimpleUpdatableItem
 
-from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
+from backend.services.weather_forecast_update_service.weather_forecast_service import SimpleWeatherForecastService
 
 
-class TempGraphUpdatableItem(SimpleUpdatableItem):
+class WeatherForecastUpdatableItem(SimpleUpdatableItem):
 
     def __init__(self,
                  provider: Optional[Provider] = None,
@@ -18,11 +18,7 @@ class TempGraphUpdatableItem(SimpleUpdatableItem):
 
         self._logger.debug(f"Service provider is set to {provider}")
 
-    def set_service_provider(self, provider: Provider):
-        self._logger.debug(f"Service provider is set to {provider}")
-        self._provider = provider
-
     async def _run_update_async(self):
         self._logger.debug("Run update")
-        service: TempGraphUpdateService = self._provider()
-        await service.update_temp_graph_async()
+        service: SimpleWeatherForecastService = self._provider()
+        await service.update_weather_forecast_async()

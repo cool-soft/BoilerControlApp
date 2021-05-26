@@ -1,13 +1,14 @@
 import logging
 
+from boiler.constants import column_names
 from dependency_injector.wiring import Provide, inject
-from dynamic_settings.service.simple_settings_service import SimpleSettingsService
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from boiler.constants import column_names
-from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
+from backend.constants import config_names
 from backend.containers.services import Services
+from backend.repositories.control_action_repository import ControlActionsRepository
+from backend.services.SettingsService import SettingsService
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 
 api_router = APIRouter(prefix="/api/v2")
@@ -15,10 +16,10 @@ api_router = APIRouter(prefix="/api/v2")
 
 @api_router.get("/getPredictedBoilerT", response_class=JSONResponse)
 @inject
-async def get_predicted_boiler_t(
+async def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
-        control_action_repository: ControlActionsSimpleRepository = Depends(
+        control_action_repository: ControlActionsRepository = Depends(
             Provide[Services.control_action_pkg.control_actions_repository]
         )
 ):
@@ -58,7 +59,7 @@ async def get_predicted_boiler_t(
                   f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                   f"with timezone {work_timezone.name}")
 
-    boiler_control_actions_df = await control_action_repository.get_control_action(
+    boiler_control_actions_df = await control_action_repository.get_control_actions_by_timestamp_range(
         datetime_range.start_datetime,
         datetime_range.end_datetime
     )
@@ -80,10 +81,85 @@ async def get_predicted_boiler_t(
     return predicted_boiler_temp_list
 
 
-@api_router.post("/set_min_home_temp_coefficient")
+@api_router.post("/setApartmentHouseMinTempCoefficient")
 @inject
-async def set_min_home_temp_coefficient(coefficient: float,
-                                        dynamic_settings_service: SimpleSettingsService = Depends(
-                                            Provide[Services.dynamic_settings_pkg.settings_service]
-                                        )):
-    await dynamic_settings_service.set_one_setting_async("home_min_temp_coefficient", coefficient)
+async def set_apartment_house_min_temp_coefficient(
+        coefficient: float,
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
+
+
+@api_router.post("/setMaxBoilerTemp")
+@inject
+async def set_max_boiler_temp(
+        temp: float,
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
+
+
+@api_router.post("/setMinBoilerTemp")
+@inject
+async def set_min_boiler_temp(
+        temp: float,
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
+
+
+@api_router.post("/setModelErrorSize")
+@inject
+async def set_model_error_size(
+        value: float,
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    await settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
+
+
+@api_router.get("/getApartmentHouseMinTempCoefficient")
+@inject
+async def get_apartment_house_min_temp_coefficient(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    return await settings_service.get_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT)
+
+
+@api_router.get("/getMaxBoilerTemp")
+@inject
+async def get_max_boiler_temp(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    return await settings_service.get_setting(config_names.MAX_BOILER_TEMP)
+
+
+@api_router.get("/getMinBoilerTemp")
+@inject
+async def get_min_boiler_temp(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    return await settings_service.get_setting(config_names.MIN_BOILER_TEMP)
+
+
+@api_router.get("/getModelErrorSize")
+@inject
+async def get_model_error_size(
+        settings_service: SettingsService = Depends(
+            Provide[Services.dynamic_settings_pkg.settings_service]
+        )
+):
+    return await settings_service.get_setting(config_names.MODEL_ERROR_SIZE)

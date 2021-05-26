@@ -1,42 +1,114 @@
-from boiler.temp_predictors.corr_table_temp_predictor import CorrTableTempPredictor
-from dependency_injector import containers, providers
+import pandas as pd
+from boiler.constants.time_tick import TIME_TICK
+from boiler.control_action.predictors.single_circuit_control_action_predictor \
+    import SingleCircuitControlActionPredictor
+from boiler.data_processing.float_round_algorithm import ArithmeticFloatRoundAlgorithm
+from boiler.data_processing.timestamp_round_algorithm import CeilTimestampRoundAlgorithm
+from boiler.heating_system.model.corr_table_heating_system_model import CorrTableHeatingSystemModel
+from boiler.heating_system.model_requirements.timedelta_model_requirements_without_history \
+    import TimedeltaModelRequirementsWithoutHistory
+from boiler.temp_requirements.constraint.single_type_heating_obj_on_weather_constraint \
+    import SingleTypeHeatingObjOnWeatherConstraint
+from boiler.temp_requirements.predictors.temp_graph_requirements_predictor \
+    import TempGraphRequirementsPredictor
+from boiler.timedelta.io.sync_timedelta_csv_reader import SyncTimedeltaCSVReader
+from boiler.timedelta.io.sync_timedelta_file_loader import SyncTimedeltaFileLoader
+from dependency_injector.containers import DeclarativeContainer
+from dependency_injector.providers import Configuration, Dependency, Resource, Factory, Coroutine
+from dynamic_settings.di_helpers import get_one_setting
 
-from backend.repositories.control_action_simple_repository import ControlActionsSimpleRepository
-from backend.resources.home_time_deltas_resource import HomeTimeDeltasResource
+from backend.constants import config_names
+from backend.resources.heating_obj_timedelta_resource import HeatingObjTimedeltaResource
 from backend.resources.temp_correlation_table import TempCorrelationTable
-from backend.services.control_action_prediction_service.corr_table_control_action_prediction_service import \
-    CorrTableControlActionPredictionService
+from backend.services.control_action_prediction_service.control_action_prediction_service import \
+    ControlActionPredictionService
 
 
-class ControlActionContainer(containers.DeclarativeContainer):
-    config = providers.Configuration()
-    settings_service = providers.Dependency()
+class ControlActionContainer(DeclarativeContainer):
+    config = Configuration(strict=True)
 
-    temp_requirements_repository = providers.Dependency()
-    control_actions_repository = providers.Singleton(
-        ControlActionsSimpleRepository
-    )
+    temp_graph_repository = Dependency()
+    weather_forecast_repository = Dependency()
+    control_actions_repository = Dependency()
+    dynamic_settings_repository = Dependency()
 
-    temp_correlation_table = providers.Resource(
+    # TODO: перевести на репозиторий
+    temp_correlation_table = Resource(
         TempCorrelationTable,
         config.temp_correlation_table_path
     )
 
-    homes_time_deltas = providers.Resource(
-        HomeTimeDeltasResource,
-        config.homes_deltas_path
+    # TODO: перевести на репозиторий
+    time_delta_df = Resource(
+        HeatingObjTimedeltaResource,
+        loader=Factory(
+            SyncTimedeltaFileLoader,
+            config.heating_objects_timedeldelta_path,
+            Factory(SyncTimedeltaCSVReader)
+        )
     )
 
-    temp_predictor = providers.Factory(
-        CorrTableTempPredictor,
-        temp_correlation_table=temp_correlation_table,
-        home_time_deltas=homes_time_deltas,
-        home_min_temp_coefficient=settings_service.provided.get_one_setting_sync.call("home_min_temp_coefficient")
+    model_requirements = Factory(
+        TimedeltaModelRequirementsWithoutHistory,
+        time_delta_df
     )
 
-    temp_prediction_service = providers.Factory(
-        CorrTableControlActionPredictionService,
-        temp_predictor=temp_predictor,
-        temp_requirements_repository=temp_requirements_repository,
-        control_actions_repository=control_actions_repository
+    timestamp_round_algo = Factory(
+        CeilTimestampRoundAlgorithm,
+        round_step=TIME_TICK
+    )
+
+    temp_constrains = Factory(
+        SingleTypeHeatingObjOnWeatherConstraint,
+        temp_requirements_predictor=Factory(
+            TempGraphRequirementsPredictor,
+            temp_graph=temp_graph_repository.provided.load_temp_graph.call(),
+            weather_temp_round_algorithm=Factory(ArithmeticFloatRoundAlgorithm)
+        ),
+        timestamp_round_algo=timestamp_round_algo,
+        temp_requirements_coefficient=Coroutine(
+            get_one_setting,
+            dynamic_settings_repository,
+            config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT
+        ),
+        min_model_error=Coroutine(
+            get_one_setting,
+            dynamic_settings_repository,
+            config_names.MODEL_ERROR_SIZE
+        )
+    )
+
+    heating_system_model = Factory(
+        CorrTableHeatingSystemModel,
+        temp_correlation_df=temp_correlation_table,
+        timedelta_df=time_delta_df,
+    )
+
+    control_action_predictor = Factory(
+        SingleCircuitControlActionPredictor,
+        heating_system_model=heating_system_model,
+        temp_requirements_constraint=temp_constrains,
+        min_boiler_temp=Coroutine(
+            get_one_setting,
+            dynamic_settings_repository,
+            config_names.MIN_BOILER_TEMP
+        ),
+        max_boiler_temp=Coroutine(
+            get_one_setting,
+            dynamic_settings_repository,
+            config_names.MAX_BOILER_TEMP
+        ),
+        min_regulation_step=0.3
+    )
+
+    temp_prediction_service = Factory(
+        ControlActionPredictionService,
+        weather_forecast_repository=weather_forecast_repository,
+        control_actions_repository=control_actions_repository,
+        control_action_predictor=control_action_predictor,
+        model_requirements=model_requirements,
+        timestamp_round_algo=timestamp_round_algo,
+        timedelta=TIME_TICK,
+        timedelta_predict_forward=pd.Timedelta(seconds=3600),
+        executor=None
     )

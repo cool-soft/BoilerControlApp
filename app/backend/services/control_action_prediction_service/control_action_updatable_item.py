@@ -1,13 +1,13 @@
 from typing import Optional
 
 from dependency_injector.providers import Provider
-from updater.updatable_item.updatable_item import UpdatableItem
+from updater.updatable_item.simple_updatable_item import SimpleUpdatableItem
 
-from backend.services.control_action_prediction_service.control_actions_prediction_service \
+from backend.services.control_action_prediction_service.control_action_prediction_service \
     import ControlActionPredictionService
 
 
-class ControlActionUpdatableItem(UpdatableItem):
+class ControlActionUpdatableItem(SimpleUpdatableItem):
 
     def __init__(self,
                  provider: Optional[Provider] = None,
@@ -25,4 +25,4 @@ class ControlActionUpdatableItem(UpdatableItem):
     async def _run_update_async(self):
         self._logger.debug("Run update")
         service: ControlActionPredictionService = await self._provider()
-        await service.predict_control_actions_async()
+        await service.update_control_actions_async()

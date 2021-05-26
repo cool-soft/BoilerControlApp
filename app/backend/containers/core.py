@@ -1,14 +1,16 @@
-from dependency_injector import containers, providers
 import logging.config
 
+from dependency_injector.containers import DeclarativeContainer
+from dependency_injector.providers import Configuration, Resource
 
-class Core(containers.DeclarativeContainer):
-    config = providers.Configuration()
+
+class Core(DeclarativeContainer):
+    config = Configuration(strict=True)
 
     # Для применения настроек логгирования необходимо инициализироватьь ресурс,
     # т.к. он напрямую нигде не вызывается.
     # Для инициализации необходимо вызвать core.init_resources() у экземпляра контенера.
-    logging = providers.Resource(
+    logging = Resource(
         logging.config.dictConfig,
         config=config.logging,
     )

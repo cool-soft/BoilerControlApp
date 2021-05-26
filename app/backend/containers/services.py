@@ -1,42 +1,47 @@
-from dependency_injector import containers, providers
+from dependency_injector.containers import DeclarativeContainer
+from dependency_injector.providers import Configuration, Container, Dependency
 
 from .services_containers.control_action_container import ControlActionContainer
 from .services_containers.dynamic_settings_container import DynamicSettingsContainer
 from .services_containers.temp_graph_container import TempGraphContainer
-from .services_containers.temp_requirements_container import TempRequirementsContainer
 from .services_containers.updater_container import UpdateContainer
+from .services_containers.weather_forecast_container import WeatherForecastContainer
 
 
-class Services(containers.DeclarativeContainer):
-    config = providers.Configuration()
+class Services(DeclarativeContainer):
+    config = Configuration(strict=True)
 
-    dynamic_settings_pkg = providers.Container(
+    dynamic_settings_repository = Dependency()
+    temp_graph_repository = Dependency()
+    weather_forecast_repository = Dependency()
+    control_actions_repository = Dependency()
+
+    dynamic_settings_pkg = Container(
         DynamicSettingsContainer,
-        config=config.dynamic_settings
+        config=config.dynamic_settings,
+        settings_repository=dynamic_settings_repository
     )
-
-    temp_graph_pkg = providers.Container(
+    temp_graph_pkg = Container(
         TempGraphContainer,
-        config=config.temp_graph_providing
+        temp_graph_repository=temp_graph_repository
     )
-
-    temp_requirements_pkg = providers.Container(
-        TempRequirementsContainer,
-        config=config.temp_requirements_calculation,
-        temp_graph_loader=temp_graph_pkg.temp_graph_dumper_loader
+    weather_forecast_pkg = Container(
+        WeatherForecastContainer,
+        config=config.weather_forecast_loader,
+        weather_forecast_repository=weather_forecast_repository
     )
-
-    control_action_pkg = providers.Container(
+    control_action_pkg = Container(
         ControlActionContainer,
-        config=config.boiler_temp_prediction,
-        settings_service=dynamic_settings_pkg.settings_service,
-        temp_requirements_repository=temp_requirements_pkg.temp_requirements_repository
+        config=config.control_action_predictor,
+        temp_graph_repository=temp_graph_repository,
+        weather_forecast_repository=weather_forecast_repository,
+        control_actions_repository=control_actions_repository,
+        dynamic_settings_repository=dynamic_settings_repository
     )
-
-    updater_pkg = providers.Container(
+    updater_pkg = Container(
         UpdateContainer,
         config=config.updater,
         control_actions_predictor=control_action_pkg.temp_prediction_service,
         temp_graph_updater=temp_graph_pkg.temp_graph_update_service,
-        temp_requirements_calculator=temp_requirements_pkg.temp_requirements_service,
+        weather_forecast_updater=weather_forecast_pkg.weather_forecast_service
     )

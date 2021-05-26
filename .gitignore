@@ -1,8 +1,15 @@
 /.idea/
 /venv/
 
-*.pyc
+**/__pycache__/
+*.py[cod]
 
 /storage/
 
-lib/
+**/*.egg-info/
+
+.coverage
+coverage-report-html/
+coverage-report.xml
+pytest-report.html
+
