@@ -2,7 +2,8 @@ from random import random
 
 import pandas as pd
 import pytest
-from boiler.constants import dataset_prototypes, column_names
+from boiler.constants import dataset_prototypes, column_names, circuit_types
+from boiler.data_processing.beetween_filter_algorithm import FullClosedTimestampFilterAlgorithm
 from dateutil.tz import gettz
 
 from backend.repositories.control_action_repository import ControlActionsRepository
@@ -11,12 +12,12 @@ from backend.repositories.control_action_repository import ControlActionsReposit
 class TestControlActionsRepository:
     time_tick = pd.Timedelta(seconds=300)
     start_timestamp = pd.Timestamp.now(tz=gettz("Asia/Yekaterinburg"))
-    end_timestamp = start_timestamp + (100 * time_tick)
+    end_timestamp = start_timestamp + (20 * time_tick)
     drop_timestamp = start_timestamp + (10 * time_tick)
 
     @pytest.fixture
     def repository(self):
-        return ControlActionsRepository()
+        return ControlActionsRepository(filter_algorithm=FullClosedTimestampFilterAlgorithm())
 
     @pytest.fixture
     def control_actions_df(self):
@@ -27,7 +28,8 @@ class TestControlActionsRepository:
             actions_df = actions_df.append(
                 {
                     column_names.TIMESTAMP: current_timestamp,
-                    column_names.FORWARD_PIPE_COOLANT_TEMP: random()
+                    column_names.FORWARD_PIPE_COOLANT_TEMP: random(),
+                    column_names.CIRCUIT_TYPE: circuit_types.HEATING
                 },
                 ignore_index=True
             )
