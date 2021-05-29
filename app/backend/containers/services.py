@@ -12,8 +12,12 @@ from .services_containers.weather_forecast_container import WeatherForecastConta
 class Services(DeclarativeContainer):
     config = Configuration(strict=True)
 
+    temp_graph_loader = Dependency()
+    weather_forecast_loader = Dependency()
+
     dynamic_settings_repository = Dependency()
     temp_graph_repository = Dependency()
+    time_delta_loader = Dependency()
     weather_forecast_repository = Dependency()
     control_actions_repository = Dependency()
 
@@ -24,16 +28,18 @@ class Services(DeclarativeContainer):
     )
     temp_graph_pkg = Container(
         TempGraphContainer,
+        temp_graph_loader=temp_graph_loader,
         temp_graph_repository=temp_graph_repository
     )
     weather_forecast_pkg = Container(
         WeatherForecastContainer,
-        config=config.weather_forecast_loader,
+        weather_forecast_loader=weather_forecast_loader,
         weather_forecast_repository=weather_forecast_repository
     )
     control_action_pkg = Container(
         ControlActionContainer,
         config=config.control_action_predictor,
+        time_delta_loader=time_delta_loader,
         temp_graph_repository=temp_graph_repository,
         weather_forecast_repository=weather_forecast_repository,
         control_actions_repository=control_actions_repository,

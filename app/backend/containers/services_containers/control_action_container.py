@@ -11,8 +11,6 @@ from boiler.temp_requirements.constraint.single_type_heating_obj_on_weather_cons
     import SingleTypeHeatingObjOnWeatherConstraint
 from boiler.temp_requirements.predictors.temp_graph_requirements_predictor \
     import TempGraphRequirementsPredictor
-from boiler.timedelta.io.sync_timedelta_csv_reader import SyncTimedeltaCSVReader
-from boiler.timedelta.io.sync_timedelta_file_loader import SyncTimedeltaFileLoader
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Dependency, Resource, Factory, Coroutine
 from dynamic_settings.di_helpers import get_one_setting
@@ -31,6 +29,7 @@ class ControlActionContainer(DeclarativeContainer):
     weather_forecast_repository = Dependency()
     control_actions_repository = Dependency()
     dynamic_settings_repository = Dependency()
+    time_delta_loader = Dependency()
 
     # TODO: перевести на репозиторий
     temp_correlation_table = Resource(
@@ -41,11 +40,7 @@ class ControlActionContainer(DeclarativeContainer):
     # TODO: перевести на репозиторий
     time_delta_df = Resource(
         HeatingObjTimedeltaResource,
-        loader=Factory(
-            SyncTimedeltaFileLoader,
-            config.heating_objects_timedeldelta_path,
-            Factory(SyncTimedeltaCSVReader)
-        )
+        loader=time_delta_loader
     )
 
     model_requirements = Factory(

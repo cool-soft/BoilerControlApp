@@ -22,7 +22,7 @@ class Repositories(DeclarativeContainer):
         filter_algorithm=Factory(FullClosedTimestampFilterAlgorithm)
     )
     control_actions_repository = Singleton(ControlActionsRepository)
-    settings_repository = Resource(
+    dynamic_settings_repository = Resource(
         DynamicSettingsRepositoryResource,
         session_factory=Resource(
             AsyncSettingsDBSessionFactory,
