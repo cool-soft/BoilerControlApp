@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends
 
 from backend.constants import config_names
 from backend.containers.services import Services
-from backend.models.api.v3.control_action import ControlAction
-from backend.models.api.v3.setting import Setting
+from backend.models.control_action.control_action_v3 import ControlActionV3
+from backend.models.setting.setting_v3 import SettingV3
 from backend.services.SettingsService import SettingsService
 from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
@@ -16,7 +16,7 @@ api_router = APIRouter(prefix="/api/v3")
 
 
 # noinspection PyTypeChecker
-@api_router.get("/predictedBoilerTemp", response_model=List[ControlAction])
+@api_router.get("/predictedBoilerTemp", response_model=List[ControlActionV3])
 @inject
 async def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
@@ -44,7 +44,7 @@ async def get_predicted_boiler_temp(
             - YYYY-MM-DD?HH:MM[:SS[.fffffff]][+HH:MM] где ? это T или символ пробела.
 
             Примеры:
-            - 2020-01-30T00:17:01.1234567+05:00 - Для обработки даты и времени используется временная зона из самой строки,
+            - 2020-01-30T00:17:01.1234567+05:00 - Для обработки датывремени используется временная зона из самой строки,
             формат «O» в C#.
             - 2020-01-30 00:17:07+05:00 - Для обработки даты и времени используется временная зона из самой строки.
             - 2020-01-30 00:17+05:30 - Для обработки даты и времени используется временная зона из самой строки.
@@ -66,7 +66,7 @@ async def get_predicted_boiler_temp(
 
 
 # noinspection PyTypeChecker
-@api_router.get("/settings", response_model=List[Setting])
+@api_router.get("/settings", response_model=List[SettingV3])
 @inject
 async def get_settings(
         settings_service: SettingsService = Depends(
@@ -87,7 +87,7 @@ async def put_apartment_house_min_temp_coefficient(
     await settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
 
 
-@api_router.get("/settings/apartmentHouseMinTempCoefficient", response_model=Setting)
+@api_router.get("/settings/apartmentHouseMinTempCoefficient", response_model=SettingV3)
 @inject
 async def get_apartment_house_min_temp_coefficient(
         settings_service: SettingsService = Depends(
@@ -108,7 +108,7 @@ async def put_max_boiler_temp(
     await settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
 
 
-@api_router.get("/settings/maxBoilerTemp", response_model=Setting)
+@api_router.get("/settings/maxBoilerTemp", response_model=SettingV3)
 @inject
 async def get_max_boiler_temp(
         settings_service: SettingsService = Depends(
@@ -129,7 +129,7 @@ async def put_min_boiler_temp(
     await settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
 
 
-@api_router.get("/settings/minBoilerTemp", response_model=Setting)
+@api_router.get("/settings/minBoilerTemp", response_model=SettingV3)
 @inject
 async def get_min_boiler_temp(
         settings_service: SettingsService = Depends(
@@ -150,7 +150,7 @@ async def put_model_error_size(
     await settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
 
 
-@api_router.get("/settings/modelErrorSize", response_model=Setting)
+@api_router.get("/settings/modelErrorSize", response_model=SettingV3)
 @inject
 async def get_model_error_size(
         settings_service: SettingsService = Depends(

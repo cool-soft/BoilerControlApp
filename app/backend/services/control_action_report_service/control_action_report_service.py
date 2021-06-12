@@ -1,12 +1,12 @@
+from datetime import datetime
 from typing import List, Tuple
 
 import pandas as pd
 from boiler.constants import column_names
 
+from backend.models.control_action.control_action_v3 import ControlActionV3
 from backend.repositories.control_action_repository import ControlActionsRepository
-
 from .abstract_control_action_report_service import AbstractControlActionReportService
-from ...models.api.v3.control_action import ControlAction
 
 
 class ControlActionReportService(AbstractControlActionReportService):
@@ -49,33 +49,34 @@ class ControlActionReportService(AbstractControlActionReportService):
                         start_timestamp: pd.Timestamp,
                         end_timestamp: pd.Timestamp,
                         report_timezone
-                        ) -> List[Tuple[str, float]]:
+                        ) -> List[Tuple[datetime, float]]:
         boiler_control_actions_df = \
             await self._control_action_repository.get_control_actions_by_timestamp_range(
                 start_timestamp,
                 end_timestamp
             )
-        predicted_boiler_temp_list = []
+        control_action_list = []
         if not boiler_control_actions_df.empty:
 
             datetime_column = boiler_control_actions_df[column_names.TIMESTAMP]
             datetime_column = datetime_column.dt.tz_convert(report_timezone)
-            datetime_column = datetime_column.to_list()
+            datetime_column = datetime_column.dt.to_pydatetime()
 
             boiler_out_temps = boiler_control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
             boiler_out_temps = boiler_out_temps.round(1)
             boiler_out_temps = boiler_out_temps.to_list()
 
             for datetime_, boiler_out_temp in zip(datetime_column, boiler_out_temps):
-                predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
+                # noinspection PyTypeChecker
+                control_action_list.append((datetime_, boiler_out_temp))
 
-        return predicted_boiler_temp_list
+        return control_action_list
 
     async def report_v3(self,
                         start_timestamp: pd.Timestamp,
                         end_timestamp: pd.Timestamp,
                         report_timezone
-                        ) -> List[ControlAction]:
+                        ) -> List[ControlActionV3]:
         boiler_control_actions_df = \
             await self._control_action_repository.get_control_actions_by_timestamp_range(
                 start_timestamp,
@@ -94,7 +95,7 @@ class ControlActionReportService(AbstractControlActionReportService):
 
             for datetime_, boiler_out_temp in zip(datetime_column, boiler_out_temps):
                 control_actions_list.append(
-                    ControlAction(
+                    ControlActionV3(
                         timestamp=datetime_,
                         forward_temp=boiler_out_temp
                     )

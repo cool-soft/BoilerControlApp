@@ -1,8 +1,10 @@
 import logging
+from datetime import datetime
+from typing import List, Tuple
 
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
+from starlette.responses import JSONResponse
 
 from backend.containers.services import Services
 from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
@@ -11,7 +13,11 @@ from backend.web.dependencies import InputDatetimeRange, InputTimezone
 api_router = APIRouter(prefix="/api/v2")
 
 
-@api_router.get("/getPredictedBoilerT", response_class=JSONResponse, deprecated=True)
+# noinspection PyTypeChecker
+@api_router.get("/getPredictedBoilerT",
+                response_model=List[Tuple[datetime, float]],
+                response_class=JSONResponse,
+                deprecated=True)
 @inject
 async def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
