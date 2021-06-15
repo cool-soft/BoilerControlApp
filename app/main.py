@@ -24,7 +24,7 @@ async def main(cmd_args):
     logger.info("Wiring")
     wire(application)
 
-    logger.info(f"Starting updater service")
+    logger.info("Starting updater service")
     updater_service: AbstractUpdaterService = application.services.updater_pkg.updater_service()
     await updater_service.start_service()
 

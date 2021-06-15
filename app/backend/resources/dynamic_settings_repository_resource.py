@@ -16,7 +16,7 @@ class DynamicSettingsRepositoryResource(AsyncResource):
                    dtype_converters: List[DTypeConverter],
                    default_settings: Dict
                    ) -> AbstractSettingsRepository:
-        logger.debug(f"Initialization of Resource")
+        logger.debug("Initialization of Resource")
 
         settings_repository = DBSettingsRepository(
             session_factory,
