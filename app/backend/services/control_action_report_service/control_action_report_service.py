@@ -7,6 +7,7 @@ from boiler.constants import column_names
 from backend.models.control_action.control_action_v3 import ControlActionV3
 from backend.repositories.control_action_repository import ControlActionsRepository
 from .abstract_control_action_report_service import AbstractControlActionReportService
+from backend.logger import logger
 
 
 class ControlActionReportService(AbstractControlActionReportService):
@@ -18,11 +19,17 @@ class ControlActionReportService(AbstractControlActionReportService):
         self._timestamp_report_pattern_v1 = timestamp_report_pattern_v1
         self._control_action_repository = control_action_repository
 
+        logger.debug("Creating instance")
+
     async def report_v1(self,
                         start_timestamp: pd.Timestamp,
                         end_timestamp: pd.Timestamp,
                         report_timezone
                         ) -> List[Tuple[str, float]]:
+        logger.debug(
+            f"Creating report for datetime range {start_timestamp}, {end_timestamp} "
+            f"in timezone{report_timezone}"
+        )
         boiler_control_actions_df = \
             await self._control_action_repository.get_control_actions_by_timestamp_range(
                 start_timestamp,
@@ -50,6 +57,10 @@ class ControlActionReportService(AbstractControlActionReportService):
                         end_timestamp: pd.Timestamp,
                         report_timezone
                         ) -> List[Tuple[datetime, float]]:
+        logger.debug(
+            f"Creating report for datetime range {start_timestamp}, {end_timestamp} "
+            f"in timezone{report_timezone}"
+        )
         boiler_control_actions_df = \
             await self._control_action_repository.get_control_actions_by_timestamp_range(
                 start_timestamp,
@@ -77,6 +88,10 @@ class ControlActionReportService(AbstractControlActionReportService):
                         end_timestamp: pd.Timestamp,
                         report_timezone
                         ) -> List[ControlActionV3]:
+        logger.debug(
+            f"Creating report for datetime range {start_timestamp}, {end_timestamp} "
+            f"in timezone{report_timezone}"
+        )
         boiler_control_actions_df = \
             await self._control_action_repository.get_control_actions_by_timestamp_range(
                 start_timestamp,

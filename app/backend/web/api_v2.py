@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 from typing import List, Tuple
 
@@ -7,6 +6,7 @@ from fastapi import APIRouter, Depends
 from starlette.responses import JSONResponse
 
 from backend.containers.services import Services
+from backend.logger import logger
 from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 
@@ -57,10 +57,9 @@ async def get_predicted_boiler_temp(
         При формировании ответа используется врменная зона из парметра timezone.
         """
 
-    _logger = logging.getLogger(__name__)
-    _logger.debug(f"Requested predicted boiler temp for dates range "
-                  f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
-                  f"with timezone {work_timezone.name}")
+    logger.debug(f"Requested predicted boiler temp for dates range "
+                 f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
+                 f"with timezone {work_timezone.name}")
 
     control_action = await control_action_report_service.report_v2(
         datetime_range.start_datetime,

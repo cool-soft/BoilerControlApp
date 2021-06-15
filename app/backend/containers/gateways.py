@@ -35,6 +35,9 @@ class Gateways(DeclarativeContainer):
 
     time_delta_loader = Factory(
         SyncTimedeltaFileLoader,
-        config.time_delta_loader.heating_objects_time_delta_path,
-        Factory(SyncTimedeltaCSVReader)
+        filepath=config.time_delta_loader.heating_objects_time_delta_path,
+        reader=Factory(
+            SyncTimedeltaCSVReader,
+            separator=","
+        )
     )

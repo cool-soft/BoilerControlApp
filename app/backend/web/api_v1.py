@@ -1,4 +1,3 @@
-import logging
 from typing import Tuple, List
 
 from dependency_injector.wiring import Provide, inject
@@ -6,6 +5,7 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from backend.containers.services import Services
+from backend.logger import logger
 from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
 from backend.web.dependencies import InputDatesRange, InputTimezone
 
@@ -18,7 +18,7 @@ api_router = APIRouter(prefix="/api/v1")
                 response_model=List[Tuple[str, float]],
                 deprecated=True)
 @inject
-async def get_predicted_boiler_t(
+async def get_predicted_boiler_temp(
         dates_range: InputDatesRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         control_action_report_service: ControlActionReportService = Depends(
@@ -34,10 +34,9 @@ async def get_predicted_boiler_t(
         Если не указан - используется временная зона из конфигов.
     """
 
-    _logger = logging.getLogger(__name__)
-    _logger.debug(f"Requested predicted boiler temp for dates range "
-                  f"from {dates_range.start_date} to {dates_range.end_date} "
-                  f"with timezone {work_timezone.name}")
+    logger.debug(f"Requested predicted boiler temp for dates range "
+                 f"from {dates_range.start_date} to {dates_range.end_date} "
+                 f"with timezone {work_timezone.name}")
 
     control_action = await control_action_report_service.report_v1(
         dates_range.start_date,

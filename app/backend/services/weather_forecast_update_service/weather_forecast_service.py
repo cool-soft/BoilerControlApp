@@ -7,6 +7,7 @@ from boiler.weather.io.abstract_async_weather_loader import AbstractAsyncWeather
 from boiler.weather.processing import AbstractWeatherProcessor
 from dateutil.tz import UTC
 
+from backend.logger import logger
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
 
 
@@ -25,7 +26,11 @@ class SimpleWeatherForecastService:
         self._preload_timedelta = preload_timedelta
         self._executor = executor
 
+        logger.debug("Creating instance")
+
     async def update_weather_forecast_async(self) -> None:
+        logger.debug("Requested forecast updating")
+
         weather_forecast_df = await self._weather_forecast_loader.load_weather()
         weather_forecast_df = await asyncio.get_running_loop().run_in_executor(
             self._executor,

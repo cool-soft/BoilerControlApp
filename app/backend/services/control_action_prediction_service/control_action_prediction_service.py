@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import Tuple
 
@@ -10,6 +9,7 @@ from boiler.data_processing.timestamp_round_algorithm import AbstractTimestampRo
 from boiler.heating_system.model_requirements.abstract_model_requirements import AbstractModelRequirements
 from dateutil.tz import UTC
 
+from backend.logger import logger
 from backend.repositories.control_action_repository import ControlActionsRepository
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
 
@@ -26,9 +26,6 @@ class ControlActionPredictionService:
                  timedelta_predict_forward: pd.Timedelta = pd.Timedelta(seconds=3600),
                  executor: ThreadPoolExecutor = None
                  ) -> None:
-        self._logger = logging.getLogger(self.__class__.__name__)
-        self._logger.debug("Creating instance")
-
         self._weather_forecast_repository = weather_forecast_repository
         self._control_action_repository = control_actions_repository
         self._control_action_predictor = control_action_predictor
@@ -38,8 +35,10 @@ class ControlActionPredictionService:
         self._timedelta = timedelta
         self._executor = executor
 
+        logger.debug("Creating instance")
+
     async def update_control_actions_async(self) -> None:
-        self._logger.debug("Requested updating control actions")
+        logger.debug("Requested updating control actions")
         control_action_start_timestamp, control_action_end_timestamp = self._calc_control_action_start_end_timestamp()
         control_action_current_timestamp = control_action_start_timestamp
         while control_action_current_timestamp <= control_action_end_timestamp:

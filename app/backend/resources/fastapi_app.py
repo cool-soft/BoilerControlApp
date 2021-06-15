@@ -1,17 +1,13 @@
-import logging
-
 from dependency_injector import resources
 from fastapi import FastAPI
+
+from backend.logger import logger
 
 
 class FastAPIApp(resources.Resource):
 
-    def __init__(self):
-        self._logger = logging.getLogger(self.__class__.__name__)
-        self._logger.debug("Creating instance of Resource")
-
     def init(self, api_routers: list) -> FastAPI:
-        self._logger.debug("Initialization of FastAPI app")
+        logger.debug("Initialization of FastAPI app")
 
         app = FastAPI()
         for router in api_routers:

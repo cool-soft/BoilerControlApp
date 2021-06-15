@@ -1,4 +1,3 @@
-import logging
 from typing import List
 
 from dependency_injector.wiring import Provide, inject
@@ -6,6 +5,7 @@ from fastapi import APIRouter, Depends
 
 from backend.constants import config_names
 from backend.containers.services import Services
+from backend.logger import logger
 from backend.models.control_action.control_action_v3 import ControlActionV3
 from backend.models.setting.setting_v3 import SettingV3
 from backend.services.SettingsService import SettingsService
@@ -25,7 +25,6 @@ async def get_predicted_boiler_temp(
             Provide[Services.control_action_report_pkg.control_action_report_service]
         )
 ):
-
     # noinspection SpellCheckingInspection
     """
             Метод для получения рекомендуемой температуры, которую необходимо выставить на бойлере.
@@ -52,10 +51,9 @@ async def get_predicted_boiler_temp(
             - 2020-01-30 00:17 - Используется временная зона из параметра timezone.
             """
 
-    _logger = logging.getLogger(__name__)
-    _logger.debug(f"Requested predicted boiler temp for dates range "
-                  f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
-                  f"with timezone {work_timezone.name}")
+    logger.debug(f"Requested predicted boiler temp for dates range "
+                 f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
+                 f"with timezone {work_timezone.name}")
 
     control_action_list = await control_action_report_service.report_v3(
         datetime_range.start_datetime,

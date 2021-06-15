@@ -2,6 +2,7 @@ from typing import Any, List
 
 from dynamic_settings.repository.abstract_settings_repository import AbstractSettingsRepository
 
+from backend.logger import logger
 from backend.models.setting.setting_v3 import SettingV3
 
 
@@ -12,14 +13,19 @@ class SettingsService:
                  ) -> None:
         self._settings_repository = settings_repository
 
+        logger.debug("Creating instance")
+
     async def get_setting(self, setting_name: str) -> SettingV3:
+        logger.debug(f"Requested setting {setting_name}")
         setting_value = await self._settings_repository.get_one(setting_name)
         return SettingV3(name=setting_name, value=setting_value)
 
     async def set_setting(self, setting_name: str, setting_value: Any) -> None:
+        logger.debug(f"Set setting {setting_name}={setting_value}")
         await self._settings_repository.set_one(setting_name, setting_value)
 
     async def get_all_settings(self) -> List[SettingV3]:
+        logger.debug("Requested all settings")
         loaded_settings = await self._settings_repository.get_all()
         response_settings = []
         for loaded_setting_name, loaded_setting_value in loaded_settings.items():

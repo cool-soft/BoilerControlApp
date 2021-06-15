@@ -1,11 +1,11 @@
 import argparse
 import asyncio
-import logging
 
 import uvicorn
 from updater.updater_service.abstract_updater_service import AbstractUpdaterService
 
 from backend.containers.application import Application
+from backend.logger import logger
 from backend.web import api_v1, api_v2, api_v3
 
 
@@ -19,9 +19,8 @@ async def main(cmd_args):
     application.config.from_yaml(cmd_args.config)
 
     application.core.init_resources()
-    # Must be placed after core.init_resources()
-    logger = logging.getLogger(__name__)
 
+    # Must be placed after core.init_resources()
     logger.info("Wiring")
     wire(application)
 

@@ -6,6 +6,8 @@ from dynamic_settings.repository.abstract_settings_repository import AbstractSet
 from dynamic_settings.repository.db_settings_repository import DBSettingsRepository
 from dynamic_settings.repository.db_settings_repository.dtype_converters import DTypeConverter
 
+from backend.logger import logger
+
 
 class DynamicSettingsRepositoryResource(AsyncResource):
 
@@ -14,6 +16,8 @@ class DynamicSettingsRepositoryResource(AsyncResource):
                    dtype_converters: List[DTypeConverter],
                    default_settings: Dict
                    ) -> AbstractSettingsRepository:
+        logger.debug(f"Initialization of Resource")
+
         settings_repository = DBSettingsRepository(
             session_factory,
             dtype_converters
