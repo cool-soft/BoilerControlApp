@@ -2,6 +2,8 @@ from typing import List
 
 from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
+from starlette import status
+from starlette.responses import Response
 
 from backend.constants import config_names
 from backend.containers.services import Services
@@ -74,7 +76,9 @@ async def get_settings(
     return await settings_service.get_all_settings()
 
 
-@api_router.put("/settings/apartmentHouseMinTempCoefficient", status_code=204)
+@api_router.put("/settings/apartmentHouseMinTempCoefficient",
+                status_code=status.HTTP_204_NO_CONTENT,
+                response_class=Response)
 @inject
 async def put_apartment_house_min_temp_coefficient(
         coefficient: float,
@@ -95,7 +99,9 @@ async def get_apartment_house_min_temp_coefficient(
     return await settings_service.get_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT)
 
 
-@api_router.put("/settings/maxBoilerTemp", status_code=204)
+@api_router.put("/settings/maxBoilerTemp",
+                status_code=status.HTTP_204_NO_CONTENT,
+                response_class=Response)
 @inject
 async def put_max_boiler_temp(
         temp: float,
@@ -116,7 +122,9 @@ async def get_max_boiler_temp(
     return await settings_service.get_setting(config_names.MAX_BOILER_TEMP)
 
 
-@api_router.put("/settings/minBoilerTemp", status_code=204)
+@api_router.put("/settings/minBoilerTemp",
+                status_code=status.HTTP_204_NO_CONTENT,
+                response_class=Response)
 @inject
 async def put_min_boiler_temp(
         temp: float,
@@ -137,7 +145,9 @@ async def get_min_boiler_temp(
     return await settings_service.get_setting(config_names.MIN_BOILER_TEMP)
 
 
-@api_router.put("/settings/modelErrorSize", status_code=204)
+@api_router.put("/settings/modelErrorSize",
+                status_code=status.HTTP_204_NO_CONTENT,
+                response_class=Response)
 @inject
 async def put_model_error_size(
         value: float,
