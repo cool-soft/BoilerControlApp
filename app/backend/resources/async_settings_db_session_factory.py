@@ -1,3 +1,5 @@
+import asyncio
+
 from dependency_injector import resources
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -14,6 +16,7 @@ class AsyncSettingsDBSessionFactory(resources.AsyncResource):
                          autoflush=False,
                          bind=db_engine,
                          class_=AsyncSession),
+            scopefunc=asyncio.current_task
         )
 
         return session_factory
