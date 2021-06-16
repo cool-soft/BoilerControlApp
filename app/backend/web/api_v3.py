@@ -78,6 +78,9 @@ async def get_settings(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
+    """
+    Возвращает список ключ-значение всех динамических настроек
+    """
     return await settings_service.get_all_settings()
 
 
@@ -101,6 +104,9 @@ async def get_apartment_house_min_temp_coefficient(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
+    """
+    Возвращает текущее значение коэффициента требований температурного графика в МКД.
+    """
     return await settings_service.get_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT)
 
 
@@ -124,6 +130,9 @@ async def get_max_boiler_temp(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
+    """
+    Возвращает текущее значение макисмальной температуры на выходе из котельной.
+    """
     return await settings_service.get_setting(config_names.MAX_BOILER_TEMP)
 
 
@@ -147,6 +156,9 @@ async def get_min_boiler_temp(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
+    """
+    Возвращает текущее значение минимальной температуры на выходе из котельной.
+    """
     return await settings_service.get_setting(config_names.MIN_BOILER_TEMP)
 
 
@@ -170,4 +182,7 @@ async def get_model_error_size(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
+    """
+    Возвращает текущее значение поправки на ошибку модели.
+    """
     return await settings_service.get_setting(config_names.MODEL_ERROR_SIZE)
