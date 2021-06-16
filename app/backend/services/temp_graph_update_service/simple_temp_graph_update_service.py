@@ -17,7 +17,7 @@ class SimpleTempGraphUpdateService(TempGraphUpdateService):
         logger.debug("Creating instance")
 
     async def update_temp_graph_async(self) -> None:
-        logger.debug("Requested temp graph update")
+        logger.info("Requesting temp graph update")
         temp_graph = await self._temp_graph_loader.load_temp_graph()
         self._temp_graph_dumper.dump_temp_graph(temp_graph)
         logger.debug("temp graph is updated")

@@ -38,7 +38,7 @@ class ControlActionPredictionService:
         logger.debug("Creating instance")
 
     async def update_control_actions_async(self) -> None:
-        logger.debug("Requested updating control actions")
+        logger.info("Requesting control actions update")
         control_action_start_timestamp, control_action_end_timestamp = self._calc_control_action_start_end_timestamp()
         control_action_current_timestamp = control_action_start_timestamp
         while control_action_current_timestamp <= control_action_end_timestamp:

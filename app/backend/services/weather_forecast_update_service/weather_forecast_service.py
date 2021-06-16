@@ -29,7 +29,7 @@ class SimpleWeatherForecastService:
         logger.debug("Creating instance")
 
     async def update_weather_forecast_async(self) -> None:
-        logger.debug("Requested forecast updating")
+        logger.info("Requesting weather forecast update")
 
         weather_forecast_df = await self._weather_forecast_loader.load_weather()
         weather_forecast_df = await asyncio.get_running_loop().run_in_executor(

@@ -26,8 +26,8 @@ class ControlActionReportService(AbstractControlActionReportService):
                         end_timestamp: pd.Timestamp,
                         report_timezone
                         ) -> List[Tuple[str, float]]:
-        logger.debug(
-            f"Creating report for datetime range {start_timestamp}, {end_timestamp} "
+        logger.info(
+            f"Creating control action report for datetime range {start_timestamp}, {end_timestamp} "
             f"in timezone{report_timezone}"
         )
         boiler_control_actions_df = \
@@ -57,8 +57,8 @@ class ControlActionReportService(AbstractControlActionReportService):
                         end_timestamp: pd.Timestamp,
                         report_timezone
                         ) -> List[Tuple[datetime, float]]:
-        logger.debug(
-            f"Creating report for datetime range {start_timestamp}, {end_timestamp} "
+        logger.info(
+            f"Creating control action report for datetime range {start_timestamp}, {end_timestamp} "
             f"in timezone{report_timezone}"
         )
         boiler_control_actions_df = \
@@ -88,8 +88,8 @@ class ControlActionReportService(AbstractControlActionReportService):
                         end_timestamp: pd.Timestamp,
                         report_timezone
                         ) -> List[ControlActionV3]:
-        logger.debug(
-            f"Creating report for datetime range {start_timestamp}, {end_timestamp} "
+        logger.info(
+            f"Creating control action report for datetime range {start_timestamp}, {end_timestamp} "
             f"in timezone{report_timezone}"
         )
         boiler_control_actions_df = \
