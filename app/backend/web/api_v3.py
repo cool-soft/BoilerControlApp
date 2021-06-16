@@ -12,7 +12,12 @@ from backend.models.control_action.control_action_v3 import ControlActionV3
 from backend.models.setting.setting_v3 import SettingV3
 from backend.services.SettingsService import SettingsService
 from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
-from backend.web.dependencies import InputDatetimeRange, InputTimezone
+from backend.web.dependencies import \
+    InputDatetimeRange, \
+    InputTimezone, \
+    get_temp_requirements_coefficient, \
+    get_max_boiler_temp, \
+    get_min_boiler_temp
 
 api_router = APIRouter(prefix="/api/v3")
 
@@ -81,7 +86,7 @@ async def get_settings(
                 response_class=Response)
 @inject
 async def put_apartment_house_min_temp_coefficient(
-        coefficient: float,
+        coefficient: float = Depends(get_temp_requirements_coefficient),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
@@ -104,7 +109,7 @@ async def get_apartment_house_min_temp_coefficient(
                 response_class=Response)
 @inject
 async def put_max_boiler_temp(
-        temp: float,
+        temp: float = Depends(get_max_boiler_temp),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
@@ -127,7 +132,7 @@ async def get_max_boiler_temp(
                 response_class=Response)
 @inject
 async def put_min_boiler_temp(
-        temp: float,
+        temp: float = Depends(get_min_boiler_temp),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )

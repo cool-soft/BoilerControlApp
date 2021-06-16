@@ -34,6 +34,7 @@ class InputTimezone:
         self.name = timezone_name
 
 
+# Deprecated. Удалить вместе со старой версией API (v1).
 class InputDatesRange:
 
     @inject
@@ -101,3 +102,42 @@ class InputDatetimeRange:
 
         self.start_datetime: pd.Timestamp = start_datetime
         self.end_datetime: pd.Timestamp = end_datetime
+
+
+def get_temp_requirements_coefficient(temp_requirements_coefficient: float):
+    if not 0 < temp_requirements_coefficient <= 1:
+        raise HTTPException(
+            422,
+            [{
+                'loc': ['query', 'temp_requirements_coefficient'],
+                'msg': 'Коэффициент выполнения температурных требований жолжен быть в пределах (0, 1]',
+                'type': 'value_error.str.condition',
+            }]
+        )
+    return temp_requirements_coefficient
+
+
+def get_max_boiler_temp(max_boiler_temp: float):
+    if not 0 < max_boiler_temp <= 120:
+        raise HTTPException(
+            422,
+            [{
+                'loc': ['query', 'min_boiler_temp'],
+                'msg': 'Максимальная температура бойлера должна быть в пределах (0, 120]',
+                'type': 'value_error.str.condition',
+            }]
+        )
+    return max_boiler_temp
+
+
+def get_min_boiler_temp(min_boiler_temp: float):
+    if not 0 < min_boiler_temp <= 120:
+        raise HTTPException(
+            422,
+            [{
+                'loc': ['query', 'min_boiler_temp'],
+                'msg': 'Минимальная температура бойлера должна быть в пределах (0, 120]',
+                'type': 'value_error.str.condition',
+            }]
+        )
+    return min_boiler_temp
