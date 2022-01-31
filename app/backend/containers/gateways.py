@@ -38,6 +38,6 @@ class Gateways(DeclarativeContainer):
         filepath=config.time_delta_loader.heating_objects_time_delta_path,
         reader=Factory(
             SyncTimedeltaCSVReader,
-            separator=","
+            separator=";"
         )
     )
