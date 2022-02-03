@@ -35,7 +35,7 @@ async def main(cmd_args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Control boiler')
-    parser.add_argument('--config', default="../storage/config/config.yaml", help='path to config file')
+    parser.add_argument('--config', default="../storage/configs/dev_config.yaml", help='path to config file')
     args = parser.parse_args()
 
     loop = asyncio.get_event_loop()
