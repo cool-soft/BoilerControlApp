@@ -4,6 +4,7 @@ from boiler.constants import column_names, dataset_prototypes
 from boiler.data_processing.beetween_filter_algorithm \
     import AbstractTimestampFilterAlgorithm, LeftClosedTimestampFilterAlgorithm
 
+from backend.db.services import add_predicted_to_db
 from backend.logger import logger
 
 
@@ -49,6 +50,8 @@ class ControlActionsRepository:
 
     async def add_control_actions(self, control_actions_df: pd.DataFrame) -> None:
         logger.debug(f"Add the {len(control_actions_df)} control actions to repository")
+
+        add_predicted_to_db(control_actions_df)
 
         async with self._get_rwlock().writer_lock:
             self._storage = self._storage.append(control_actions_df)
