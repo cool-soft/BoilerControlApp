@@ -1,6 +1,6 @@
 git+https://github.com/cool-soft/updater.git#egg=updater
 git+https://github.com/cool-soft/boiler.git#egg=boiler
-git+https://github.com/cool-soft/boiler-softm.git#egg=boiler-softm
+git+https://github.com/cool-soft/boiler-softm.git@bannikov/develop#egg=boiler-softm
 git+https://github.com/cool-soft/dynamic-settings.git#egg=dynamic-settings
 
 pytest~=6.2.3

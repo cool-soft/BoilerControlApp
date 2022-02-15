@@ -1,5 +1,5 @@
-from backend.db.resources import Predicted
-from backend.db.schemas import PredictedData
+from backend.db.resources import Predicted, Weather
+from backend.db.schemas import PredictedData, WeatherData
 
 from datetime import datetime
 
@@ -45,6 +45,30 @@ class DBRepository:
                 .filter(column >= start).filter(column <= end) \
                 .all()
         return rows
+
+    def add_weather(self, data: WeatherData) -> None:
+        """
+        Добавление данных по погоде в БД
+        :param data: добавляемые данные
+        :return:
+        """
+        with self.session_factory() as session:
+            session.add(Weather(d_timestamp=data.d_timestamp,
+                                t=data.t
+                                ))
+            session.commit()
+
+    def is_weather(self, d_timestamp: datetime) -> bool:
+        """
+        Проверка существования в БД записи по погоде
+        :param d_timestamp: дата и время снятия показаний
+        :return: True - запись существует, False - запись не найдена
+        """
+        with self.session_factory() as session:
+            data = session.query(Weather) \
+                .filter(Weather.d_timestamp == d_timestamp) \
+                .all()
+        return len(data) > 0
 
     def add_predicted(self, data: PredictedData) -> None:
         """

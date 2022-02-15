@@ -4,6 +4,29 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, sessionmaker, DeclarativeMeta
 
 PredictedBase = declarative_base()
+WeatherBase = declarative_base()
+
+
+class Weather(WeatherBase):
+    __tablename__ = "weather"
+    __tableargs__ = {
+        "comment": "Погодные условия"
+    }
+    weather_id = Column(
+        Integer,
+        nullable=False,
+        unique=True,
+        primary_key=True,
+        autoincrement=True
+    )
+    d_timestamp = Column(
+        DateTime,
+        comment="Дата и время снятия показаний"
+    )
+    t = Column(
+        Float,
+        comment="Температура окружающей среды"
+    )
 
 
 class Predicted(PredictedBase):
