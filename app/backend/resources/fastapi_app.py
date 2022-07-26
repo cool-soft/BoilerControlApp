@@ -1,7 +1,7 @@
 from dependency_injector import resources
 from fastapi import FastAPI
 
-from backend.logger import logger
+from backend.logging import logger
 
 
 class FastAPIApp(resources.Resource):

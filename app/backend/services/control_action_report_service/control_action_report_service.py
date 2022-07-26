@@ -4,13 +4,12 @@ from typing import List, Tuple
 import pandas as pd
 from boiler.constants import column_names
 
+from backend.logging import logger
 from backend.models.control_action.control_action_v3 import ControlActionV3
 from backend.repositories.control_action_repository import ControlActionsRepository
-from .abstract_control_action_report_service import AbstractControlActionReportService
-from backend.logger import logger
 
 
-class ControlActionReportService(AbstractControlActionReportService):
+class ControlActionReportService:
 
     def __init__(self,
                  timestamp_report_pattern_v1: str,
@@ -21,7 +20,7 @@ class ControlActionReportService(AbstractControlActionReportService):
 
         logger.debug("Creating instance")
 
-    async def report_v1(self,
+    def report_v1(self,
                         start_timestamp: pd.Timestamp,
                         end_timestamp: pd.Timestamp,
                         report_timezone
@@ -31,7 +30,7 @@ class ControlActionReportService(AbstractControlActionReportService):
             f"in timezone{report_timezone}"
         )
         boiler_control_actions_df = \
-            await self._control_action_repository.get_control_actions_by_timestamp_range(
+            self._control_action_repository.get_control_actions_by_timestamp_range(
                 start_timestamp,
                 end_timestamp
             )
@@ -52,7 +51,7 @@ class ControlActionReportService(AbstractControlActionReportService):
 
         return predicted_boiler_temp_list
 
-    async def report_v2(self,
+    def report_v2(self,
                         start_timestamp: pd.Timestamp,
                         end_timestamp: pd.Timestamp,
                         report_timezone
@@ -62,7 +61,7 @@ class ControlActionReportService(AbstractControlActionReportService):
             f"in timezone{report_timezone}"
         )
         boiler_control_actions_df = \
-            await self._control_action_repository.get_control_actions_by_timestamp_range(
+            self._control_action_repository.get_control_actions_by_timestamp_range(
                 start_timestamp,
                 end_timestamp
             )
@@ -83,7 +82,7 @@ class ControlActionReportService(AbstractControlActionReportService):
 
         return control_action_list
 
-    async def report_v3(self,
+    def report_v3(self,
                         start_timestamp: pd.Timestamp,
                         end_timestamp: pd.Timestamp,
                         report_timezone
@@ -93,7 +92,7 @@ class ControlActionReportService(AbstractControlActionReportService):
             f"in timezone{report_timezone}"
         )
         boiler_control_actions_df = \
-            await self._control_action_repository.get_control_actions_by_timestamp_range(
+            self._control_action_repository.get_control_actions_by_timestamp_range(
                 start_timestamp,
                 end_timestamp
             )

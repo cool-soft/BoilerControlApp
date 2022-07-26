@@ -7,7 +7,7 @@ from starlette.responses import Response
 
 from backend.constants import config_names
 from backend.containers.services import Services
-from backend.logger import logger
+from backend.logging import logger
 from backend.models.control_action.control_action_v3 import ControlActionV3
 from backend.models.setting.setting_v3 import SettingV3
 from backend.services.SettingsService import SettingsService
@@ -94,7 +94,7 @@ async def put_apartment_house_min_temp_coefficient(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
-    await settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
+    settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
 
 
 @api_router.get("/settings/apartmentHouseMinTempCoefficient", response_model=SettingV3)
@@ -107,7 +107,7 @@ async def get_apartment_house_min_temp_coefficient(
     """
     Возвращает текущее значение коэффициента требований температурного графика в МКД.
     """
-    return await settings_service.get_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT)
+    return settings_service.get_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT)
 
 
 @api_router.put("/settings/maxBoilerTemp",

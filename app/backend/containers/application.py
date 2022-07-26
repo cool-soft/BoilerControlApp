@@ -11,14 +11,15 @@ from backend.containers.wsgi import WSGI
 class Application(DeclarativeContainer):
     config = Configuration(strict=True)
 
-    repositories = Container(
-        Repositories,
-        config=config.repositories
-    )
-
     gateways = Container(
         Gateways,
         config=config.gateways
+    )
+
+    repositories = Container(
+        Repositories,
+        config=config.repositories,
+        session_factory=gateways.session_factory
     )
 
     services = Container(
@@ -30,7 +31,8 @@ class Application(DeclarativeContainer):
         dynamic_settings_repository=repositories.dynamic_settings_repository,
         temp_graph_repository=repositories.temp_graph_repository,
         weather_forecast_repository=repositories.weather_forecast_repository,
-        control_actions_repository=repositories.control_actions_repository
+        control_actions_repository=repositories.control_actions_repository,
+        session_factory=gateways.session_factory
     )
 
     core = Container(

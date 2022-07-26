@@ -1,11 +1,11 @@
 from dependency_injector.providers import Provider
-from updater.updatable_item.simple_updatable_item import SimpleUpdatableItem
+from updater.updatable_item.abstract_sync_updatable_item import AbstractSyncUpdatableItem
 
-from backend.logger import logger
-from backend.services.temp_graph_update_service.temp_graph_update_service import TempGraphUpdateService
+from backend.logging import logger
+from backend.services.temp_graph_update_service.simple_temp_graph_update_service import SimpleTempGraphUpdateService
 
 
-class TempGraphUpdatableItem(SimpleUpdatableItem):
+class TempGraphUpdatableItem(AbstractSyncUpdatableItem):
 
     def __init__(self,
                  provider: Provider,
@@ -21,7 +21,7 @@ class TempGraphUpdatableItem(SimpleUpdatableItem):
             f"service provider: {provider}"
         )
 
-    async def _run_update_async(self):
+    def _run_update(self):
         logger.debug("Run update")
-        service: TempGraphUpdateService = self._provider()
-        await service.update_temp_graph_async()
+        service: SimpleTempGraphUpdateService = self._provider()
+        service.update_temp_graph()

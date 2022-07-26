@@ -4,6 +4,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Resource
 
 
+# noinspection SpellCheckingInspection
 class Core(DeclarativeContainer):
     config = Configuration(strict=True)
 

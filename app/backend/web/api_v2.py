@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends
 from starlette.responses import JSONResponse
 
 from backend.containers.services import Services
-from backend.logger import logger
+from backend.logging import logger
 from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
 from backend.web.dependencies import InputDatetimeRange, InputTimezone
 

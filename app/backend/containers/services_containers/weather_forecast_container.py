@@ -4,8 +4,8 @@ from boiler.data_processing.timestamp_interpolator_algorithm import TimestampInt
 from boiler.data_processing.timestamp_round_algorithm import CeilTimestampRoundAlgorithm
 from boiler.data_processing.value_interpolation_algorithm \
     import LinearInsideValueInterpolationAlgorithm, LinearOutsideValueInterpolationAlgorithm
-from boiler_softm.constants.time_tick import TIME_TICK
-from boiler_softm.weather.processing import SoftMWeatherProcessor
+from boiler_softm_lysva.constants.time_tick import TIME_TICK
+from boiler_softm_lysva.weather.processing import SoftMWeatherProcessor
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory, Object, Dependency
 
@@ -39,6 +39,5 @@ class WeatherForecastContainer(DeclarativeContainer):
         weather_forecast_loader=weather_forecast_loader,
         weather_forecast_processor=weather_forecast_preprocessor,
         weather_forecast_repository=weather_forecast_repository,
-        preload_timedelta=Object(pd.Timedelta(hours=3)),
-        executor=None
+        preload_timedelta=Object(pd.Timedelta(hours=3))
     )

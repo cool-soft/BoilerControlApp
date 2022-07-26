@@ -1,32 +1,41 @@
 from typing import Any, List
 
-from dynamic_settings.repository.abstract_settings_repository import AbstractSettingsRepository
+from dynamic_settings.repository.abstract_settings_repository import AbstractSyncSettingsRepository
+from sqlalchemy.orm import scoped_session
 
-from backend.logger import logger
+from backend.logging import logger
 from backend.models.setting.setting_v3 import SettingV3
 
 
 class SettingsService:
 
     def __init__(self,
-                 settings_repository: AbstractSettingsRepository,
+                 repository: AbstractSyncSettingsRepository,
+                 session_factory: scoped_session
                  ) -> None:
-        self._settings_repository = settings_repository
-
         logger.debug("Creating instance")
+        self._settings_repository = repository
+        self._session_factory = session_factory
 
-    async def get_setting(self, setting_name: str) -> SettingV3:
+    def get_setting(self, setting_name: str) -> SettingV3:
         logger.info(f"Requesting setting {setting_name}")
-        setting_value = await self._settings_repository.get_one(setting_name)
+        with self._session_factory.begin():
+            setting_value = self._settings_repository.get_one(setting_name)
+        self._session_factory.remove()
         return SettingV3(name=setting_name, value=setting_value)
 
-    async def set_setting(self, setting_name: str, setting_value: Any) -> None:
+    def set_setting(self, setting_name: str, setting_value: Any) -> None:
         logger.info(f"Set setting {setting_name}={setting_value}")
-        await self._settings_repository.set_one(setting_name, setting_value)
+        with self._session_factory.begin() as session:
+            self._settings_repository.set_one(setting_name, setting_value)
+            session.commit()
+        self._session_factory.remove()
 
-    async def get_all_settings(self) -> List[SettingV3]:
+    def get_all_settings(self) -> List[SettingV3]:
         logger.info("Requesting all settings")
-        loaded_settings = await self._settings_repository.get_all()
+        with self._session_factory.begin():
+            loaded_settings = self._settings_repository.get_all()
+        self._session_factory.remove()
         response_settings = []
         for loaded_setting_name, loaded_setting_value in loaded_settings.items():
             response_settings.append(

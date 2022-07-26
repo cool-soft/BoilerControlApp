@@ -1,22 +1,35 @@
 from boiler.timedelta.io.sync_timedelta_csv_reader import SyncTimedeltaCSVReader
 from boiler.timedelta.io.sync_timedelta_file_loader import SyncTimedeltaFileLoader
-from boiler_softm.temp_graph.io.soft_m_async_temp_graph_online_loader import SoftMAsyncTempGraphOnlineLoader
-from boiler_softm.temp_graph.io.soft_m_sync_temp_graph_json_reader import SoftMSyncTempGraphJSONReader
-from boiler_softm.weather.io.soft_m_async_weather_forecast_online_loader \
-    import SoftMAsyncWeatherForecastOnlineLoader
-from boiler_softm.weather.io.soft_m_sync_weather_forecast_json_reader \
-    import SoftMSyncWeatherForecastJSONReader
+from boiler_softm_lysva.temp_graph.io.softm_lysva_sync_temp_graph_online_loader \
+    import SoftMLysvaSyncTempGraphOnlineLoader
+from boiler_softm_lysva.temp_graph.io.softm_lysva_sync_temp_graph_online_reader \
+    import SoftMLysvaSyncTempGraphOnlineReader
+from boiler_softm_lysva.weather.io.softm_lysva_sync_weather_forecast_online_loader \
+    import SoftMLysvaSyncWeatherForecastOnlineLoader
+from boiler_softm_lysva.weather.io.softm_lysva_sync_weather_forecast_online_reader \
+    import SoftMLysvaSyncWeatherForecastOnlineReader
 from dateutil.tz import gettz
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Configuration, Factory, Callable
+from dependency_injector.providers import Configuration, Factory, Callable, Resource
+
+from backend.resources.settings_db_engine import SettingsDBEngine
+from backend.resources.settings_db_session_factory import SettingsDBSessionFactory
 
 
 class Gateways(DeclarativeContainer):
     config = Configuration(strict=True)
 
-    temp_graph_reader = Factory(SoftMSyncTempGraphJSONReader)
+    session_factory = Resource(
+        SettingsDBSessionFactory,
+        db_engine=Resource(
+            SettingsDBEngine,
+            db_url=config.db_settings_url
+        )
+    )
+
+    temp_graph_reader = Factory(SoftMLysvaSyncTempGraphOnlineReader)
     temp_graph_loader = Factory(
-        SoftMAsyncTempGraphOnlineLoader,
+        SoftMLysvaSyncTempGraphOnlineLoader,
         reader=temp_graph_reader
     )
 
@@ -25,11 +38,11 @@ class Gateways(DeclarativeContainer):
         config.weather_forecast_loader.weather_server_timezone
     )
     weather_forecast_reader = Factory(
-        SoftMSyncWeatherForecastJSONReader,
+        SoftMLysvaSyncWeatherForecastOnlineReader,
         weather_data_timezone=weather_forecast_timezone
     )
     weather_forecast_loader = Factory(
-        SoftMAsyncWeatherForecastOnlineLoader,
+        SoftMLysvaSyncWeatherForecastOnlineLoader,
         reader=weather_forecast_reader
     )
 

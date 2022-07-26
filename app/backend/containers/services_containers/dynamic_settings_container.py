@@ -7,9 +7,11 @@ from backend.services.SettingsService import SettingsService
 class DynamicSettingsContainer(DeclarativeContainer):
     config = Configuration(strict=True)
 
+    session_factory = Dependency()
     settings_repository = Dependency()
 
     settings_service = Singleton(
         SettingsService,
-        settings_repository=settings_repository,
+        settings_repository,
+        session_factory
     )

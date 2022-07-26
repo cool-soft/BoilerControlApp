@@ -1,7 +1,7 @@
 import pandas as pd
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Dependency, Singleton, Configuration, List, Callable
-from updater.updater_service.simple_updater_service import SimpleUpdaterService
+from updater.updater_service.sync_updater_service import SyncUpdaterService
 
 from backend.services.control_action_prediction_service.control_action_updatable_item import ControlActionUpdatableItem
 from backend.services.temp_graph_update_service.temp_graph_updatable_item import TempGraphUpdatableItem
@@ -15,10 +15,6 @@ class UpdateContainer(DeclarativeContainer):
     control_actions_predictor = Dependency()
     temp_graph_updater = Dependency()
     weather_forecast_updater = Dependency()
-
-    control_actions_predictor.enable_async_mode()
-    temp_graph_updater.enable_async_mode()
-    weather_forecast_updater.enable_async_mode()
 
     temp_graph_updatable_item = Singleton(
         TempGraphUpdatableItem,
@@ -48,6 +44,6 @@ class UpdateContainer(DeclarativeContainer):
     )
 
     updater_service = Singleton(
-        SimpleUpdaterService,
+        SyncUpdaterService,
         item_to_update=control_action_updatable_item
     )

@@ -12,14 +12,18 @@ from boiler.temp_requirements.constraint.single_type_heating_obj_on_weather_cons
 from boiler.temp_requirements.predictors.temp_graph_requirements_predictor \
     import TempGraphRequirementsPredictor
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Configuration, Dependency, Resource, Factory, Coroutine
-from dynamic_settings.di_helpers import get_one_setting
+from dependency_injector.providers import Configuration, Dependency, Resource, Factory, Callable
 
 from backend.constants import config_names
 from backend.resources.heating_obj_timedelta_resource import HeatingObjTimedeltaResource
 from backend.resources.temp_correlation_table import TempCorrelationTable
+from backend.services.SettingsService import SettingsService
 from backend.services.control_action_prediction_service.control_action_prediction_service import \
     ControlActionPredictionService
+
+
+def kostyle(settings_service: SettingsService, setting_name: str):
+    return settings_service.get_setting(setting_name).value
 
 
 class ControlActionContainer(DeclarativeContainer):
@@ -28,7 +32,7 @@ class ControlActionContainer(DeclarativeContainer):
     temp_graph_repository = Dependency()
     weather_forecast_repository = Dependency()
     control_actions_repository = Dependency()
-    dynamic_settings_repository = Dependency()
+    dynamic_settings_service = Dependency()
     time_delta_loader = Dependency()
 
     # TODO: перевести на репозиторий
@@ -61,16 +65,16 @@ class ControlActionContainer(DeclarativeContainer):
             weather_temp_round_algorithm=Factory(ArithmeticFloatRoundAlgorithm)
         ),
         timestamp_round_algo=timestamp_round_algo,
-        temp_requirements_coefficient=Coroutine(
-            get_one_setting,
-            dynamic_settings_repository,
+        temp_requirements_coefficient=Callable(
+            kostyle,
+            dynamic_settings_service,
             config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT
         ),
-        min_model_error=Coroutine(
-            get_one_setting,
-            dynamic_settings_repository,
+        min_model_error=Callable(
+            kostyle,
+            dynamic_settings_service,
             config_names.MODEL_ERROR_SIZE
-        )
+        ),
     )
 
     heating_system_model = Factory(
@@ -83,14 +87,14 @@ class ControlActionContainer(DeclarativeContainer):
         SingleCircuitControlActionPredictor,
         heating_system_model=heating_system_model,
         temp_requirements_constraint=temp_constrains,
-        min_boiler_temp=Coroutine(
-            get_one_setting,
-            dynamic_settings_repository,
+        min_boiler_temp=Callable(
+            kostyle,
+            dynamic_settings_service,
             config_names.MIN_BOILER_TEMP
         ),
-        max_boiler_temp=Coroutine(
-            get_one_setting,
-            dynamic_settings_repository,
+        max_boiler_temp=Callable(
+            kostyle,
+            dynamic_settings_service,
             config_names.MAX_BOILER_TEMP
         ),
         min_regulation_step=0.3
@@ -104,6 +108,5 @@ class ControlActionContainer(DeclarativeContainer):
         model_requirements=model_requirements,
         timestamp_round_algo=timestamp_round_algo,
         timedelta=TIME_TICK,
-        timedelta_predict_forward=pd.Timedelta(seconds=3600),
-        executor=None
+        timedelta_predict_forward=pd.Timedelta(seconds=3600)
     )

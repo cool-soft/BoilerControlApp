@@ -1,11 +1,10 @@
 import argparse
-import asyncio
 
 import uvicorn
-from updater.updater_service.abstract_updater_service import AbstractUpdaterService
+from updater.updater_service.sync_updater_service import SyncUpdaterService
 
 from backend.containers.application import Application
-from backend.logger import logger
+from backend.logging import logger
 from backend.web import api_v1, api_v2, api_v3
 
 
@@ -14,7 +13,7 @@ def wire(application_container):
     application_container.services.wire(modules=(api_v1, api_v2, api_v3))
 
 
-async def main(cmd_args):
+def main(cmd_args):
     application = Application()
     application.config.from_yaml(cmd_args.config)
 
@@ -25,19 +24,16 @@ async def main(cmd_args):
     wire(application)
 
     logger.info("Starting updater service")
-    updater_service: AbstractUpdaterService = application.services.updater_pkg.updater_service()
-    await updater_service.start_service()
+    updater_service: SyncUpdaterService = application.services.updater_pkg.updater_service()
+    updater_service.start_service()
 
     server: uvicorn.Server = application.wsgi.server()
     logger.info(f"Starting server at {server.config.host}:{server.config.port}")
-    await server.serve(sockets=None)
+    server.run(sockets=None)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Control boiler')
     parser.add_argument('--config', default="../storage/config/config.yaml", help='path to config file')
     args = parser.parse_args()
-
-    loop = asyncio.get_event_loop()
-    loop.set_debug(True)
-    loop.run_until_complete(main(args))
+    main(args)

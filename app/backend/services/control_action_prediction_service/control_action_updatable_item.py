@@ -1,12 +1,12 @@
 from dependency_injector.providers import Provider
-from updater.updatable_item.simple_updatable_item import SimpleUpdatableItem
+from updater.updatable_item.abstract_sync_updatable_item import AbstractSyncUpdatableItem
 
-from backend.logger import logger
+from backend.logging import logger
 from backend.services.control_action_prediction_service.control_action_prediction_service \
     import ControlActionPredictionService
 
 
-class ControlActionUpdatableItem(SimpleUpdatableItem):
+class ControlActionUpdatableItem(AbstractSyncUpdatableItem):
 
     def __init__(self,
                  provider: Provider,
@@ -18,7 +18,7 @@ class ControlActionUpdatableItem(SimpleUpdatableItem):
 
         logger.debug(f"Service provider is set to {provider}")
 
-    async def _run_update_async(self):
+    def _run_update(self) -> None:
         logger.debug("Run update")
-        service: ControlActionPredictionService = await self._provider()
-        await service.update_control_actions_async()
+        service: ControlActionPredictionService = self._provider()
+        service.update_control_actions_async()

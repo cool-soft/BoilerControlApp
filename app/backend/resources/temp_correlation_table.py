@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from dependency_injector import resources
 
-from backend.logger import logger
+from backend.logging import logger
 
 
 class TempCorrelationTable(resources.Resource):

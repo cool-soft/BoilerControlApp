@@ -2,19 +2,18 @@ from boiler.data_processing.beetween_filter_algorithm import FullClosedTimestamp
 from boiler.temp_graph.io.sync_temp_graph_in_memory_dumper_loader \
     import SyncTempGraphInMemoryDumperLoader
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Configuration, Singleton, Factory, Resource, Object
+from dependency_injector.providers import Configuration, Singleton, Factory, Resource, Object, Dependency
 from dynamic_settings.repository.db_settings_repository import dtype_converters
 
 from backend.constants import default_config
 from backend.repositories.control_action_repository import ControlActionsRepository
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
-from backend.resources.async_settings_db_engine import AsyncSettingsDBEngine
-from backend.resources.async_settings_db_session_factory import AsyncSettingsDBSessionFactory
 from backend.resources.dynamic_settings_repository_resource import DynamicSettingsRepositoryResource
 
 
 class Repositories(DeclarativeContainer):
     config = Configuration(strict=True)
+    session_factory = Dependency()
 
     temp_graph_repository = Singleton(SyncTempGraphInMemoryDumperLoader)
     weather_forecast_repository = Singleton(
@@ -24,13 +23,7 @@ class Repositories(DeclarativeContainer):
     control_actions_repository = Singleton(ControlActionsRepository)
     dynamic_settings_repository = Resource(
         DynamicSettingsRepositoryResource,
-        session_factory=Resource(
-            AsyncSettingsDBSessionFactory,
-            db_engine=Resource(
-                AsyncSettingsDBEngine,
-                db_url=config.db_settings_url
-            )
-        ),
+        session_factory=session_factory,
         dtype_converters=Object([
             dtype_converters.BooleanDTypeConverter(),
             dtype_converters.DatetimeDTypeConverter(),

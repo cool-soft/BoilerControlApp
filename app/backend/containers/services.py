@@ -11,6 +11,7 @@ from .services_containers.weather_forecast_container import WeatherForecastConta
 
 class Services(DeclarativeContainer):
     config = Configuration(strict=True)
+    session_factory = Dependency()
 
     temp_graph_loader = Dependency()
     weather_forecast_loader = Dependency()
@@ -24,7 +25,8 @@ class Services(DeclarativeContainer):
     dynamic_settings_pkg = Container(
         DynamicSettingsContainer,
         config=config.dynamic_settings,
-        settings_repository=dynamic_settings_repository
+        settings_repository=dynamic_settings_repository,
+        session_factory=session_factory
     )
     temp_graph_pkg = Container(
         TempGraphContainer,
@@ -43,7 +45,7 @@ class Services(DeclarativeContainer):
         temp_graph_repository=temp_graph_repository,
         weather_forecast_repository=weather_forecast_repository,
         control_actions_repository=control_actions_repository,
-        dynamic_settings_repository=dynamic_settings_repository
+        dynamic_settings_service=dynamic_settings_pkg.settings_service
     )
     control_action_report_pkg = Container(
         ControlActionReportContainer,

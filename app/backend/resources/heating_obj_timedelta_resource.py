@@ -3,7 +3,7 @@ from boiler.timedelta.io.abstract_sync_timedelta_loader \
     import AbstractSyncTimedeltaLoader
 from dependency_injector import resources
 
-from backend.logger import logger
+from backend.logging import logger
 
 
 class HeatingObjTimedeltaResource(resources.Resource):

@@ -1,11 +1,11 @@
 from dependency_injector.providers import Provider
-from updater.updatable_item.simple_updatable_item import SimpleUpdatableItem
+from updater.updatable_item.abstract_sync_updatable_item import AbstractSyncUpdatableItem
 
-from backend.logger import logger
+from backend.logging import logger
 from backend.services.weather_forecast_update_service.weather_forecast_service import SimpleWeatherForecastService
 
 
-class WeatherForecastUpdatableItem(SimpleUpdatableItem):
+class WeatherForecastUpdatableItem(AbstractSyncUpdatableItem):
 
     def __init__(self,
                  provider: Provider,
@@ -21,7 +21,7 @@ class WeatherForecastUpdatableItem(SimpleUpdatableItem):
             f"service provider: {provider}"
         )
 
-    async def _run_update_async(self):
+    def _run_update(self):
         logger.debug("Run update")
         service: SimpleWeatherForecastService = self._provider()
-        await service.update_weather_forecast_async()
+        service.update_weather_forecast()
