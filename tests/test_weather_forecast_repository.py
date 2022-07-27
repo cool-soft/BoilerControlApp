@@ -19,8 +19,7 @@ class TestWeatherForecastRepository:
     forecast_end_timestamp = forecast_start_timestamp + (100 * time_tick)
     forecast_drop_timestamp = forecast_start_timestamp + (10 * time_tick)
 
-    # db_url = "sqlite:///:memory:"
-    db_url = "sqlite:///C:\\Users\\Georgij\\Desktop\\1.db"
+    db_url = "sqlite:///:memory:"
 
     @pytest.fixture
     def session_factory(self):
