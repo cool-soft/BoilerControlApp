@@ -2,7 +2,7 @@ from dependency_injector.providers import Provider
 from updater.updatable_item.abstract_sync_updatable_item import AbstractSyncUpdatableItem
 
 from backend.logging import logger
-from backend.services.weather_forecast_update_service.weather_forecast_service import SimpleWeatherForecastService
+from backend.services.weather_forecast_update_service import WeatherForecastUpdateService
 
 
 class WeatherForecastUpdatableItem(AbstractSyncUpdatableItem):
@@ -23,5 +23,5 @@ class WeatherForecastUpdatableItem(AbstractSyncUpdatableItem):
 
     def _run_update(self):
         logger.debug("Run update")
-        service: SimpleWeatherForecastService = self._provider()
+        service: WeatherForecastUpdateService = self._provider()
         service.update_weather_forecast()

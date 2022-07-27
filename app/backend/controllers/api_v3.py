@@ -6,13 +6,13 @@ from starlette import status
 from starlette.responses import Response
 
 from backend.constants import config_names
-from backend.containers.services import Services
+from backend.di.containers import Services
 from backend.logging import logger
 from backend.models.control_action.control_action_v3 import ControlActionV3
 from backend.models.setting.setting_v3 import SettingV3
-from backend.services.SettingsService import SettingsService
-from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
-from backend.web.dependencies import \
+from backend.services.settings_service import SettingsService
+from backend.services.control_action_report_service import ControlActionReportService
+from backend.controllers.dependencies import \
     InputDatetimeRange, \
     InputTimezone, \
     get_temp_requirements_coefficient, \
@@ -38,7 +38,7 @@ async def get_predicted_boiler_temp(
             Принимает 3 **опциональных** параметра.
             - **start_datetime**: Дата время начала управляющего воздействия в формате ISO 8601.
             - **end_datetime**: Дата время окончания управляющего воздействия в формате ISO 8601.
-            - **timezone**: Имя временной зоны для обработки запроса и генерации ответа.
+            - **weather_data_timezone**: Имя временной зоны для обработки запроса и генерации ответа.
             Если не указан - используется временная зона из конфигов.
 
             ISO 8601: https://en.wikipedia.org/wiki/ISO_8601
@@ -55,12 +55,12 @@ async def get_predicted_boiler_temp(
             - 2020-01-30 00:17:07+05:00 - Для обработки даты и времени используется временная зона из самой строки.
             - 2020-01-30 00:17+05:30 - Для обработки даты и времени используется временная зона из самой строки.
             - 2020-01-30 00:17+05 - Для обработки даты и времени используется временная зона из самой строки.
-            - 2020-01-30 00:17 - Используется временная зона из параметра timezone.
+            - 2020-01-30 00:17 - Используется временная зона из параметра weather_data_timezone.
             """
 
     logger.debug(f"Requested predicted boiler temp for dates range "
                  f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
-                 f"with timezone {work_timezone.name}")
+                 f"with weather_data_timezone {work_timezone.name}")
 
     control_action_list = await control_action_report_service.report_v3(
         datetime_range.start_datetime,

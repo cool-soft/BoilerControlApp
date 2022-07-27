@@ -32,7 +32,7 @@ class ControlActionPredictionService:
         self._timedelta_predict_forward = timedelta_predict_forward
         self._timedelta = timedelta
 
-    def update_control_actions_async(self) -> None:
+    def update_control_actions(self) -> None:
         logger.info("Requesting control actions update")
         control_action_start_timestamp, control_action_end_timestamp = self._calc_control_action_start_end_timestamp()
         control_action_current_timestamp = control_action_start_timestamp

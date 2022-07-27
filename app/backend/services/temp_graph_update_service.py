@@ -4,7 +4,7 @@ from boiler.temp_graph.io.abstract_sync_temp_graph_loader import AbstractSyncTem
 from backend.logging import logger
 
 
-class SimpleTempGraphUpdateService:
+class TempGraphUpdateService:
 
     def __init__(self,
                  temp_graph_loader: AbstractSyncTempGraphLoader,

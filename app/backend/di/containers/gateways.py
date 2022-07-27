@@ -12,8 +12,8 @@ from dateutil.tz import gettz
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Factory, Callable, Resource
 
-from backend.resources.settings_db_engine import SettingsDBEngine
-from backend.resources.settings_db_session_factory import SettingsDBSessionFactory
+from backend.di.resources.settings_db_engine import SettingsDBEngine
+from backend.di.resources.settings_db_session_factory import SettingsDBSessionFactory
 
 
 class Gateways(DeclarativeContainer):

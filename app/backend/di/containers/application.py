@@ -1,11 +1,11 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Container
 
-from backend.containers.core import Core
-from backend.containers.gateways import Gateways
-from backend.containers.repositories import Repositories
-from backend.containers.services import Services
-from backend.containers.wsgi import WSGI
+from backend.di.containers.core import Core
+from backend.di.containers.gateways import Gateways
+from backend.di.containers.repositories import Repositories
+from backend.di.containers.services import Services
+from backend.di.containers.wsgi import WSGI
 
 
 class Application(DeclarativeContainer):

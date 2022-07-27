@@ -1,61 +1,58 @@
-from threading import RLock
+from datetime import datetime
+from typing import Iterator, Callable
 
 import pandas as pd
-from boiler.constants import column_names, dataset_prototypes
-from boiler.data_processing.beetween_filter_algorithm \
-    import AbstractTimestampFilterAlgorithm, LeftClosedTimestampFilterAlgorithm
+from boiler.constants import column_names
+from dateutil.tz import UTC
+from sqlalchemy import select, delete
+from sqlalchemy.sql.elements import and_
 
-from backend.logging import logger
+from backend.models.db import WeatherForecast
 
 
 class WeatherForecastRepository:
 
-    def __init__(self,
-                 filter_algorithm: AbstractTimestampFilterAlgorithm = LeftClosedTimestampFilterAlgorithm(),
-                 drop_filter_algorithm: AbstractTimestampFilterAlgorithm = LeftClosedTimestampFilterAlgorithm()
-                 ) -> None:
-        self._rwlock = RLock()
-        self._storage: pd.DataFrame = dataset_prototypes.WEATHER.copy()
-        self._filter_algorithm = filter_algorithm
-        self._drop_filter_algorithm = drop_filter_algorithm
-
-        logger.debug(
-            f"Creating instance:"
-            f"filter_algorithm: {filter_algorithm}"
-            f"drop_filter_algorithm: {drop_filter_algorithm}"
-        )
+    def __init__(self, db_session_provider: Callable) -> None:
+        self._db_session_provider = db_session_provider
 
     def get_weather_forecast_by_timestamp_range(self,
-                                                start_timestamp: pd.Timestamp,
-                                                end_timestamp: pd.Timestamp
+                                                start_timestamp: datetime,
+                                                end_timestamp: datetime
                                                 ) -> pd.DataFrame:
-        logger.debug(f"Requested weather forecast for timestamp range: "
-                     f"{start_timestamp}: {end_timestamp}")
-        with self._rwlock:
-            weather_forecast_df = \
-                self._filter_algorithm.filter_df_by_min_max_timestamp(
-                    self._storage,
-                    start_timestamp,
-                    end_timestamp
-                )
+        session = self._db_session_provider()
+        statement = select(WeatherForecast).filter(
+            and_(
+                WeatherForecast.timestamp >= start_timestamp.astimezone(UTC),
+                WeatherForecast.timestamp < end_timestamp.astimezone(UTC)
+            )
+        ).order_by(WeatherForecast.timestamp)
+        weather_forecast_iterator: Iterator[WeatherForecast] = session.execute(statement).scalars()
+        weather_forecast_list = []
+        for record in weather_forecast_iterator:
+            weather_forecast_list.append({
+                column_names.TIMESTAMP: record.timestamp.replace(tzinfo=UTC),
+                column_names.WEATHER_TEMP: record.weather_temp
+            })
+        weather_forecast_df = pd.DataFrame(weather_forecast_list)
         return weather_forecast_df
 
-    def set_weather_forecast(self, weather_df: pd.DataFrame) -> None:
-        logger.debug(f"Add {len(weather_df)} weather rows")
-        with self._rwlock:
-            self._storage = self._storage.append(weather_df)
-            self._storage = self._storage.drop_duplicates(
-                column_names.TIMESTAMP,
-                keep="last",
-                ignore_index=True
-            )
-            self._storage = self._storage.sort_values(by=column_names.TIMESTAMP, ignore_index=True)
+    def add_weather_forecast(self, weather_df: pd.DataFrame) -> None:
+        session = self._db_session_provider()
 
-    def drop_weather_forecast_older_than(self, timestamp: pd.Timestamp) -> None:
-        logger.debug(f"Requested deleting weather forecast older than {timestamp}")
-        with self._rwlock:
-            self._storage = self._drop_filter_algorithm.filter_df_by_min_max_timestamp(
-                self._storage,
-                timestamp,
-                None
+        # adding_timestamps = weather_df[column_names.TIMESTAMP].copy()
+        # adding_timestamps = adding_timestamps.dt.tz_convert(UTC)
+        # adding_timestamps = adding_timestamps.dt.to_pydatetime()
+        # statement = delete(WeatherForecast).where(WeatherForecast.timestamp.in_(adding_timestamps))
+        # session.execute(statement)
+
+        for idx, row in weather_df.iterrows():
+            new_record = WeatherForecast(
+                timestamp=row[column_names.TIMESTAMP].tz_convert(UTC),
+                weather_temp=row[column_names.WEATHER_TEMP]
             )
+            session.add(new_record)
+
+    def drop_weather_forecast_older_than(self, timestamp: datetime) -> None:
+        session = self._db_session_provider()
+        statement = delete(WeatherForecast).where(WeatherForecast.timestamp < timestamp)
+        session.execute(statement)

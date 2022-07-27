@@ -8,7 +8,7 @@ from backend.logging import logger
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
 
 
-class SimpleWeatherForecastService:
+class WeatherForecastUpdateService:
 
     def __init__(self,
                  weather_forecast_loader: AbstractSyncWeatherLoader,

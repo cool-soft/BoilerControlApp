@@ -1,7 +1,7 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Dependency, Singleton, Configuration
 
-from backend.services.SettingsService import SettingsService
+from backend.services.settings_service import SettingsService
 
 
 class DynamicSettingsContainer(DeclarativeContainer):

@@ -1,7 +1,7 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Dependency, Configuration, Factory
 
-from backend.services.control_action_report_service.control_action_report_service import ControlActionReportService
+from backend.services.control_action_report_service import ControlActionReportService
 
 
 class ControlActionReportContainer(DeclarativeContainer):

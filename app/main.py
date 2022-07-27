@@ -3,9 +3,9 @@ import argparse
 import uvicorn
 from updater.updater_service.sync_updater_service import SyncUpdaterService
 
-from backend.containers.application import Application
+from backend.di.containers import Application
 from backend.logging import logger
-from backend.web import api_v1, api_v2, api_v3
+from backend.controllers import api_v1, api_v2, api_v3
 
 
 def wire(application_container):

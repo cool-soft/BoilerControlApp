@@ -9,8 +9,8 @@ from boiler_softm_lysva.weather.processing import SoftMWeatherProcessor
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory, Object, Dependency
 
-from backend.services.weather_forecast_update_service.weather_forecast_service \
-    import SimpleWeatherForecastService
+from backend.services.weather_forecast_update_service \
+    import WeatherForecastUpdateService
 
 
 class WeatherForecastContainer(DeclarativeContainer):
@@ -35,7 +35,7 @@ class WeatherForecastContainer(DeclarativeContainer):
     )
 
     weather_forecast_service = Factory(
-        SimpleWeatherForecastService,
+        WeatherForecastUpdateService,
         weather_forecast_loader=weather_forecast_loader,
         weather_forecast_processor=weather_forecast_preprocessor,
         weather_forecast_repository=weather_forecast_repository,

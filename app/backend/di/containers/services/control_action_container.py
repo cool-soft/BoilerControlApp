@@ -15,10 +15,10 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Dependency, Resource, Factory, Callable
 
 from backend.constants import config_names
-from backend.resources.heating_obj_timedelta_resource import HeatingObjTimedeltaResource
-from backend.resources.temp_correlation_table import TempCorrelationTable
-from backend.services.SettingsService import SettingsService
-from backend.services.control_action_prediction_service.control_action_prediction_service import \
+from backend.di.resources.heating_obj_timedelta_resource import HeatingObjTimedeltaResource
+from backend.di.resources.temp_correlation_table import TempCorrelationTable
+from backend.services.settings_service import SettingsService
+from backend.services.control_action_prediction_service import \
     ControlActionPredictionService
 
 
