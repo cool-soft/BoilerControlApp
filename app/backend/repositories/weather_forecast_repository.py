@@ -39,11 +39,11 @@ class WeatherForecastRepository:
     def add_weather_forecast(self, weather_df: pd.DataFrame) -> None:
         session = self._db_session_provider()
 
-        # adding_timestamps = weather_df[column_names.TIMESTAMP].copy()
-        # adding_timestamps = adding_timestamps.dt.tz_convert(UTC)
-        # adding_timestamps = adding_timestamps.dt.to_pydatetime()
-        # statement = delete(WeatherForecast).where(WeatherForecast.timestamp.in_(adding_timestamps))
-        # session.execute(statement)
+        adding_timestamps = weather_df[column_names.TIMESTAMP].copy()
+        adding_timestamps = adding_timestamps.dt.tz_convert(UTC)
+        adding_timestamps = adding_timestamps.dt.to_pydatetime()
+        statement = delete(WeatherForecast).where(WeatherForecast.timestamp.in_(adding_timestamps))
+        session.execute(statement)
 
         for idx, row in weather_df.iterrows():
             new_record = WeatherForecast(
