@@ -65,11 +65,8 @@ class TestWeatherForecastRepository:
                 self.forecast_start_timestamp,
                 self.forecast_end_timestamp
             )
-        # noinspection PyUnresolvedReferences
-        assert (weather_forecast_df[column_names.WEATHER_TEMP].to_numpy().round(4) ==
-               loaded_weather_forecast[column_names.WEATHER_TEMP].to_numpy().round(4)).all()
-        assert weather_forecast_df[column_names.TIMESTAMP].to_list() == \
-               loaded_weather_forecast[column_names.TIMESTAMP].dt.tz_convert(self.weather_data_timezone).to_list()
+
+        assert weather_forecast_df.to_dict("records") == loaded_weather_forecast.to_dict("records")
 
     def test_set_drop_get(self, weather_forecast_df, repository, session_factory):
         with session_factory.begin() as session:
