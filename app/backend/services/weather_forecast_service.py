@@ -9,7 +9,7 @@ from sqlalchemy.orm import scoped_session
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
 
 
-class WeatherForecastUpdateService:
+class WeatherForecastService:
 
     def __init__(self,
                  weather_forecast_loader: AbstractSyncWeatherLoader,

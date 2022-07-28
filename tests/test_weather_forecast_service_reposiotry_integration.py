@@ -12,7 +12,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 
 from backend.models.db import WeatherForecast
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
-from backend.services.weather_forecast_update_service import WeatherForecastUpdateService
+from backend.services.weather_forecast_service import WeatherForecastService
 
 
 class TestWeatherForecastServiceRepositoryIntegration:
@@ -90,7 +90,7 @@ class TestWeatherForecastServiceRepositoryIntegration:
                                         weather_forecast_repository,
                                         weather_forecast_loader,
                                         weather_forecast_processor):
-        return WeatherForecastUpdateService(
+        return WeatherForecastService(
             weather_forecast_loader,
             weather_forecast_processor,
             weather_forecast_repository,
