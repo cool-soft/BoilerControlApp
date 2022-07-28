@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pandas as pd
 from boiler.weather.io.abstract_sync_weather_loader import AbstractSyncWeatherLoader
 from boiler.weather.processing import AbstractWeatherProcessor
-from dateutil.tz import UTC
+from dateutil.tz import UTC, gettz
 from sqlalchemy.orm import scoped_session
 
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
@@ -16,7 +16,7 @@ class WeatherForecastService:
                  weather_forecast_processor: AbstractWeatherProcessor,
                  weather_forecast_repository: WeatherForecastRepository,
                  session_provider: scoped_session,
-                 preload_timedelta: pd.Timedelta = pd.Timedelta(hours=3)
+                 preload_timedelta: timedelta = timedelta(hours=3)
                  ) -> None:
         self._session_provider = session_provider
         self._weather_forecast_loader = weather_forecast_loader
@@ -25,8 +25,12 @@ class WeatherForecastService:
         self._preload_timedelta = preload_timedelta
 
     def update_weather_forecast(self) -> None:
-        start_timestamp = datetime.now(tz=UTC)
+        start_timestamp = datetime.now(tz=gettz("Asia/Yekaterinburg"))
         end_timestamp = start_timestamp + self._preload_timedelta
+        # noinspection PyTypeChecker
+        start_timestamp = pd.Timestamp(start_timestamp)
+        # noinspection PyTypeChecker
+        end_timestamp = pd.Timestamp(end_timestamp)
         # noinspection PyTypeChecker
         weather_forecast_df = self._weather_forecast_loader.load_weather(start_timestamp, end_timestamp)
         # noinspection PyTypeChecker
