@@ -97,16 +97,25 @@ class TestWeatherForecastServiceRepositoryIntegration:
             session_factory,
         )
 
-    def test_update(self,
-                    weather_forecast_update_service,
-                    weather_forecast_loader,
-                    weather_forecast_repository,
-                    session_factory):
+    def test_weather_forecast_update_and_drop_older(self,
+                                                    weather_forecast_update_service,
+                                                    weather_forecast_loader,
+                                                    weather_forecast_repository,
+                                                    session_factory):
         weather_forecast_update_service.update_weather_forecast()
         original_weather_forecast = weather_forecast_loader.load_weather()
         with session_factory.begin():
-            loaded_df = weather_forecast_repository.get_weather_forecast_by_timestamp_range(
+            loaded_weather_forecast = weather_forecast_repository.get_weather_forecast_by_timestamp_range(
                 original_weather_forecast[column_names.TIMESTAMP].min(),
-                original_weather_forecast[column_names.TIMESTAMP].max()+self.time_tick
+                original_weather_forecast[column_names.TIMESTAMP].max() + self.time_tick
             )
-        assert original_weather_forecast.to_dict("records") == loaded_df.to_dict("records")
+        assert original_weather_forecast.to_dict("records") == loaded_weather_forecast.to_dict("records")
+        older_forecast_timestamp = original_weather_forecast[column_names.TIMESTAMP].median()
+        weather_forecast_update_service.drop_weather_forecast_older_than(older_forecast_timestamp)
+        with session_factory.begin():
+            loaded_weather_forecast = weather_forecast_repository.get_weather_forecast_by_timestamp_range(
+                original_weather_forecast[column_names.TIMESTAMP].min(),
+                original_weather_forecast[column_names.TIMESTAMP].max() + self.time_tick
+            )
+        assert not loaded_weather_forecast.empty
+        assert loaded_weather_forecast[column_names.TIMESTAMP].min() >= older_forecast_timestamp
