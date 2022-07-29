@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from boiler.weather.io.abstract_sync_weather_loader import AbstractSyncWeatherLoader
 from boiler.weather.processing import AbstractWeatherProcessor
-from dateutil.tz import UTC, gettz
+from dateutil import tz
 from sqlalchemy.orm import scoped_session
 
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
@@ -25,7 +25,7 @@ class WeatherForecastService:
         self._preload_timedelta = preload_timedelta
 
     def update_weather_forecast(self) -> None:
-        start_timestamp = datetime.now(tz=gettz("Asia/Yekaterinburg"))
+        start_timestamp = datetime.now(tz=tz.UTC)
         end_timestamp = start_timestamp + self._preload_timedelta
         # noinspection PyTypeChecker
         start_timestamp = pd.Timestamp(start_timestamp)

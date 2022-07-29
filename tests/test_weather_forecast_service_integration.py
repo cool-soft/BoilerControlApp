@@ -70,7 +70,6 @@ class TestWeatherForecastService:
 
     def test_weather_forecast_service_integration(self,
                                                   weather_forecast_update_service,
-                                                  weather_forecast_loader,
                                                   weather_forecast_repository,
                                                   session_factory):
         datetime_now = datetime.now(tz=self.timezone)
@@ -78,6 +77,6 @@ class TestWeatherForecastService:
         with session_factory.begin():
             loaded_weather_forecast = weather_forecast_repository.get_weather_forecast_by_timestamp_range(
                 datetime_now,
-                datetime_now + self.preload_timedelta
+                datetime_now + self.preload_timedelta - self.time_tick
             )
         assert len(loaded_weather_forecast) == self.preload_timedelta // self.time_tick
