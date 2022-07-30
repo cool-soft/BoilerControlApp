@@ -3,9 +3,9 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Dependency, Singleton, Configuration, List, Callable
 from updater.updater_service.sync_updater_service import SyncUpdaterService
 
-from backend.services.updatable_items.control_action_updatable_item import ControlActionUpdatableItem
-from backend.services.updatable_items.temp_graph_updatable_item import TempGraphUpdatableItem
-from backend.services.updatable_items.weather_forecast_updatable_item import \
+from backend.updatable_items.control_action_updatable_item import ControlActionUpdatableItem
+from backend.updatable_items.temp_graph_updatable_item import TempGraphUpdatableItem
+from backend.updatable_items.weather_forecast_updatable_item import \
     WeatherForecastUpdatableItem
 
 

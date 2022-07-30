@@ -1,64 +1,82 @@
-from threading import RLock
+from datetime import datetime
+from typing import Iterator, Callable
 
 import pandas as pd
-from boiler.constants import column_names, dataset_prototypes
-from boiler.data_processing.beetween_filter_algorithm \
-    import AbstractTimestampFilterAlgorithm, LeftClosedTimestampFilterAlgorithm
+from dateutil import tz
+from sqlalchemy import select, delete
+from sqlalchemy.sql.elements import and_
+from boiler.constants import column_names
 
-from backend.logging import logger
+from backend.models.db import ControlAction
 
 
-class ControlActionsRepository:
+class ControlActionRepository:
 
-    def __init__(self,
-                 filter_algorithm: AbstractTimestampFilterAlgorithm = LeftClosedTimestampFilterAlgorithm(),
-                 drop_filter_algorithm: AbstractTimestampFilterAlgorithm = LeftClosedTimestampFilterAlgorithm()
-                 ) -> None:
-        self._rwlock = RLock()
-        self._storage: pd.DataFrame = dataset_prototypes.CONTROL_ACTION.copy()
-        self._filter_algorithm = filter_algorithm
-        self._drop_filter_algorithm = drop_filter_algorithm
+    def __init__(self, db_session_provider: Callable) -> None:
+        self._db_session_provider = db_session_provider
 
-        logger.debug(
-            f"Creating instance:"
-            f"filter_algorithm: {filter_algorithm}"
-            f"drop_filter_algorithm: {drop_filter_algorithm}"
-        )
-
-    def get_control_actions_by_timestamp_range(self,
-                                               start_timestamp: pd.Timestamp,
-                                               end_timestamp: pd.Timestamp
-                                               ) -> pd.DataFrame:
-        logger.debug(
-            f"Requested control actions for timestamp range: "
-            f"{start_timestamp}: {end_timestamp}"
-        )
-        with self._rwlock:
-            control_actions_df = \
-                self._filter_algorithm.filter_df_by_min_max_timestamp(
-                    self._storage,
-                    start_timestamp,
-                    end_timestamp
-                )
-        return control_actions_df
-
-    def add_control_actions(self, control_actions_df: pd.DataFrame) -> None:
-        logger.debug(f"Add the {len(control_actions_df)} control actions to repository")
-
-        with self._rwlock:
-            self._storage = self._storage.append(control_actions_df)
-            self._storage = self._storage.drop_duplicates(
-                column_names.TIMESTAMP,
-                keep="last",
-                ignore_index=True
+    def get_control_action_by_timestamp_range(self,
+                                              start_timestamp: datetime,
+                                              end_timestamp: datetime,
+                                              circuit_type: str
+                                              ) -> pd.DataFrame:
+        session = self._db_session_provider()
+        statement = select(ControlAction).filter(
+            and_(
+                ControlAction.timestamp >= start_timestamp.astimezone(tz.UTC),
+                ControlAction.timestamp < end_timestamp.astimezone(tz.UTC),
+                ControlAction.circuit_type == circuit_type
             )
-            self._storage = self._storage.sort_values(by=column_names.TIMESTAMP, ignore_index=True)
+        ).order_by(ControlAction.timestamp)
+        control_action_iterator: Iterator[ControlAction] = session.execute(statement).scalars()
+        control_action_list = []
+        for record in control_action_iterator:
+            control_action_list.append({
+                column_names.TIMESTAMP: record.timestamp.replace(tzinfo=tz.UTC),
+                column_names.CIRCUIT_TYPE: record.circuit_type,
+                column_names.FORWARD_PIPE_COOLANT_TEMP: record.forward_temp
+            })
+        control_action_df = pd.DataFrame(control_action_list)
+        return control_action_df
 
-    def drop_control_actions_older_than(self, timestamp: pd.Timestamp) -> None:
-        logger.debug(f"Requested deleting control actions older than {timestamp}")
-        with self._rwlock:
-            self._storage = self._drop_filter_algorithm.filter_df_by_min_max_timestamp(
-                self._storage,
-                timestamp,
-                None
+    def add_control_action(self, control_action_df: pd.DataFrame) -> None:
+        session = self._db_session_provider()
+
+        circuit_types = control_action_df[column_names.CIRCUIT_TYPE].unique()
+        for circuit_type in circuit_types:
+            circuit_data = control_action_df[control_action_df[column_names.CIRCUIT_TYPE] == circuit_type]
+            circuit_data_timestamps = circuit_data[column_names.TIMESTAMP]
+            self._drop_by_circuit_type_and_timestamp(circuit_type, circuit_data_timestamps)
+
+        for idx, row in control_action_df.iterrows():
+            new_record = ControlAction(
+                timestamp=row[column_names.TIMESTAMP].tz_convert(tz.UTC),
+                cicuit_type=row[column_names.CIRCUIT_TYPE],
+                forward_temp=row[column_names.FORWARD_PIPE_COOLANT_TEMP]
             )
+            session.add(new_record)
+
+    def _drop_by_circuit_type_and_timestamp(self,
+                                            circuit_type: str,
+                                            circuit_data_timestamps: pd.Series[pd.Timestamp]
+                                            ) -> None:
+        session = self._db_session_provider()
+        circuit_data_timestamps = circuit_data_timestamps.copy()
+        circuit_data_timestamps = circuit_data_timestamps.dt.tz_convert(tz.UTC)
+        circuit_data_timestamps = circuit_data_timestamps.dt.to_pydatetime()
+        statement = delete(ControlAction).where(
+            and_(
+                ControlAction.timestamp.in_(circuit_data_timestamps),
+                ControlAction.circuit_type == circuit_type
+            ))
+        session.execute(statement)
+
+    def drop_control_action_older_than(self, timestamp: datetime, circuit_type: str) -> None:
+        session = self._db_session_provider()
+        statement = delete(ControlAction).where(
+            and_(
+                ControlAction.timestamp < timestamp,
+                ControlAction.circuit_type == circuit_type
+            )
+        )
+        session.execute(statement)

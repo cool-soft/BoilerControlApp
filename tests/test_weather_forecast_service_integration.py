@@ -77,6 +77,6 @@ class TestWeatherForecastService:
         with session_factory.begin():
             loaded_weather_forecast = weather_forecast_repository.get_weather_forecast_by_timestamp_range(
                 datetime_now,
-                datetime_now + self.preload_timedelta - self.time_tick
+                datetime_now + self.preload_timedelta
             )
-        assert len(loaded_weather_forecast) == self.preload_timedelta // self.time_tick
+        assert not loaded_weather_forecast.empty

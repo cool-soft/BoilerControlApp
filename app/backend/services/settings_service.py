@@ -4,7 +4,7 @@ from dynamic_settings.repository.abstract_settings_repository import AbstractSyn
 from sqlalchemy.orm import scoped_session
 
 from backend.logging import logger
-from backend.models.setting.setting_v3 import SettingV3
+from backend.models.api import SettingV3
 
 
 class SettingsService:

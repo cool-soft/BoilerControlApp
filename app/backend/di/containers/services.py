@@ -1,12 +1,12 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Container, Dependency
 
-from .services.control_action_container import ControlActionContainer
-from .services.control_action_report_container import ControlActionReportContainer
-from .services.dynamic_settings_container import DynamicSettingsContainer
-from .services.temp_graph_container import TempGraphContainer
-from .services.updater_container import UpdateContainer
-from .services.weather_forecast_container import WeatherForecastContainer
+from .services_containers.control_action_container import ControlActionContainer
+from .services_containers.control_action_report_container import ControlActionReportContainer
+from .services_containers.dynamic_settings_container import DynamicSettingsContainer
+from .services_containers.temp_graph_container import TempGraphContainer
+from .services_containers.updater_container import UpdateContainer
+from .services_containers.weather_forecast_container import WeatherForecastContainer
 
 
 class Services(DeclarativeContainer):

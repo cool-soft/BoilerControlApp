@@ -4,7 +4,7 @@ from dependency_injector.providers import Configuration, Container
 from backend.di.containers.core import Core
 from backend.di.containers.gateways import Gateways
 from backend.di.containers.repositories import Repositories
-from backend.di.containers.services import Services
+from backend.di.containers.services_containers import Services
 from backend.di.containers.wsgi import WSGI
 
 

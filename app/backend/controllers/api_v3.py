@@ -8,8 +8,7 @@ from starlette.responses import Response
 from backend.constants import config_names
 from backend.di.containers import Services
 from backend.logging import logger
-from backend.models.control_action.control_action_v3 import ControlActionV3
-from backend.models.setting.setting_v3 import SettingV3
+from backend.models.api import ControlActionV3, SettingV3
 from backend.services.settings_service import SettingsService
 from backend.services.control_action_report_service import ControlActionReportService
 from backend.controllers.dependencies import \
