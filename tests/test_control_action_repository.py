@@ -48,9 +48,9 @@ class TestControlActionRepositoryRepository:
             current_timestamp = self.action_start_timestamp
             while current_timestamp < self.action_end_timestamp:
                 forecast_list.append({
-                        column_names.TIMESTAMP: current_timestamp,
-                        column_names.CIRCUIT_TYPE: circuit_type,
-                        column_names.FORWARD_PIPE_COOLANT_TEMP: random()
+                    column_names.TIMESTAMP: current_timestamp,
+                    column_names.CIRCUIT_TYPE: circuit_type,
+                    column_names.FORWARD_PIPE_COOLANT_TEMP: random()
                 })
                 current_timestamp += self.time_tick
         forecast_df = pd.DataFrame(forecast_list)
@@ -91,25 +91,40 @@ class TestControlActionRepositoryRepository:
         assert (control_action_df.columns == loaded_control_action.columns).all()
         assert loaded_control_action[column_names.TIMESTAMP].min() >= self.control_action_drop_timestamp
 
-    def _test_set_with_update(self, control_action_df, repository, session_factory):
+    def test_set_with_update(self, control_action_df, repository, session_factory):
         with session_factory.begin() as session:
-            repository.add_weather_forecast(control_action_df)
+            repository.add_control_action(control_action_df)
             session.commit()
 
-        new_weather_forecast_df = control_action_df.copy()
-        index_count = len(new_weather_forecast_df.index)
+        selected_circuit = self.circuits[0]
+        new_control_action_df = control_action_df[
+            control_action_df[column_names.CIRCUIT_TYPE] == selected_circuit
+            ].copy()
+        index_count = len(new_control_action_df.index)
         for i in range(3):
-            random_index = new_weather_forecast_df.index[randint(0, index_count - 1)]
-            new_weather_forecast_df.at[random_index, column_names.WEATHER_TEMP] = random()
+            random_index = new_control_action_df.index[randint(0, index_count - 1)]
+            new_control_action_df.at[random_index, column_names.FORWARD_PIPE_COOLANT_TEMP] = random()
         with session_factory.begin() as session:
-            repository.add_weather_forecast(new_weather_forecast_df)
+            repository.add_control_action(new_control_action_df)
             session.commit()
 
         with session_factory.begin():
-            loaded_weather_forecast = repository.get_weather_forecast_by_timestamp_range(
-                new_weather_forecast_df[column_names.TIMESTAMP].min(),
-                new_weather_forecast_df[column_names.TIMESTAMP].max() + self.time_tick
+            loaded_control_action = repository.get_control_action_by_timestamp_range(
+                control_action_df[column_names.TIMESTAMP].min(),
+                control_action_df[column_names.TIMESTAMP].max() + self.time_tick,
+                selected_circuit
             )
+            assert new_control_action_df.to_dict("records") == loaded_control_action.to_dict("records")
+
+            for circuit_type in self.circuits[1:]:
+                loaded_control_action = repository.get_control_action_by_timestamp_range(
+                    control_action_df[column_names.TIMESTAMP].min(),
+                    control_action_df[column_names.TIMESTAMP].max() + self.time_tick,
+                    circuit_type
+                )
+                original_control_action = control_action_df[
+                    control_action_df[column_names.CIRCUIT_TYPE] == circuit_type
+                    ].copy()
+                assert original_control_action.to_dict("records") == loaded_control_action.to_dict("records")
 
         session_factory.remove()
-        assert new_weather_forecast_df.to_dict("records") == loaded_weather_forecast.to_dict("records")
