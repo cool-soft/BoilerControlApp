@@ -12,7 +12,7 @@ from backend.models.db import ControlAction
 from backend.repositories.control_action_repository import ControlActionRepository
 
 
-class TestControlActionRepositoryRepository:
+class TestControlActionRepository:
     time_tick = pd.Timedelta(seconds=300)
     weather_data_timezone = tz.gettz("Asia/Yekaterinburg")
     action_start_timestamp = datetime.now(tz=weather_data_timezone)
