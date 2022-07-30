@@ -1,8 +1,7 @@
 [run]
 branch = True
 command_line = -m pytest
-source =
-    app/
+source = app/
 
 [report]
 exclude_lines =

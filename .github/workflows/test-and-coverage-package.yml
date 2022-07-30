@@ -1,61 +1,53 @@
 name: Test and coverage package
-
 on:
-  push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
-
+  [push, pull_request]
 jobs:
-
   test-and-coverage-package:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
+    env:
+      SOCKS_PROXY_ADDRESS: "localhost"
+      SOCKS_PROXY_PORT: 8080
+      SSH_PROXY_ADDRESS: ${{secrets.SOFT_M_SSH_PROXY_ADDRESS}}
+      SSH_PROXY_PORT: ${{secrets.SOFT_M_SSH_PROXY_PORT}}
+      SSH_PROXY_PRIVATE_KEY: ${{secrets.SOFT_M_SSH_PROXY_KEY}}
+      TEST_WITH_PROXY: True
+      COVERAGE_HTML_REPORT_PATH: /tmp/coverage_html_report
+      COVERAGE_XML_REPORT_PATH: /tmp/coverage_xml_report.xml
+      PYTEST_REPORT_PATH: /tmp/pytest_report.html
     steps:
-
+      - name: "Preparing to start ssh proxy"
+        run: |
+          mkdir ~/.ssh
+          printenv SSH_PROXY_PRIVATE_KEY > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: "Start socks over ssh proxy"
+        run: ssh -fCN -D${{env.SOCKS_PROXY_PORT}} -o StrictHostKeychecking=no root@${{env.SSH_PROXY_ADDRESS}} -p ${{env.SSH_PROXY_PORT}}
       - name: "Checkout repository"
         uses: actions/checkout@v2
-
       - name: "Install python"
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: '3.8'
           architecture: 'x64'
-
+          cache: 'pip'
       - name: "Install project dependencies"
-        run: if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
+        run: pip install -r requirements.txt
       - name: "Run tests and code coverage analysis"
-        run: coverage run
-
-      - name: "Upload coverage to Codecov"
-        uses: codecov/codecov-action@v1
+        run: coverage run -m pytest --html=${{ env.PYTEST_REPORT_PATH }} --self-contained-html
+      - name: "Generate code coverage html report"
+        run: coverage html --directory ${{ env.COVERAGE_HTML_REPORT_PATH }}
+      - name: "Archive pytest and coverage reports"
+        uses: actions/upload-artifact@v2
         if: ${{!cancelled()}}
         with:
-          fail_ci_if_error: true
-
+          name: "Test and coverage reports"
+          path: |
+            ${{ env.PYTEST_REPORT_PATH }}
+            ${{ env.COVERAGE_HTML_REPORT_PATH }}
       - name: "Generate code coverage xml report"
-        run: coverage xml
-
-      - name: "Run codacy-coverage-reporter"
+        run: coverage xml -o ${{ env.COVERAGE_XML_REPORT_PATH }}
+      - name: "Push coverage xml report to codacy"
         uses: codacy/codacy-coverage-reporter-action@v1
-        if: ${{!cancelled()}}
         with:
           project-token: ${{ secrets.CODACY_PROJECT_API_TOKEN }}
-          coverage-reports: coverage-report.xml
-
-      - name: "Generate code coverage html report"
-        run: coverage html
-
-      - name: "Archive code coverage results"
-        uses: actions/upload-artifact@v2
-        if: ${{!cancelled()}}
-        with:
-          name: coverage-report-html
-          path: coverage-report-html
-
-      - name: "Archive pytest results"
-        uses: actions/upload-artifact@v2
-        if: ${{!cancelled()}}
-        with:
-          name: pytest-report
-          path: pytest-report.html
+          coverage-reports: ${{ env.COVERAGE_XML_REPORT_PATH }}

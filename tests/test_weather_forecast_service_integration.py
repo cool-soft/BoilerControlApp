@@ -44,9 +44,16 @@ class TestWeatherForecastService:
         return SoftMLysvaSyncWeatherForecastOnlineReader()
 
     @pytest.fixture
-    def weather_forecast_loader(self, weather_forecast_reader):
+    def weather_forecast_loader(self, weather_forecast_reader, is_need_proxy, proxy_address):
+        http_proxy = None
+        https_proxy = None
+        if is_need_proxy:
+            http_proxy = proxy_address
+            https_proxy = proxy_address
         return SoftMLysvaSyncWeatherForecastOnlineLoader(
-            reader=weather_forecast_reader
+            reader=weather_forecast_reader,
+            http_proxy=http_proxy,
+            https_proxy=https_proxy
         )
 
     @pytest.fixture
