@@ -51,14 +51,14 @@ class ControlActionRepository:
         for idx, row in control_action_df.iterrows():
             new_record = ControlAction(
                 timestamp=row[column_names.TIMESTAMP].tz_convert(tz.UTC),
-                cicuit_type=row[column_names.CIRCUIT_TYPE],
+                circuit_type=row[column_names.CIRCUIT_TYPE],
                 forward_temp=row[column_names.FORWARD_PIPE_COOLANT_TEMP]
             )
             session.add(new_record)
 
     def _drop_by_circuit_type_and_timestamp(self,
                                             circuit_type: str,
-                                            circuit_data_timestamps: pd.Series[pd.Timestamp]
+                                            circuit_data_timestamps: pd.Series
                                             ) -> None:
         session = self._db_session_provider()
         circuit_data_timestamps = circuit_data_timestamps.copy()
