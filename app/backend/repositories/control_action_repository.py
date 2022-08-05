@@ -48,7 +48,7 @@ class ControlActionRepository:
             circuit_data_timestamps = circuit_data[column_names.TIMESTAMP]
             self._drop_by_circuit_type_and_timestamp(circuit_type, circuit_data_timestamps)
 
-        for idx, row in control_action_df.iterrows():
+        for _, row in control_action_df.iterrows():
             new_record = ControlAction(
                 timestamp=row[column_names.TIMESTAMP].tz_convert(tz.UTC),
                 circuit_type=row[column_names.CIRCUIT_TYPE],

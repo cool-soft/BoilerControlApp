@@ -45,7 +45,7 @@ class WeatherForecastRepository:
         statement = delete(WeatherForecast).where(WeatherForecast.timestamp.in_(adding_timestamps))
         session.execute(statement)
 
-        for idx, row in weather_df.iterrows():
+        for _, row in weather_df.iterrows():
             new_record = WeatherForecast(
                 timestamp=row[column_names.TIMESTAMP].tz_convert(UTC),
                 weather_temp=row[column_names.WEATHER_TEMP]
