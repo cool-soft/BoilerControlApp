@@ -21,3 +21,12 @@ class ControlAction(AppDBBase):
     __table_args__ = (
         UniqueConstraint('timestamp', 'circuit_type', name='uq_timestamp_circuit_type'),
     )
+
+
+class TempGraph(AppDBBase):
+    __tablename__ = "temp_graph"
+    record_id = Column(INTEGER, primary_key=True, autoincrement=True)
+    circuit_type = Column(VARCHAR(32), nullable=False)
+    weather_temp = Column(FLOAT, nullable=False, unique=True)
+    forward_temp = Column(FLOAT, nullable=False)
+    backward_temp = Column(FLOAT, nullable=False)
