@@ -11,6 +11,5 @@ class ControlActionReportContainer(DeclarativeContainer):
 
     control_action_report_service = Factory(
         ControlActionReportService,
-        timestamp_report_pattern_v1=config.timestamp_report_pattern_v1,
         control_action_repository=control_action_repository
     )

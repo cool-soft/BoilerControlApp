@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 class ControlActionV3(BaseModel):
     timestamp: datetime
+    circuit_type: str
     forward_temp: float
 
 
