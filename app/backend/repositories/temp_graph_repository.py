@@ -34,7 +34,7 @@ class TempGraphRepository:
         statement = delete(TempGraph).where(TempGraph.circuit_type == circuit_type)
         session.execute(statement)
 
-        for idx, row in temp_graph_df.iterrows():
+        for _, row in temp_graph_df.iterrows():
             new_record = TempGraph(
                 weather_temp=row[column_names.WEATHER_TEMP],
                 circuit_type=circuit_type,
