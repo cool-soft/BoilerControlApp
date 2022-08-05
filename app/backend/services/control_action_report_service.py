@@ -1,8 +1,9 @@
 from datetime import datetime, tzinfo
-from typing import List, Tuple, Callable
+from typing import List, Tuple
 
 from boiler.constants import column_names, circuit_types
 from dateutil import tz
+from sqlalchemy.orm import scoped_session
 
 from backend.models.api import ControlActionV3
 from backend.repositories.control_action_repository import ControlActionRepository
@@ -11,7 +12,7 @@ from backend.repositories.control_action_repository import ControlActionReposito
 class ControlActionReportService:
 
     def __init__(self,
-                 db_session_factory: Callable,
+                 db_session_factory: scoped_session,
                  control_action_repository: ControlActionRepository,
                  timestamp_report_pattern_v1: str = "%Y-%m-%d %H:%M"
                  ) -> None:
@@ -46,6 +47,7 @@ class ControlActionReportService:
             for datetime_, boiler_out_temp in zip(datetime_column, boiler_out_temps):
                 predicted_boiler_temp_list.append((datetime_, boiler_out_temp))
 
+        self._db_session_factory.remove()
         return predicted_boiler_temp_list
 
     def report_v2(self,
@@ -74,6 +76,7 @@ class ControlActionReportService:
             for datetime_, boiler_out_temp in zip(datetime_column, boiler_out_temps):
                 control_action_list.append((datetime_, boiler_out_temp))
 
+        self._db_session_factory.remove()
         return control_action_list
 
     def report_v3(self,
@@ -109,4 +112,5 @@ class ControlActionReportService:
                     )
                 )
 
+        self._db_session_factory.remove()
         return control_actions_list

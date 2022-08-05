@@ -25,15 +25,9 @@ class WeatherForecastService:
         self._preload_timedelta = preload_timedelta
 
     def update_weather_forecast(self) -> None:
-        start_timestamp = datetime.now(tz=tz.UTC)
+        start_timestamp = pd.Timestamp.now(tz=tz.UTC)
         end_timestamp = start_timestamp + self._preload_timedelta
-        # noinspection PyTypeChecker
-        start_timestamp = pd.Timestamp(start_timestamp)
-        # noinspection PyTypeChecker
-        end_timestamp = pd.Timestamp(end_timestamp)
-        # noinspection PyTypeChecker
         weather_forecast_df = self._weather_forecast_loader.load_weather(start_timestamp, end_timestamp)
-        # noinspection PyTypeChecker
         weather_forecast_df = self._weather_forecast_processor.process_weather_df(
             weather_forecast_df,
             start_timestamp,
