@@ -22,7 +22,7 @@ class ControlActionPredictionService:
                  model_requirements: AbstractModelRequirements,
                  temp_requirements_calculator: AbstractTempRequirementsCalculator,
                  control_action_predictor: AbstractControlActionPredictor,
-                 control_actions_repository: ControlActionRepository,
+                 control_action_repository: ControlActionRepository,
                  timestamp_round_algo: AbstractTimestampRoundAlgorithm,
                  time_tick: pd.Timedelta,
                  timedelta_predict_forward: timedelta = timedelta(seconds=3600),
@@ -35,7 +35,7 @@ class ControlActionPredictionService:
         self._model_requirements = model_requirements
         self._temp_requirements_calculator = temp_requirements_calculator
         self._control_action_predictor = control_action_predictor
-        self._control_action_repository = control_actions_repository
+        self._control_action_repository = control_action_repository
 
     def update_control_actions(self) -> None:
         control_action_start_timestamp, control_action_end_timestamp = self._calc_control_action_start_end_timestamp()

@@ -9,7 +9,7 @@ from starlette import status
 
 from boiler.constants import time_tick
 from boiler.data_processing.timestamp_parsing_algorithm import SimpleTimestampParsingAlgorithm
-from backend.di.containers import Core
+from backend.di.containers.core import Core
 
 
 class InputTimezone:

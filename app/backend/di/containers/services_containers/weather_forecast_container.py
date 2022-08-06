@@ -1,43 +1,32 @@
 import pandas as pd
-from boiler.data_processing.beetween_filter_algorithm import FullClosedTimestampFilterAlgorithm
-from boiler.data_processing.timestamp_interpolator_algorithm import TimestampInterpolationAlgorithm
-from boiler.data_processing.timestamp_round_algorithm import CeilTimestampRoundAlgorithm
-from boiler.data_processing.value_interpolation_algorithm \
-    import LinearInsideValueInterpolationAlgorithm, LinearOutsideValueInterpolationAlgorithm
-from boiler_softm_lysva.constants.time_tick import TIME_TICK
-from boiler_softm_lysva.weather.processing import SoftMWeatherProcessor
+from boiler_softm_lysva.weather.io import SoftMLysvaSyncWeatherForecastOnlineReader, \
+    SoftMLysvaSyncWeatherForecastOnlineLoader
+from boiler_softm_lysva.weather.processing import SoftMLysvaWeatherForecastProcessor
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Factory, Object, Dependency
+from dependency_injector.providers import Factory, Object, Dependency, Singleton
 
-from backend.services.weather_forecast_service \
-    import WeatherForecastService
+from backend.repositories.weather_forecast_repository import WeatherForecastRepository
+from backend.services.weather_forecast_service import WeatherForecastService
 
 
 class WeatherForecastContainer(DeclarativeContainer):
-    weather_forecast_repository = Dependency()
-    weather_forecast_loader = Dependency()
+    db_session_provider = Dependency()
 
-    timestamp_round_algorithm = Factory(
-        CeilTimestampRoundAlgorithm,
-        round_step=TIME_TICK
+    weather_forecast_repository = Singleton(
+        WeatherForecastRepository,
+        db_session_provider=db_session_provider
     )
-    weather_forecast_preprocessor = Factory(
-        SoftMWeatherProcessor,
-        timestamp_round_algorithm=timestamp_round_algorithm,
-        timestamp_interpolation_algorithm=Factory(
-            TimestampInterpolationAlgorithm,
-            timestamp_round_algorithm,
-            TIME_TICK
-        ),
-        timestamp_filter_algorithm=Factory(FullClosedTimestampFilterAlgorithm),
-        border_values_interpolation_algorithm=Factory(LinearInsideValueInterpolationAlgorithm),
-        internal_values_interpolation_algorithm=Factory(LinearOutsideValueInterpolationAlgorithm)
+    weather_forecast_reader = Factory(SoftMLysvaSyncWeatherForecastOnlineReader)
+    weather_forecast_loader = Factory(
+        SoftMLysvaSyncWeatherForecastOnlineLoader,
+        reader=weather_forecast_reader
     )
-
-    weather_forecast_service = Factory(
+    weather_forecast_preprocessor = Factory(SoftMLysvaWeatherForecastProcessor)
+    weather_forecast_update_service = Factory(
         WeatherForecastService,
+        session_provider=db_session_provider,
         weather_forecast_loader=weather_forecast_loader,
         weather_forecast_processor=weather_forecast_preprocessor,
         weather_forecast_repository=weather_forecast_repository,
-        preload_timedelta=Object(pd.Timedelta(hours=3))
+        preload_timedelta=Object(pd.Timedelta(hours=3))  # Как рассчитывать?
     )

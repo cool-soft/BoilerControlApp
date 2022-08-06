@@ -7,10 +7,7 @@ from backend.services.weather_forecast_service import WeatherForecastService
 
 class WeatherForecastUpdatableItem(AbstractSyncUpdatableItem):
 
-    def __init__(self,
-                 provider: Provider,
-                 **kwargs
-                 ) -> None:
+    def __init__(self, provider: Provider, **kwargs) -> None:
 
         super().__init__(**kwargs)
 

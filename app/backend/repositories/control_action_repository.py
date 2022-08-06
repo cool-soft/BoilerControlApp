@@ -1,18 +1,19 @@
 from datetime import datetime
-from typing import Iterator, Callable
+from typing import Iterator
 
 import pandas as pd
+from boiler.constants import column_names
 from dateutil import tz
 from sqlalchemy import select, delete
+from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql.elements import and_
-from boiler.constants import column_names
 
 from backend.models.db import ControlAction
 
 
 class ControlActionRepository:
 
-    def __init__(self, db_session_provider: Callable) -> None:
+    def __init__(self, db_session_provider: scoped_session) -> None:
         self._db_session_provider = db_session_provider
 
     def get_control_action(self,

@@ -3,14 +3,14 @@ import argparse
 import uvicorn
 from updater.updater_service.sync_updater_service import SyncUpdaterService
 
-from backend.di.containers import Application
+from backend.di.containers.application import Application
 from backend.logging import logger
-from backend.controllers import api_v1, api_v2, api_v3
+from backend.controllers import api_v1, api_v2, api_v3, dependencies
 
 
 def wire(application_container):
-    application_container.core.wire(modules=(api_v1, api_v2, api_v3))
     application_container.services.wire(modules=(api_v1, api_v2, api_v3))
+    application_container.core.wire(modules=(api_v1, api_v2, api_v3, dependencies))
 
 
 def main(cmd_args):
@@ -18,12 +18,9 @@ def main(cmd_args):
     application.config.from_yaml(cmd_args.config)
 
     application.core.init_resources()
-
     # Must be placed after core.init_resources()
-    logger.info("Wiring")
     wire(application)
 
-    logger.info("Starting updater service")
     updater_service: SyncUpdaterService = application.services.updater_pkg.updater_service()
     updater_service.start_service()
 

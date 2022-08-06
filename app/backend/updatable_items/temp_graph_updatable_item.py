@@ -7,10 +7,7 @@ from backend.services.temp_graph_update_service import TempGraphUpdateService
 
 class TempGraphUpdatableItem(AbstractSyncUpdatableItem):
 
-    def __init__(self,
-                 provider: Provider,
-                 **kwargs
-                 ) -> None:
+    def __init__(self, provider: Provider, **kwargs) -> None:
 
         super().__init__(**kwargs)
 

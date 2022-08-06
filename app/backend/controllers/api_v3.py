@@ -6,17 +6,17 @@ from starlette import status
 from starlette.responses import Response
 
 from backend.constants import config_names
-from backend.di.containers import Services
-from backend.logging import logger
-from backend.models.api import ControlActionV3, SettingV3
-from backend.services.settings_service import SettingsService
-from backend.services.control_action_report_service import ControlActionReportService
 from backend.controllers.dependencies import \
     InputDatetimeRange, \
     InputTimezone, \
     get_temp_requirements_coefficient, \
     get_max_boiler_temp, \
     get_min_boiler_temp
+from backend.di.containers.services import Services
+from backend.logging import logger
+from backend.models.api import ControlActionV3, SettingV3
+from backend.services.control_action_report_service import ControlActionReportService
+from backend.services.settings_service import SettingsService
 
 api_router = APIRouter(prefix="/api/v3")
 
@@ -24,11 +24,11 @@ api_router = APIRouter(prefix="/api/v3")
 # noinspection PyTypeChecker
 @api_router.get("/predictedBoilerTemp", response_model=List[ControlActionV3])
 @inject
-async def get_predicted_boiler_temp(
+def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         control_action_report_service: ControlActionReportService = Depends(
-            Provide[Services.control_action_report_pkg.control_action_report_service]
+            Provide[Services.control_action_pkg.control_action_report_service]
         )
 ):
     # noinspection SpellCheckingInspection
@@ -61,7 +61,7 @@ async def get_predicted_boiler_temp(
                  f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                  f"with weather_data_timezone {work_timezone.name}")
 
-    control_action_list = await control_action_report_service.report_v3(
+    control_action_list = control_action_report_service.report_v3(
         datetime_range.start_datetime,
         datetime_range.end_datetime,
         work_timezone.timezone
@@ -72,7 +72,7 @@ async def get_predicted_boiler_temp(
 # noinspection PyTypeChecker
 @api_router.get("/settings", response_model=List[SettingV3])
 @inject
-async def get_settings(
+def get_settings(
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
@@ -80,14 +80,14 @@ async def get_settings(
     """
     Возвращает список ключ-значение всех динамических настроек
     """
-    return await settings_service.get_all_settings()
+    return settings_service.get_all_settings()
 
 
 @api_router.put("/settings/apartmentHouseMinTempCoefficient",
                 status_code=status.HTTP_204_NO_CONTENT,
                 response_class=Response)
 @inject
-async def put_apartment_house_min_temp_coefficient(
+def put_apartment_house_min_temp_coefficient(
         coefficient: float = Depends(get_temp_requirements_coefficient),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
@@ -98,7 +98,7 @@ async def put_apartment_house_min_temp_coefficient(
 
 @api_router.get("/settings/apartmentHouseMinTempCoefficient", response_model=SettingV3)
 @inject
-async def get_apartment_house_min_temp_coefficient(
+def get_apartment_house_min_temp_coefficient(
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
@@ -113,18 +113,18 @@ async def get_apartment_house_min_temp_coefficient(
                 status_code=status.HTTP_204_NO_CONTENT,
                 response_class=Response)
 @inject
-async def put_max_boiler_temp(
+def put_max_boiler_temp(
         temp: float = Depends(get_max_boiler_temp),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
-    await settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
+    settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
 
 
 @api_router.get("/settings/maxBoilerTemp", response_model=SettingV3)
 @inject
-async def get_max_boiler_temp(
+def get_max_boiler_temp(
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
@@ -132,20 +132,20 @@ async def get_max_boiler_temp(
     """
     Возвращает текущее значение макисмальной температуры на выходе из котельной.
     """
-    return await settings_service.get_setting(config_names.MAX_BOILER_TEMP)
+    return settings_service.get_setting(config_names.MAX_BOILER_TEMP)
 
 
 @api_router.put("/settings/minBoilerTemp",
                 status_code=status.HTTP_204_NO_CONTENT,
                 response_class=Response)
 @inject
-async def put_min_boiler_temp(
+def put_min_boiler_temp(
         temp: float = Depends(get_min_boiler_temp),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
-    await settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
+    settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
 
 
 @api_router.get("/settings/minBoilerTemp", response_model=SettingV3)
@@ -158,25 +158,25 @@ async def get_min_boiler_temp(
     """
     Возвращает текущее значение минимальной температуры на выходе из котельной.
     """
-    return await settings_service.get_setting(config_names.MIN_BOILER_TEMP)
+    return settings_service.get_setting(config_names.MIN_BOILER_TEMP)
 
 
 @api_router.put("/settings/modelErrorSize",
                 status_code=status.HTTP_204_NO_CONTENT,
                 response_class=Response)
 @inject
-async def put_model_error_size(
+def put_model_error_size(
         value: float,
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
 ):
-    await settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
+    settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
 
 
 @api_router.get("/settings/modelErrorSize", response_model=SettingV3)
 @inject
-async def get_model_error_size(
+def get_model_error_size(
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
@@ -184,4 +184,4 @@ async def get_model_error_size(
     """
     Возвращает текущее значение поправки на ошибку модели.
     """
-    return await settings_service.get_setting(config_names.MODEL_ERROR_SIZE)
+    return settings_service.get_setting(config_names.MODEL_ERROR_SIZE)

@@ -5,7 +5,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from starlette.responses import JSONResponse
 
-from backend.di.containers import Services
+from backend.di.containers.services import Services
 from backend.logging import logger
 from backend.services.control_action_report_service import ControlActionReportService
 from backend.controllers.dependencies import InputDatetimeRange, InputTimezone
@@ -19,11 +19,11 @@ api_router = APIRouter(prefix="/api/v2")
                 response_class=JSONResponse,
                 deprecated=True)
 @inject
-async def get_predicted_boiler_temp(
+def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         control_action_report_service: ControlActionReportService = Depends(
-            Provide[Services.control_action_report_pkg.control_action_report_service]
+            Provide[Services.control_action_pkg.control_action_report_service]
         )
 ):
     # noinspection SpellCheckingInspection
@@ -61,7 +61,7 @@ async def get_predicted_boiler_temp(
                  f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                  f"with weather_data_timezone {work_timezone.name}")
 
-    control_action = await control_action_report_service.report_v2(
+    control_action = control_action_report_service.report_v2(
         datetime_range.start_datetime,
         datetime_range.end_datetime,
         work_timezone.timezone

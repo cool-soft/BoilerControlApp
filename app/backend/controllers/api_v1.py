@@ -4,7 +4,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from backend.di.containers import Services
+from backend.di.containers.services import Services
 from backend.logging import logger
 from backend.services.control_action_report_service import ControlActionReportService
 from backend.controllers.dependencies import InputDatesRange, InputTimezone
@@ -18,11 +18,13 @@ api_router = APIRouter(prefix="/api/v1")
                 response_model=List[Tuple[str, float]],
                 deprecated=True)
 @inject
-async def get_predicted_boiler_temp(
+def get_predicted_boiler_temp(
         dates_range: InputDatesRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         control_action_report_service: ControlActionReportService = Depends(
-            Provide[Services.control_action_report_pkg.control_action_report_service]
+            Provide[
+                Services.control_action_pkg.control_action_report_service
+            ]
         )
 ):
     """
@@ -38,7 +40,7 @@ async def get_predicted_boiler_temp(
                  f"from {dates_range.start_date} to {dates_range.end_date} "
                  f"with weather_data_timezone {work_timezone.name}")
 
-    control_action = await control_action_report_service.report_v1(
+    control_action = control_action_report_service.report_v1(
         dates_range.start_date,
         dates_range.end_date,
         work_timezone.timezone
