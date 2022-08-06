@@ -27,7 +27,7 @@ class ControlActionReportService:
                   ) -> List[Tuple[str, float]]:
         with self._db_session_factory():
             control_actions_df = \
-                self._control_action_repository.get_control_action_by_timestamp_range(
+                self._control_action_repository.get_control_action(
                     start_timestamp,
                     end_timestamp,
                     circuit_types.HEATING
@@ -57,7 +57,7 @@ class ControlActionReportService:
                   ) -> List[Tuple[datetime, float]]:
         with self._db_session_factory():
             control_actions_df = \
-                self._control_action_repository.get_control_action_by_timestamp_range(
+                self._control_action_repository.get_control_action(
                     start_timestamp,
                     end_timestamp,
                     circuit_types.HEATING
@@ -87,7 +87,7 @@ class ControlActionReportService:
                   ) -> List[ControlActionV3]:
         with self._db_session_factory():
             control_actions_df = \
-                self._control_action_repository.get_control_action_by_timestamp_range(
+                self._control_action_repository.get_control_action(
                     start_timestamp,
                     end_timestamp,
                     circuit_type

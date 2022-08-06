@@ -15,11 +15,11 @@ class ControlActionRepository:
     def __init__(self, db_session_provider: Callable) -> None:
         self._db_session_provider = db_session_provider
 
-    def get_control_action_by_timestamp_range(self,
-                                              start_timestamp: datetime,
-                                              end_timestamp: datetime,
-                                              circuit_type: str
-                                              ) -> pd.DataFrame:
+    def get_control_action(self,
+                           start_timestamp: datetime,
+                           end_timestamp: datetime,
+                           circuit_type: str
+                           ) -> pd.DataFrame:
         session = self._db_session_provider()
         statement = select(ControlAction).filter(
             and_(

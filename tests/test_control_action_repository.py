@@ -62,7 +62,7 @@ class TestControlActionRepository:
             session.commit()
         with session_factory.begin():
             for circuit_type in self.circuits:
-                loaded_control_action = repository.get_control_action_by_timestamp_range(
+                loaded_control_action = repository.get_control_action(
                     control_action_df[column_names.TIMESTAMP].min(),
                     control_action_df[column_names.TIMESTAMP].max() + self.time_tick,
                     circuit_type
@@ -81,7 +81,7 @@ class TestControlActionRepository:
             repository.drop_control_action_older_than(self.control_action_drop_timestamp, circuit_types.HEATING)
             session.commit()
         with session_factory.begin():
-            loaded_control_action = repository.get_control_action_by_timestamp_range(
+            loaded_control_action = repository.get_control_action(
                 control_action_df[column_names.TIMESTAMP].min(),
                 control_action_df[column_names.TIMESTAMP].max() + self.time_tick,
                 circuit_types.HEATING
@@ -109,7 +109,7 @@ class TestControlActionRepository:
             session.commit()
 
         with session_factory.begin():
-            loaded_control_action = repository.get_control_action_by_timestamp_range(
+            loaded_control_action = repository.get_control_action(
                 control_action_df[column_names.TIMESTAMP].min(),
                 control_action_df[column_names.TIMESTAMP].max() + self.time_tick,
                 selected_circuit
@@ -117,7 +117,7 @@ class TestControlActionRepository:
             assert new_control_action_df.to_dict("records") == loaded_control_action.to_dict("records")
 
             for circuit_type in self.circuits[1:]:
-                loaded_control_action = repository.get_control_action_by_timestamp_range(
+                loaded_control_action = repository.get_control_action(
                     control_action_df[column_names.TIMESTAMP].min(),
                     control_action_df[column_names.TIMESTAMP].max() + self.time_tick,
                     circuit_type

@@ -30,7 +30,7 @@ class Application(DeclarativeContainer):
         time_delta_loader=gateways.time_delta_loader,
         dynamic_settings_repository=repositories.dynamic_settings_repository,
         temp_graph_repository=repositories.temp_graph_repository,
-        weather_forecast_repository=repositories.weather_forecast_repository,
+        weather_forecast_repository=repositories.control_action_repository,
         control_actions_repository=repositories.control_actions_repository,
         session_factory=gateways.session_factory
     )
