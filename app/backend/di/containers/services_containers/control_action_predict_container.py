@@ -26,7 +26,7 @@ def kostyle(settings_service: SettingsService, setting_name: str):
     return settings_service.get_setting(setting_name).value
 
 
-class ControlActionContainer(DeclarativeContainer):
+class ControlActionPredictContainer(DeclarativeContainer):
     config = Configuration(strict=True)
 
     temp_graph_repository = Dependency()
@@ -107,6 +107,6 @@ class ControlActionContainer(DeclarativeContainer):
         control_action_predictor=control_action_predictor,
         model_requirements=model_requirements,
         timestamp_round_algo=timestamp_round_algo,
-        timedelta=TIME_TICK,
+        time_tick=TIME_TICK,
         timedelta_predict_forward=pd.Timedelta(seconds=3600)
     )

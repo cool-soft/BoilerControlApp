@@ -40,7 +40,7 @@ class ControlActionReportService:
             datetime_column = datetime_column.dt.strftime(self._timestamp_report_pattern_v1)
             datetime_column = datetime_column.to_list()
 
-            boiler_out_temps = control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
+            boiler_out_temps = control_actions_df[column_names.FORWARD_TEMP]
             boiler_out_temps = boiler_out_temps.round(1)
             boiler_out_temps = boiler_out_temps.to_list()
 
@@ -69,7 +69,7 @@ class ControlActionReportService:
             datetime_column = datetime_column.dt.tz_convert(report_timezone)
             datetime_column = datetime_column.dt.to_pydatetime()
 
-            boiler_out_temps = control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
+            boiler_out_temps = control_actions_df[column_names.FORWARD_TEMP]
             boiler_out_temps = boiler_out_temps.round(1)
             boiler_out_temps = boiler_out_temps.to_list()
 
@@ -99,7 +99,7 @@ class ControlActionReportService:
             datetime_column = datetime_column.dt.tz_convert(report_timezone)
             datetime_column = datetime_column.to_list()
 
-            boiler_out_temps = control_actions_df[column_names.FORWARD_PIPE_COOLANT_TEMP]
+            boiler_out_temps = control_actions_df[column_names.FORWARD_TEMP]
             boiler_out_temps = boiler_out_temps.round(1)
             boiler_out_temps = boiler_out_temps.to_list()
 

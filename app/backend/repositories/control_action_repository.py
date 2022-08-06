@@ -34,7 +34,7 @@ class ControlActionRepository:
             control_action_list.append({
                 column_names.TIMESTAMP: record.timestamp.replace(tzinfo=tz.UTC),
                 column_names.CIRCUIT_TYPE: record.circuit_type,
-                column_names.FORWARD_PIPE_COOLANT_TEMP: record.forward_temp
+                column_names.FORWARD_TEMP: record.forward_temp
             })
         control_action_df = pd.DataFrame(control_action_list)
         return control_action_df
@@ -52,7 +52,7 @@ class ControlActionRepository:
             new_record = ControlAction(
                 timestamp=row[column_names.TIMESTAMP].tz_convert(tz.UTC),
                 circuit_type=row[column_names.CIRCUIT_TYPE],
-                forward_temp=row[column_names.FORWARD_PIPE_COOLANT_TEMP]
+                forward_temp=row[column_names.FORWARD_TEMP]
             )
             session.add(new_record)
 

@@ -50,7 +50,7 @@ class TestControlActionRepository:
                 forecast_list.append({
                     column_names.TIMESTAMP: current_timestamp,
                     column_names.CIRCUIT_TYPE: circuit_type,
-                    column_names.FORWARD_PIPE_COOLANT_TEMP: random()
+                    column_names.FORWARD_TEMP: random()
                 })
                 current_timestamp += self.time_tick
         forecast_df = pd.DataFrame(forecast_list)
@@ -103,7 +103,7 @@ class TestControlActionRepository:
         index_count = len(new_control_action_df.index)
         for i in range(3):
             random_index = new_control_action_df.index[randint(0, index_count - 1)]
-            new_control_action_df.at[random_index, column_names.FORWARD_PIPE_COOLANT_TEMP] = random()
+            new_control_action_df.at[random_index, column_names.FORWARD_TEMP] = random()
         with session_factory.begin() as session:
             repository.add_control_action(new_control_action_df)
             session.commit()

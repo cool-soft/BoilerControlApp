@@ -43,8 +43,8 @@ class TestTempGraphRepository:
             for i in range(self.temp_graph_rows_count):
                 temp_graph_list.append({
                     column_names.WEATHER_TEMP: random(),
-                    column_names.FORWARD_PIPE_COOLANT_TEMP: random(),
-                    column_names.BACKWARD_PIPE_COOLANT_TEMP: random()
+                    column_names.FORWARD_TEMP: random(),
+                    column_names.BACKWARD_TEMP: random()
                 })
             temp_graph_list = sorted(temp_graph_list, key=lambda x: x[column_names.WEATHER_TEMP])
             temp_graphs[circuit_type] = pd.DataFrame(temp_graph_list)

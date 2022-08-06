@@ -60,7 +60,7 @@ class TestWeatherForecastRepository:
             repository.add_weather_forecast(weather_forecast_df)
             session.commit()
         with session_factory.begin():
-            loaded_weather_forecast = repository.get_weather_forecast_by_timestamp_range(
+            loaded_weather_forecast = repository.get_weather_forecast(
                 weather_forecast_df[column_names.TIMESTAMP].min(),
                 weather_forecast_df[column_names.TIMESTAMP].max() + self.time_tick
             )
@@ -77,7 +77,7 @@ class TestWeatherForecastRepository:
             session.commit()
         session_factory.remove()
         with session_factory.begin():
-            loaded_weather_forecast = repository.get_weather_forecast_by_timestamp_range(
+            loaded_weather_forecast = repository.get_weather_forecast(
                 weather_forecast_df[column_names.TIMESTAMP].min(),
                 weather_forecast_df[column_names.TIMESTAMP].max() + self.time_tick
             )
@@ -101,7 +101,7 @@ class TestWeatherForecastRepository:
             session.commit()
 
         with session_factory.begin():
-            loaded_weather_forecast = repository.get_weather_forecast_by_timestamp_range(
+            loaded_weather_forecast = repository.get_weather_forecast(
                 new_weather_forecast_df[column_names.TIMESTAMP].min(),
                 new_weather_forecast_df[column_names.TIMESTAMP].max() + self.time_tick
             )

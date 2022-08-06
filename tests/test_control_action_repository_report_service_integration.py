@@ -53,7 +53,7 @@ class TestControlActionRepository:
                 forecast_list.append({
                     column_names.TIMESTAMP: current_timestamp,
                     column_names.CIRCUIT_TYPE: circuit_type,
-                    column_names.FORWARD_PIPE_COOLANT_TEMP: random()
+                    column_names.FORWARD_TEMP: random()
                 })
                 current_timestamp += self.time_tick
         forecast_df = pd.DataFrame(forecast_list)

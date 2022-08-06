@@ -15,10 +15,10 @@ class WeatherForecastRepository:
     def __init__(self, db_session_provider: Callable) -> None:
         self._db_session_provider = db_session_provider
 
-    def get_weather_forecast_by_timestamp_range(self,
-                                                start_timestamp: datetime,
-                                                end_timestamp: datetime
-                                                ) -> pd.DataFrame:
+    def get_weather_forecast(self,
+                             start_timestamp: datetime,
+                             end_timestamp: datetime
+                             ) -> pd.DataFrame:
         session = self._db_session_provider()
         statement = select(WeatherForecast).filter(
             and_(

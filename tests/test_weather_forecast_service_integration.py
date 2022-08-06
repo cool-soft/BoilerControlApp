@@ -82,7 +82,7 @@ class TestWeatherForecastService:
         datetime_now = datetime.now(tz=self.timezone)
         weather_forecast_update_service.update_weather_forecast()
         with session_factory.begin():
-            loaded_weather_forecast = weather_forecast_repository.get_weather_forecast_by_timestamp_range(
+            loaded_weather_forecast = weather_forecast_repository.get_weather_forecast(
                 datetime_now,
                 datetime_now + self.preload_timedelta
             )

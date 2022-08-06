@@ -22,8 +22,8 @@ class TempGraphRepository:
         for record in temp_graph_iterator:
             temp_graph_list.append({
                 column_names.WEATHER_TEMP: record.weather_temp,
-                column_names.FORWARD_PIPE_COOLANT_TEMP: record.forward_temp,
-                column_names.BACKWARD_PIPE_COOLANT_TEMP: record.backward_temp
+                column_names.FORWARD_TEMP: record.forward_temp,
+                column_names.BACKWARD_TEMP: record.backward_temp
             })
         temp_graph_df = pd.DataFrame(temp_graph_list)
         return temp_graph_df
@@ -38,7 +38,7 @@ class TempGraphRepository:
             new_record = TempGraph(
                 weather_temp=row[column_names.WEATHER_TEMP],
                 circuit_type=circuit_type,
-                forward_temp=row[column_names.FORWARD_PIPE_COOLANT_TEMP],
-                backward_temp=row[column_names.BACKWARD_PIPE_COOLANT_TEMP]
+                forward_temp=row[column_names.FORWARD_TEMP],
+                backward_temp=row[column_names.BACKWARD_TEMP]
             )
             session.add(new_record)

@@ -1,7 +1,7 @@
 from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Container, Dependency
 
-from .services_containers.control_action_container import ControlActionContainer
+from .services_containers.control_action_predict_container import ControlActionPredictContainer
 from .services_containers.control_action_report_container import ControlActionReportContainer
 from .services_containers.dynamic_settings_container import DynamicSettingsContainer
 from .services_containers.temp_graph_container import TempGraphContainer
@@ -39,7 +39,7 @@ class Services(DeclarativeContainer):
         weather_forecast_repository=weather_forecast_repository
     )
     control_action_pkg = Container(
-        ControlActionContainer,
+        ControlActionPredictContainer,
         config=config.control_action_predictor,
         time_delta_loader=time_delta_loader,
         temp_graph_repository=temp_graph_repository,
