@@ -9,7 +9,7 @@ from dynamic_settings.repository.db_settings_repository.sync_db_settings_reposit
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker, Session
 
-from backend.models.db import WeatherForecast, ControlAction, TempGraph
+from backend.models.db import WeatherForecast, ControlAction, TempGraph, TempRequirements
 
 
 def db_session_factory(db_url: str, settings_db_url: str) -> scoped_session:
@@ -20,6 +20,7 @@ def db_session_factory(db_url: str, settings_db_url: str) -> scoped_session:
         WeatherForecast.metadata.create_all(conn)
         ControlAction.metadata.create_all(conn)
         TempGraph.metadata.create_all(conn)
+        TempRequirements.metadata.create_all(conn)
 
     with settings_db_engine.begin() as conn:
         Setting.metadata.create_all(conn)
@@ -31,6 +32,7 @@ def db_session_factory(db_url: str, settings_db_url: str) -> scoped_session:
                 WeatherForecast: db_engine,
                 ControlAction: db_engine,
                 TempGraph: db_engine,
+                TempRequirements: db_engine,
                 Setting: settings_db_engine
             }
         ),
@@ -38,7 +40,7 @@ def db_session_factory(db_url: str, settings_db_url: str) -> scoped_session:
     return session_factory
 
 
-def dynamic_settings_repository(db_session_provider,
+def dynamic_settings_repository(db_session_provider: scoped_session,
                                 dtype_converters: List[DTypeConverter],
                                 default_settings: Dict
                                 ) -> AbstractSyncSettingsRepository:
@@ -53,5 +55,5 @@ def dynamic_settings_repository(db_session_provider,
         new_settings.update(current_settings)
         settings_repository.set_all(new_settings)
         session.commit()
-
+    db_session_provider.remove()
     return settings_repository
