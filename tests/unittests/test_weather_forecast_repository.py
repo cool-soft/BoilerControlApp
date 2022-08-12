@@ -108,3 +108,17 @@ class TestWeatherForecastRepository:
 
         session_factory.remove()
         assert new_weather_forecast_df.to_dict("records") == loaded_weather_forecast.to_dict("records")
+
+    def test_get_max_timestamp(self, weather_forecast_df, repository, session_factory):
+        with session_factory.begin():
+            max_cached_timestamp = repository.get_max_cached_timestamp()
+            assert max_cached_timestamp is None
+
+        with session_factory.begin() as session:
+            repository.add_weather_forecast(weather_forecast_df)
+            session.commit()
+        with session_factory.begin():
+            max_cached_timestamp = repository.get_max_cached_timestamp()
+            assert max_cached_timestamp == weather_forecast_df[column_names.TIMESTAMP].max()
+
+        session_factory.remove()
