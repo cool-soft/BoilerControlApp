@@ -39,7 +39,7 @@ class Application(DeclarativeContainer):
         TempGraphProviderContainer,
         config=config.temp_graph,
         db_session_provider=database.db_session_provider,
-        temp_graph_laoder=gateways.temp_graph_loader,
+        temp_graph_loader=gateways.temp_graph_loader,
         temp_graph_cache_repository=repositories.temp_graph_cache_repository,
         keychain_repository=repositories.keychain_repository,
     )
@@ -68,7 +68,7 @@ class Application(DeclarativeContainer):
         control_action_repository=repositories.control_action_cache_repository,
         model_requirements=model_pkg.model_requirements,
         control_action_predictor=control_action_predictor_pkg.control_action_predictor,
-        settings_repository=repositories.settings_repository
+        dynamic_settings_repository=repositories.dynamic_settings_repository
     )
 
     wsgi = Container(

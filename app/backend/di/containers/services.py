@@ -14,12 +14,12 @@ class Services(DeclarativeContainer):
     control_action_repository = Dependency()
     model_requirements = Dependency()
     control_action_predictor = Dependency()
-    settings_repository = Dependency()
+    dynamic_settings_repository = Dependency()
 
     dynamic_settings_pkg = Container(
         DynamicSettingsServiceContainer,
-        dynamic_settings_db_session_provider=db_session_provider,
-        settings_repository=settings_repository
+        db_session_provider=db_session_provider,
+        settings_repository=dynamic_settings_repository
     )
     control_action_pkg = Container(
         ControlActionServiceContainer,

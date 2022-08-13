@@ -26,6 +26,7 @@ def cache_database(cache_db_engine: Engine) -> None:
     with cache_db_engine.begin() as conn:
         ControlAction.metadata.create_all(conn)
         TempGraph.metadata.create_all(conn)
+        Keychain.metadata.create_all(conn)
 
 
 def settings_database(settings_db_engine: Engine) -> None:
