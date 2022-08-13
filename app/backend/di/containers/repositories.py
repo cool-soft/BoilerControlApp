@@ -5,7 +5,7 @@ from dynamic_settings.repository.db_settings_repository.settings_converter impor
 from updater_keychain.keychain_db_repository import KeychainDBRepository
 
 from backend.constants import default_config
-from backend.di.resources import dynamic_settings_repository
+from backend.di.resources.dynamic_settings_repository import dynamic_settings_repository
 from backend.repositories.control_action_repository import ControlActionRepository
 from backend.repositories.temp_graph_repository import TempGraphRepository
 

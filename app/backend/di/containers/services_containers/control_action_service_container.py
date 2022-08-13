@@ -3,7 +3,7 @@ from datetime import timedelta
 from boiler.constants.time_tick import TIME_TICK
 from boiler.data_processing.timestamp_round_algorithm import CeilTimestampRoundAlgorithm
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Dependency, Factory, Configuration, Callable
+from dependency_injector.providers import Dependency, Factory, Configuration, Callable, Object
 
 from backend.services.control_action_prediction_service import ControlActionPredictionService
 from backend.services.control_action_report_service import ControlActionReportService
@@ -20,7 +20,7 @@ class ControlActionServiceContainer(DeclarativeContainer):
 
     timestamp_round_algo = Factory(
         CeilTimestampRoundAlgorithm,
-        round_step=TIME_TICK
+        round_step=Object(TIME_TICK)
     )
     control_action_prediction_service = Factory(
         ControlActionPredictionService,
@@ -30,7 +30,7 @@ class ControlActionServiceContainer(DeclarativeContainer):
         db_session_factory=db_session_provider,
         control_action_repository=control_action_repository,
         timestamp_round_algo=timestamp_round_algo,
-        time_tick=TIME_TICK,
+        time_tick=Object(TIME_TICK),
         timedelta_predict_forward=Callable(timedelta, config.timedelta_predict_forward)
     )
     control_action_report_service = Factory(

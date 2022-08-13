@@ -8,6 +8,7 @@ from backend.di.providers import dynamic_settings_provider
 
 
 class ControlActionPredictorContainer(DeclarativeContainer):
+    db_session_provider = Dependency()
     dynamic_settings_repository = Dependency()
     heating_system_model = Dependency()
 
@@ -18,11 +19,13 @@ class ControlActionPredictorContainer(DeclarativeContainer):
         heating_system_model=heating_system_model,
         min_boiler_temp=Callable(
             dynamic_settings_provider,
+            db_session_provider,
             dynamic_settings_repository,
             config_names.MIN_BOILER_TEMP
         ),
         max_boiler_temp=Callable(
             dynamic_settings_provider,
+            db_session_provider,
             dynamic_settings_repository,
             config_names.MAX_BOILER_TEMP
         ),

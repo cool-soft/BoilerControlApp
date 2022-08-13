@@ -56,6 +56,7 @@ class Application(DeclarativeContainer):
 
     control_action_predictor_pkg = Container(
         ControlActionPredictorContainer,
+        db_session_provider=database.db_session_provider,
         dynamic_settings_repository=repositories.dynamic_settings_repository,
         heating_system_model=model_pkg.heating_system_model
     )
