@@ -10,8 +10,8 @@ from backend.models.api import SettingV3
 class SettingsService:
 
     def __init__(self,
-                 repository: AbstractSyncSettingsRepository,
-                 session_factory: scoped_session
+                 session_factory: scoped_session,
+                 repository: AbstractSyncSettingsRepository
                  ) -> None:
         logger.debug("Creating instance")
         self._settings_repository = repository

@@ -1,14 +1,20 @@
+from boiler_softm_lysva.temp_graph.io import SoftMLysvaSyncTempGraphOnlineReader, SoftMLysvaSyncTempGraphOnlineLoader
+from boiler_softm_lysva.weather.io import \
+    SoftMLysvaSyncWeatherForecastOnlineReader, \
+    SoftMLysvaSyncWeatherForecastOnlineLoader
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Configuration, Resource
-
-from backend.di.resources.database import db_session_factory
+from dependency_injector.providers import Configuration, Factory
 
 
 class Gateways(DeclarativeContainer):
-    config = Configuration(strict=True)
+    weather_forecast_reader = Factory(SoftMLysvaSyncWeatherForecastOnlineReader)
+    weather_forecast_loader = Factory(
+        SoftMLysvaSyncWeatherForecastOnlineLoader,
+        reader=weather_forecast_reader
+    )
 
-    session_factory = Resource(
-        db_session_factory,
-        db_url=config.db_url,
-        settings_db_url=config.settings_db_url
+    temp_graph_reader = Factory(SoftMLysvaSyncTempGraphOnlineReader)
+    temp_graph_loader = Factory(
+        SoftMLysvaSyncTempGraphOnlineLoader,
+        reader=temp_graph_reader
     )
