@@ -14,8 +14,8 @@ class UpdateContainer(DeclarativeContainer):
 
     control_action_updatable_item = Singleton(
         ControlActionUpdatableItem,
-        update_interval=Callable(timedelta, seconds=config.control_action_update_interval),
-        provider=control_actions_predictor.provider
+        provider=control_actions_predictor.provider,
+        update_interval=Callable(timedelta, seconds=config.control_action_update_interval)
     )
     # TODO: очистка старого control action
 
