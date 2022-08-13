@@ -37,7 +37,11 @@ class Application(DeclarativeContainer):
     )
     temp_graph_pkg = Container(
         TempGraphProviderContainer,
-        temp_graph_laoder=gateways.temp_graph_loader
+        config=config.temp_graph,
+        db_session_provider=database.db_session_provider,
+        temp_graph_laoder=gateways.temp_graph_loader,
+        temp_graph_cache_repository=repositories.temp_graph_cache_repository,
+        keychain_repository=repositories.keychain_repository,
     )
     temp_requirements_pkg = Container(
         TempRequirementsProviderContainer,

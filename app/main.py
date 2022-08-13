@@ -18,6 +18,7 @@ def main(cmd_args):
     application.config.from_yaml(cmd_args.config)
 
     application.core.init_resources()
+    application.database.init_resources()
     # Must be placed after core.init_resources()
     wire(application)
 

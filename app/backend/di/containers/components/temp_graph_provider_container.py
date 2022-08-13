@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Configuration, Dependency, Factory
+from dependency_injector.providers import Configuration, Dependency, Factory, Callable
 from updater_keychain.keychain_item import UpdaterKeychainWithDBStorage
 
 from backend.constants import keychain_names
@@ -18,7 +18,7 @@ class TempGraphProviderContainer(DeclarativeContainer):
 
     temp_graph_updater_keychain = Factory(
         UpdaterKeychainWithDBStorage,
-        update_interval=timedelta(seconds=3600),  # TODO: this
+        update_interval=Callable(timedelta, seconds=config.temp_graph_update_interval),
         keychain_name=keychain_names.TEMP_GRAPH_UPDATE_KEYCHAIN_NAME,
         db_session_factory=db_session_provider,
         keychain_repository=keychain_repository

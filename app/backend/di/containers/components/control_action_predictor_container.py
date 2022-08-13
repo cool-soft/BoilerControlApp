@@ -1,15 +1,13 @@
 from boiler.control_action.predictors.single_circuit_control_action_predictor import SingleCircuitControlActionPredictor
 from boiler.control_action.temp_delta_calculator.single_type_temp_delta_calculator import SingleTypeTempDeltaCalculator
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Configuration, Dependency, Factory, Callable
+from dependency_injector.providers import Dependency, Factory, Callable
 
-from backend.di.providers import dynamic_settings_provider
 from backend.constants import config_names
+from backend.di.providers import dynamic_settings_provider
 
 
 class ControlActionPredictorContainer(DeclarativeContainer):
-    config = Configuration(strict=True)
-
     dynamic_settings_repository = Dependency()
     heating_system_model = Dependency()
 
