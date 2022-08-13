@@ -31,7 +31,7 @@ class ControlActionServiceContainer(DeclarativeContainer):
         control_action_repository=control_action_repository,
         timestamp_round_algo=timestamp_round_algo,
         time_tick=Object(TIME_TICK),
-        timedelta_predict_forward=Callable(timedelta, config.timedelta_predict_forward)
+        timedelta_predict_forward=Callable(timedelta, seconds=config.timedelta_predict_forward)
     )
     control_action_report_service = Factory(
         ControlActionReportService,
