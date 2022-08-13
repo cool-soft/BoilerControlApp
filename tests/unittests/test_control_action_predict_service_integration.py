@@ -189,7 +189,7 @@ class TestControlActionServiceIntegration:
     def test_service(self, control_action_predict_service, session_factory, control_action_repository):
         control_action_predict_service.update_control_actions()
         control_action_start_timestamp = datetime.now(tz.UTC)
-        control_action_end_timestamp = control_action_start_timestamp + self.predict_forward_timedelta + self.time_tick
+        control_action_end_timestamp = control_action_start_timestamp + self.predict_forward_timedelta
         with session_factory():
             control_action_df = control_action_repository.get_control_action(
                 control_action_start_timestamp,
