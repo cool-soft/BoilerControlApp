@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 
 from backend.di.resources.database import db_session_factory, cache_database, settings_database
 
-# TODO: init resources
+
 class Database(DeclarativeContainer):
     config = Configuration(strict=True)
 

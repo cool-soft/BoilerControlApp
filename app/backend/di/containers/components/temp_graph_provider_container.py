@@ -18,7 +18,7 @@ class TempGraphProviderContainer(DeclarativeContainer):
 
     temp_graph_updater_keychain = Factory(
         UpdaterKeychainWithDBStorage,
-        update_interval=Callable(timedelta, seconds=config.temp_graph_update_interval),
+        update_interval=Callable(timedelta, seconds=config.update_interval),
         keychain_name=keychain_names.TEMP_GRAPH_UPDATE_KEYCHAIN_NAME,
         db_session_factory=db_session_provider,
         keychain_repository=keychain_repository
