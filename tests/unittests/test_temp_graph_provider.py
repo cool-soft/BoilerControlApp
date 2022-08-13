@@ -52,7 +52,7 @@ class TestTempGraphProvider:
         )
 
     @pytest.fixture
-    def repository(self, session_factory):
+    def temp_graph_repository(self, session_factory):
         return TempGraphRepository(session_factory)
 
     @pytest.fixture
@@ -62,30 +62,30 @@ class TestTempGraphProvider:
         )
 
     @pytest.fixture
-    def provider(self, temp_graph_loader, session_factory, repository, updater_keychain):
+    def temp_graph_provider(self, temp_graph_loader, session_factory, temp_graph_repository, updater_keychain):
         return TempGraphProvider(
             temp_graph_loader,
             session_factory,
-            repository,
+            temp_graph_repository,
             updater_keychain,
             self.circuit_type
         )
 
-    def test_provide_temp_graph(self, provider, session_factory, repository, updater_keychain):
+    def test_provide_temp_graph(self, temp_graph_provider, session_factory, temp_graph_repository, updater_keychain):
         start_datetime = datetime.now(tz=tz.UTC)
-        temp_graph_from_server = provider.load_temp_graph()
+        temp_graph_from_server = temp_graph_provider.load_temp_graph()
         assert isinstance(temp_graph_from_server, pd.DataFrame)
         assert not temp_graph_from_server.empty
         assert updater_keychain.get_last_update_datetime() >= start_datetime
 
         with session_factory():
-            temp_graph = repository.get_temp_graph_for_circuit_type(self.circuit_type)
+            temp_graph = temp_graph_repository.get_temp_graph_for_circuit_type(self.circuit_type)
         assert not temp_graph.empty
         session_factory.remove()
 
         sleep(0.1)
         datetime_now = datetime.now(tz=tz.UTC)
-        temp_graph_from_cache = provider.load_temp_graph()
+        temp_graph_from_cache = temp_graph_provider.load_temp_graph()
         assert isinstance(temp_graph_from_cache, pd.DataFrame)
         assert not temp_graph_from_cache.empty
         assert updater_keychain.get_last_update_datetime() < datetime_now
