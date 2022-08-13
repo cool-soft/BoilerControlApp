@@ -3,7 +3,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Dependency, Singleton, Factory
 
 from backend.repositories.temp_graph_repository import TempGraphRepository
-from backend.services.temp_graph_update_service import TempGraphUpdateService
+from backend.providers.temp_graph_provider import TempGraphUpdateService
 
 
 class TempGraphContainer(DeclarativeContainer):

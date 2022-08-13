@@ -6,7 +6,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Factory, Object, Dependency, Singleton
 
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
-from backend.services.weather_forecast_service import WeatherForecastService
+from backend.providers.weather_forecast_provider import WeatherForecastService
 
 
 class WeatherForecastContainer(DeclarativeContainer):

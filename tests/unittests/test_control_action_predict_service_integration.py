@@ -23,7 +23,7 @@ from backend.models.db import ControlAction, WeatherForecast
 from backend.repositories.control_action_repository import ControlActionRepository
 from backend.repositories.weather_forecast_repository import WeatherForecastRepository
 from backend.services.control_action_prediction_service import ControlActionPredictionService
-from backend.services.weather_forecast_service import WeatherForecastService
+from backend.providers.weather_forecast_provider import WeatherForecastService
 
 
 class TestControlActionPredictServiceIntegration:

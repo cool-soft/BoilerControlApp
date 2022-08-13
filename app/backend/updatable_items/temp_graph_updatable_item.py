@@ -2,7 +2,7 @@ from dependency_injector.providers import Provider
 from updater.updatable_item.abstract_sync_updatable_item import AbstractSyncUpdatableItem
 
 from backend.logging import logger
-from backend.services.temp_graph_update_service import TempGraphUpdateService
+from backend.providers.temp_graph_provider import TempGraphUpdateService
 
 
 class TempGraphUpdatableItem(AbstractSyncUpdatableItem):
