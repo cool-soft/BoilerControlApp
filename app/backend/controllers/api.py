@@ -150,7 +150,7 @@ def put_min_boiler_temp(
 
 @api_router.get("/settings/minBoilerTemp", response_model=SettingAPIModel)
 @inject
-async def get_min_boiler_temp(
+def get_min_boiler_temp(
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
