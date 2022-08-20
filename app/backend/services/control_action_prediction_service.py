@@ -4,7 +4,7 @@ from typing import Tuple
 import pandas as pd
 from boiler.control_action.predictors.abstract_control_action_predictor import AbstractControlActionPredictor
 from boiler.data_processing.timestamp_round_algorithm import AbstractTimestampRoundAlgorithm
-from boiler.heating_system.model_requirements.abstract_model_requirements import AbstractModelRequirements
+from boiler.heating_system.model_parameters.abstract_model_requirements import AbstractModelParameters
 from dateutil import tz
 from sqlalchemy.orm import scoped_session
 
@@ -15,7 +15,7 @@ from backend.repositories.control_action_repository import ControlActionReposito
 class ControlActionPredictionService:
 
     def __init__(self,
-                 model_requirements: AbstractModelRequirements,
+                 model_requirements: AbstractModelParameters,
                  temp_requirements_provider: TempRequirementsProvider,
                  control_action_predictor: AbstractControlActionPredictor,
                  db_session_factory: scoped_session,
@@ -60,11 +60,11 @@ class ControlActionPredictionService:
                                                     control_action_start_timestamp: pd.Timestamp,
                                                     control_action_end_timestamp: pd.Timestamp
                                                     ) -> Tuple[pd.Timestamp, pd.Timestamp]:
-        requirements_start_timestamp, _ = \
-            self._model_requirements.get_weather_start_end_timestamps(control_action_start_timestamp)
-        _, weather_forecast_end_timestamp = \
-            self._model_requirements.get_weather_start_end_timestamps(control_action_end_timestamp)
-        return requirements_start_timestamp, weather_forecast_end_timestamp + self._time_tick
+        temp_requirements_start_timestamp = \
+            control_action_start_timestamp + self._model_requirements.get_min_heating_system_lag()
+        temp_requirements_end_timestamp = \
+            control_action_end_timestamp + self._model_requirements.get_max_heating_system_lag() + self._time_tick
+        return temp_requirements_start_timestamp, temp_requirements_end_timestamp
 
     def _calc_control_action(self, control_action_start_timestamp, control_action_end_timestamp, temp_requirements_df):
         control_actions_list = []

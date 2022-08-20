@@ -3,10 +3,10 @@ from datetime import datetime
 import pandas as pd
 from boiler.constants import circuit_types
 from dateutil import tz
-from updater_keychain.helpers import is_need_update_item
-from updater_keychain.keychain_item import UpdaterKeychain
 from boiler.temp_graph.io.abstract_sync_temp_graph_loader import AbstractSyncTempGraphLoader
 from sqlalchemy.orm import scoped_session
+from updater.helpers import is_need_update_item
+from updater.update_keychain import UpdateKeychain
 
 from backend.repositories.temp_graph_repository import TempGraphRepository
 
@@ -17,13 +17,13 @@ class TempGraphProvider(AbstractSyncTempGraphLoader):
                  temp_graph_loader: AbstractSyncTempGraphLoader,
                  db_session_factory: scoped_session,
                  temp_graph_repository: TempGraphRepository,
-                 updater_keychain: UpdaterKeychain,
+                 update_keychain: UpdateKeychain,
                  circuit_type: str = circuit_types.HEATING
                  ) -> None:
         self._temp_graph_loader = temp_graph_loader
         self._session_factory = db_session_factory
         self._temp_graph_repository = temp_graph_repository
-        self._updater_keychain = updater_keychain
+        self._updater_keychain = update_keychain
         self._circuit_type = circuit_type
 
     def load_temp_graph(self) -> pd.DataFrame:

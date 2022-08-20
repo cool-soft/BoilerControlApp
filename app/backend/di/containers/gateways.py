@@ -3,10 +3,12 @@ from boiler_softm_lysva.weather.io import \
     SoftMLysvaSyncWeatherForecastOnlineReader, \
     SoftMLysvaSyncWeatherForecastOnlineLoader
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Factory
+from dependency_injector.providers import Factory, Configuration
 
 
 class Gateways(DeclarativeContainer):
+    config = Configuration(strict=True)
+
     weather_forecast_reader = Factory(SoftMLysvaSyncWeatherForecastOnlineReader)
     weather_forecast_loader = Factory(
         SoftMLysvaSyncWeatherForecastOnlineLoader,

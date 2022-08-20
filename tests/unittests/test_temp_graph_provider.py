@@ -8,7 +8,7 @@ from boiler_softm_lysva.temp_graph.io import SoftMLysvaSyncTempGraphOnlineReader
 from dateutil import tz
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from updater_keychain.keychain_item import UpdaterKeychain
+from updater.update_keychain import UpdateKeychain
 
 from backend.models.db import TempGraph
 from backend.providers.temp_graph_provider import TempGraphProvider
@@ -56,27 +56,27 @@ class TestTempGraphProvider:
         return TempGraphRepository(session_factory)
 
     @pytest.fixture
-    def updater_keychain(self):
-        return UpdaterKeychain(
+    def update_keychain(self):
+        return UpdateKeychain(
             update_interval=timedelta(minutes=10)
         )
 
     @pytest.fixture
-    def temp_graph_provider(self, temp_graph_loader, session_factory, temp_graph_repository, updater_keychain):
+    def temp_graph_provider(self, temp_graph_loader, session_factory, temp_graph_repository, update_keychain):
         return TempGraphProvider(
             temp_graph_loader,
             session_factory,
             temp_graph_repository,
-            updater_keychain,
+            update_keychain,
             self.circuit_type
         )
 
-    def test_provide_temp_graph(self, temp_graph_provider, session_factory, temp_graph_repository, updater_keychain):
+    def test_provide_temp_graph(self, temp_graph_provider, session_factory, temp_graph_repository, update_keychain):
         start_datetime = datetime.now(tz=tz.UTC)
         temp_graph_from_server = temp_graph_provider.load_temp_graph()
         assert isinstance(temp_graph_from_server, pd.DataFrame)
         assert not temp_graph_from_server.empty
-        assert updater_keychain.get_last_update_datetime() >= start_datetime
+        assert update_keychain.get_last_update_datetime() >= start_datetime
 
         with session_factory():
             temp_graph = temp_graph_repository.get_temp_graph_for_circuit_type(self.circuit_type)
@@ -88,4 +88,4 @@ class TestTempGraphProvider:
         temp_graph_from_cache = temp_graph_provider.load_temp_graph()
         assert isinstance(temp_graph_from_cache, pd.DataFrame)
         assert not temp_graph_from_cache.empty
-        assert updater_keychain.get_last_update_datetime() < datetime_now
+        assert update_keychain.get_last_update_datetime() < datetime_now

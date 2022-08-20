@@ -4,11 +4,12 @@ import pandas as pd
 import pytest
 from boiler.constants import column_names, circuit_types
 from boiler.control_action.predictors.single_circuit_control_action_predictor import SingleCircuitControlActionPredictor
-from boiler.control_action.temp_delta_calculator.single_type_temp_delta_calculator import SingleTypeTempDeltaCalculator
+from boiler.temp_requirements.temp_delta_calculator.single_type_temp_delta_calculator_with_parameters import \
+    SingleTypeTempDeltaCalculatorWithParameters
 from boiler.data_processing.float_round_algorithm import ArithmeticFloatRoundAlgorithm
 from boiler.data_processing.timestamp_round_algorithm import FloorTimestampRoundAlgorithm
 from boiler.heating_system.model.corr_table_heating_system_model import CorrTableHeatingSystemModel
-from boiler.heating_system.model_requirements.corr_table_model_requirements import CorrTableModelRequirements
+from boiler.heating_system.model_parameters.corr_table_model_parameters import CorrTableModelParameters
 from boiler.temp_requirements.calculators.temp_graph_requirements_calculator import TempGraphRequirementsCalculator
 from boiler_softm_lysva.constants.time_tick import TIME_TICK
 from boiler_softm_lysva.temp_graph.io import SoftMLysvaSyncTempGraphOnlineReader, SoftMLysvaSyncTempGraphOnlineLoader
@@ -139,8 +140,8 @@ class TestControlActionServiceIntegration:
         return ControlActionRepository(session_factory)
 
     @pytest.fixture
-    def model_requirements(self):
-        return CorrTableModelRequirements(
+    def model_parameters(self):
+        return CorrTableModelParameters(
             timedelta_df=self.timedelta_df
         )
 
@@ -153,7 +154,7 @@ class TestControlActionServiceIntegration:
 
     @pytest.fixture
     def temp_delta_calculator(self):
-        return SingleTypeTempDeltaCalculator()
+        return SingleTypeTempDeltaCalculatorWithParameters()
 
     @pytest.fixture
     def timestamp_round_algo(self):
@@ -168,7 +169,7 @@ class TestControlActionServiceIntegration:
 
     @pytest.fixture
     def control_action_predict_service(self,
-                                       model_requirements,
+                                       model_parameters,
                                        temp_requirements_provider,
                                        control_action_predictor,
                                        session_factory,
@@ -176,7 +177,7 @@ class TestControlActionServiceIntegration:
                                        timestamp_round_algo
                                        ):
         return ControlActionPredictionService(
-            model_requirements,
+            model_parameters,
             temp_requirements_provider,
             control_action_predictor,
             session_factory,

@@ -1,8 +1,8 @@
-name: Test and coverage package
+name: Test, coverage and lint app
 on:
   [push, pull_request]
 jobs:
-  test-and-coverage-package:
+  test-and-coverage-app:
     runs-on: ubuntu-latest
     env:
       SOCKS_PROXY_ADDRESS: "localhost"
@@ -49,5 +49,17 @@ jobs:
       - name: "Push coverage xml report to codacy"
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
-          project-token: ${{ secrets.CODACY_PROJECT_API_TOKEN }}
+          api-token: ${{ secrets.CODACY_API_TOKEN }}
           coverage-reports: ${{ env.COVERAGE_XML_REPORT_PATH }}
+
+  run-codacy-analisis-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v2
+      - name: "Run Codacy Analysis CLI"
+        uses: codacy/codacy-analysis-cli-action@master
+        with:
+          api-token: ${{ secrets.CODACY_API_TOKEN }}
+          upload: true
+          max-allowed-issues: 2147483647

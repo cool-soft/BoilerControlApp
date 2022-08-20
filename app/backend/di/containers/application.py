@@ -3,9 +3,9 @@ from dependency_injector.providers import Configuration, Container
 
 from backend.di.containers.components.control_action_predictor_container import ControlActionPredictorContainer
 from backend.di.containers.components.model_container import ModelContainer
-from backend.di.containers.components.temp_graph_provider_container import TempGraphProviderContainer
+from backend.di.containers.components.temp_graph_loader_with_cache_container import TempGraphLoaderWithCacheContainer
 from backend.di.containers.components.temp_requirements_provider_container import TempRequirementsProviderContainer
-from backend.di.containers.components.weather_forecast_provider_container import WeatherForecastProviderContainer
+from backend.di.containers.components.weather_forecast_processing_loader import WeatherForecastProcessingLoaderContainer
 from backend.di.containers.core import Core
 from backend.di.containers.database import Database
 from backend.di.containers.gateways import Gateways
@@ -32,21 +32,22 @@ class Application(DeclarativeContainer):
     )
 
     weather_forecast_pkg = Container(
-        WeatherForecastProviderContainer,
+        WeatherForecastProcessingLoaderContainer,
         weather_forecast_loader=gateways.weather_forecast_loader
     )
     temp_graph_pkg = Container(
-        TempGraphProviderContainer,
+        TempGraphLoaderWithCacheContainer,
         config=config.temp_graph,
         db_session_provider=database.db_session_provider,
         temp_graph_loader=gateways.temp_graph_loader,
         temp_graph_cache_repository=repositories.temp_graph_cache_repository,
         keychain_repository=repositories.keychain_repository,
     )
+
     temp_requirements_pkg = Container(
         TempRequirementsProviderContainer,
-        weather_forecast_loader=weather_forecast_pkg.weather_forecast_provider,
-        temp_graph_loader=temp_graph_pkg.temp_graph_provider
+        weather_forecast_loader=weather_forecast_pkg.weather_forecast_processing_loader,
+        temp_graph_loader=temp_graph_pkg.temp_graph_loader_with_cache
     )
 
     model_pkg = Container(
