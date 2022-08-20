@@ -8,7 +8,7 @@ from backend.models.api import ControlActionAPIModel
 from backend.repositories.control_action_repository import ControlActionRepository
 
 
-class ControlActionReportService:
+class ControlActionService:
 
     def __init__(self,
                  db_session_provider: scoped_session,
@@ -26,6 +26,7 @@ class ControlActionReportService:
         with self._db_session_provider():
             control_actions_df = \
                 self._control_action_repository.get_control_action(start_timestamp, end_timestamp, circuit_type)
+        self._db_session_provider.remove()
 
         control_actions_list = []
         if not control_actions_df.empty:
@@ -41,6 +42,4 @@ class ControlActionReportService:
                         forward_temp=row[column_names.FORWARD_TEMP]
                     )
                 )
-
-        self._db_session_provider.remove()
         return control_actions_list

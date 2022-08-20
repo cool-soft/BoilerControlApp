@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from backend.models.api import ControlActionAPIModel
 from backend.models.db import ControlActionDBModel
 from backend.repositories.control_action_repository import ControlActionRepository
-from backend.services.control_action_report_service import ControlActionReportService
+from backend.services.control_action_service import ControlActionService
 
 
 class TestControlActionRepository:
@@ -61,7 +61,7 @@ class TestControlActionRepository:
 
     @pytest.fixture
     def report_service(self, repository, session_factory):
-        return ControlActionReportService(db_session_provider=session_factory, control_action_repository=repository)
+        return ControlActionService(db_session_provider=session_factory, control_action_repository=repository)
 
     def test_report(self, control_action_df, repository, session_factory, report_service):
         with session_factory.begin() as session:

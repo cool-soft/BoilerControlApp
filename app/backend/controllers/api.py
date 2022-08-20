@@ -15,7 +15,7 @@ from backend.controllers.dependencies import \
 from backend.di.containers.services import Services
 from backend.logging import logger
 from backend.models.api import ControlActionAPIModel, SettingAPIModel
-from backend.services.control_action_report_service import ControlActionReportService
+from backend.services.control_action_service import ControlActionService
 from backend.services.settings_service import SettingsService
 
 api_router = APIRouter(prefix="/api/v3")
@@ -27,7 +27,7 @@ api_router = APIRouter(prefix="/api/v3")
 def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
-        control_action_report_service: ControlActionReportService = Depends(
+        control_action_report_service: ControlActionService = Depends(
             Provide[Services.control_action_pkg.control_action_report_service]
         )
 ):

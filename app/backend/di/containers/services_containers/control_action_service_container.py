@@ -6,7 +6,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Dependency, Factory, Configuration, Callable, Object
 
 from backend.services.control_action_prediction_service import ControlActionPredictionService
-from backend.services.control_action_report_service import ControlActionReportService
+from backend.services.control_action_service import ControlActionService
 
 
 class ControlActionServiceContainer(DeclarativeContainer):
@@ -34,7 +34,7 @@ class ControlActionServiceContainer(DeclarativeContainer):
         timedelta_predict_forward=Callable(timedelta, seconds=config.timedelta_predict_forward)
     )
     control_action_report_service = Factory(
-        ControlActionReportService,
+        ControlActionService,
         db_session_provider=db_session_provider,
         control_action_repository=control_action_repository
     )
