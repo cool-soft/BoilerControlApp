@@ -9,9 +9,9 @@ from backend.constants import config_names
 from backend.controllers.dependencies import \
     InputDatetimeRange, \
     InputTimezone, \
-    get_temp_requirements_coefficient, \
-    get_max_boiler_temp, \
-    get_min_boiler_temp
+    temp_requirements_coefficient_dependency, \
+    max_boiler_temp_dependency, \
+    min_boiler_temp_dependency
 from backend.di.containers.services import Services
 from backend.logging import logger
 from backend.models.api import ControlActionAPIModel, SettingAPIModel
@@ -88,7 +88,7 @@ def get_settings(
                 response_class=Response)
 @inject
 def put_apartment_house_min_temp_coefficient(
-        coefficient: float = Depends(get_temp_requirements_coefficient),
+        coefficient: float = Depends(temp_requirements_coefficient_dependency),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
@@ -114,7 +114,7 @@ def get_apartment_house_min_temp_coefficient(
                 response_class=Response)
 @inject
 def put_max_boiler_temp(
-        temp: float = Depends(get_max_boiler_temp),
+        temp: float = Depends(max_boiler_temp_dependency),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )
@@ -140,7 +140,7 @@ def get_max_boiler_temp(
                 response_class=Response)
 @inject
 def put_min_boiler_temp(
-        temp: float = Depends(get_min_boiler_temp),
+        temp: float = Depends(min_boiler_temp_dependency),
         settings_service: SettingsService = Depends(
             Provide[Services.dynamic_settings_pkg.settings_service]
         )

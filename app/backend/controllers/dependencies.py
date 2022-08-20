@@ -68,7 +68,7 @@ class InputDatetimeRange:
         self.end_datetime: pd.Timestamp = end_datetime
 
 
-def get_temp_requirements_coefficient(temp_requirements_coefficient: float):
+def temp_requirements_coefficient_dependency(temp_requirements_coefficient: float):
     if not 0 < temp_requirements_coefficient <= 1:
         raise HTTPException(
             422,
@@ -81,7 +81,7 @@ def get_temp_requirements_coefficient(temp_requirements_coefficient: float):
     return temp_requirements_coefficient
 
 
-def get_max_boiler_temp(max_boiler_temp: float):
+def max_boiler_temp_dependency(max_boiler_temp: float):
     if not 0 < max_boiler_temp <= 120:
         raise HTTPException(
             422,
@@ -94,7 +94,7 @@ def get_max_boiler_temp(max_boiler_temp: float):
     return max_boiler_temp
 
 
-def get_min_boiler_temp(min_boiler_temp: float):
+def min_boiler_temp_dependency(min_boiler_temp: float):
     if not 0 < min_boiler_temp <= 120:
         raise HTTPException(
             422,
