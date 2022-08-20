@@ -4,7 +4,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Object, Resource, Singleton, Factory
 
 from backend.di.resources.fastapi_app import fastapi_app
-from backend.controllers import api_v1, api_v2, api
+from backend.controllers import api
 
 
 class WSGI(DeclarativeContainer):
@@ -13,9 +13,7 @@ class WSGI(DeclarativeContainer):
     app = Resource(
         fastapi_app,
         api_routers=Object([
-            api_v1.api_router,
-            api_v2.api_router,
-            api_v3.api_router
+            api.api_router,
         ])
     )
     server = Singleton(

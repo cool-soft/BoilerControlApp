@@ -4,7 +4,7 @@ import pandas as pd
 from sqlalchemy import select, delete
 from boiler.constants import column_names
 
-from backend.models.db import TempGraph
+from backend.models.db import TempGraphDBModel
 
 
 class TempGraphRepository:
@@ -14,10 +14,10 @@ class TempGraphRepository:
 
     def get_temp_graph_for_circuit_type(self, circuit_type: str) -> pd.DataFrame:
         session = self._db_session_provider()
-        statement = select(TempGraph).filter(
-            TempGraph.circuit_type == circuit_type,
-        ).order_by(TempGraph.weather_temp)
-        temp_graph_iterator: Iterator[TempGraph] = session.execute(statement).scalars()
+        statement = select(TempGraphDBModel).filter(
+            TempGraphDBModel.circuit_type == circuit_type,
+        ).order_by(TempGraphDBModel.weather_temp)
+        temp_graph_iterator: Iterator[TempGraphDBModel] = session.execute(statement).scalars()
         temp_graph_list = []
         for record in temp_graph_iterator:
             temp_graph_list.append({
@@ -31,11 +31,11 @@ class TempGraphRepository:
     def set_temp_graph_for_circuit_type(self, temp_graph_df: pd.DataFrame, circuit_type: str) -> None:
         session = self._db_session_provider()
 
-        statement = delete(TempGraph).where(TempGraph.circuit_type == circuit_type)
+        statement = delete(TempGraphDBModel).where(TempGraphDBModel.circuit_type == circuit_type)
         session.execute(statement)
 
         for _, row in temp_graph_df.iterrows():
-            new_record = TempGraph(
+            new_record = TempGraphDBModel(
                 weather_temp=row[column_names.WEATHER_TEMP],
                 circuit_type=circuit_type,
                 forward_temp=row[column_names.FORWARD_TEMP],

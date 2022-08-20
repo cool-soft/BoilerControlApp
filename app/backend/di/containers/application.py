@@ -68,7 +68,7 @@ class Application(DeclarativeContainer):
         db_session_provider=database.db_session_provider,
         temp_requirements_provider=temp_requirements_pkg.temp_requirements_provider,
         control_action_repository=repositories.control_action_cache_repository,
-        model_requirements=model_pkg.model_requirements,
+        model_parameters=model_pkg.model_parameters,
         control_action_predictor=control_action_predictor_pkg.control_action_predictor,
         dynamic_settings_repository=repositories.dynamic_settings_repository
     )

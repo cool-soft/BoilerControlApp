@@ -15,7 +15,7 @@ class ControlActionServiceContainer(DeclarativeContainer):
     db_session_provider = Dependency()
     temp_requirements_provider = Dependency()
     control_action_repository = Dependency()
-    model_requirements = Dependency()
+    model_parameters = Dependency()
     control_action_predictor = Dependency()
 
     timestamp_round_algo = Factory(
@@ -24,7 +24,7 @@ class ControlActionServiceContainer(DeclarativeContainer):
     )
     control_action_prediction_service = Factory(
         ControlActionPredictionService,
-        model_requirements=model_requirements,
+        model_parameters=model_parameters,
         temp_requirements_provider=temp_requirements_provider,
         control_action_predictor=control_action_predictor,
         db_session_factory=db_session_provider,
@@ -35,6 +35,6 @@ class ControlActionServiceContainer(DeclarativeContainer):
     )
     control_action_report_service = Factory(
         ControlActionReportService,
-        db_session_factory=db_session_provider,
+        db_session_provider=db_session_provider,
         control_action_repository=control_action_repository
     )

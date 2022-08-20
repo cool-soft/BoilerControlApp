@@ -14,7 +14,7 @@ from backend.controllers.dependencies import \
     get_min_boiler_temp
 from backend.di.containers.services import Services
 from backend.logging import logger
-from backend.models.api import ControlActionAPIModel, Setting
+from backend.models.api import ControlActionAPIModel, SettingAPIModel
 from backend.services.control_action_report_service import ControlActionReportService
 from backend.services.settings_service import SettingsService
 
@@ -70,7 +70,7 @@ def get_predicted_boiler_temp(
 
 
 # noinspection PyTypeChecker
-@api_router.get("/settings", response_model=List[Setting])
+@api_router.get("/settings", response_model=List[SettingAPIModel])
 @inject
 def get_settings(
         settings_service: SettingsService = Depends(
@@ -96,7 +96,7 @@ def put_apartment_house_min_temp_coefficient(
     settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
 
 
-@api_router.get("/settings/apartmentHouseMinTempCoefficient", response_model=Setting)
+@api_router.get("/settings/apartmentHouseMinTempCoefficient", response_model=SettingAPIModel)
 @inject
 def get_apartment_house_min_temp_coefficient(
         settings_service: SettingsService = Depends(
@@ -122,7 +122,7 @@ def put_max_boiler_temp(
     settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
 
 
-@api_router.get("/settings/maxBoilerTemp", response_model=Setting)
+@api_router.get("/settings/maxBoilerTemp", response_model=SettingAPIModel)
 @inject
 def get_max_boiler_temp(
         settings_service: SettingsService = Depends(
@@ -148,7 +148,7 @@ def put_min_boiler_temp(
     settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
 
 
-@api_router.get("/settings/minBoilerTemp", response_model=Setting)
+@api_router.get("/settings/minBoilerTemp", response_model=SettingAPIModel)
 @inject
 async def get_min_boiler_temp(
         settings_service: SettingsService = Depends(
@@ -174,7 +174,7 @@ def put_model_error_size(
     settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
 
 
-@api_router.get("/settings/modelErrorSize", response_model=Setting)
+@api_router.get("/settings/modelErrorSize", response_model=SettingAPIModel)
 @inject
 def get_model_error_size(
         settings_service: SettingsService = Depends(

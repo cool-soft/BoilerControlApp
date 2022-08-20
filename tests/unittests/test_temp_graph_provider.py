@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from updater.update_keychain import UpdateKeychain
 
-from backend.models.db import TempGraph
+from backend.models.db import TempGraphDBModel
 from backend.providers.temp_graph_provider import TempGraphProvider
 from backend.repositories.temp_graph_repository import TempGraphRepository
 
@@ -23,8 +23,8 @@ class TestTempGraphProvider:
     def session_factory(self):
         engine = create_engine(self.db_url)
         with engine.begin() as conn:
-            TempGraph.metadata.drop_all(conn)
-            TempGraph.metadata.create_all(conn)
+            TempGraphDBModel.metadata.drop_all(conn)
+            TempGraphDBModel.metadata.create_all(conn)
         db_session_maker = sessionmaker(
             autocommit=False,
             bind=engine

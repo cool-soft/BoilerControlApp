@@ -2,7 +2,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Dependency, Factory, Object, Resource
 from dynamic_settings.repository.db_settings_repository import dtype_converters
 from dynamic_settings.repository.db_settings_repository.settings_converter import SettingsConverter
-from updater_keychain.keychain_db_repository import KeychainDBRepository
+from updater.update_datetime_memento.update_datetime_db_repository import UpdateDatetimeDBRepository
 
 from backend.constants import default_config
 from backend.di.resources.dynamic_settings_repository import dynamic_settings_repository
@@ -40,6 +40,6 @@ class Repositories(DeclarativeContainer):
         default_settings=Object(default_config.DICT)
     )
     keychain_repository = Factory(
-        KeychainDBRepository,
+        UpdateDatetimeDBRepository,
         db_session_factory=db_session_provider
     )

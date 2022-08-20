@@ -1,5 +1,5 @@
 from dependency_injector.providers import Provider
-from updater.updatable_item.abstract_sync_updatable_item import AbstractSyncUpdatableItem
+from updater.updatable_item import AbstractSyncUpdatableItem
 
 from backend.logging import logger
 from backend.services.control_action_prediction_service import ControlActionPredictionService

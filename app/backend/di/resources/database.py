@@ -1,9 +1,9 @@
 from dynamic_settings.repository.db_settings_repository.setting_model import Setting
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session, sessionmaker, Session
-from updater_keychain.keychain_db_repository import Keychain
+from updater.update_datetime_memento.update_datetime_db_repository import UpdateDatetimeDBRecord
 
-from backend.models.db import ControlActionDBModel, TempGraph
+from backend.models.db import ControlActionDBModel, TempGraphDBModel
 
 
 def db_session_factory(cache_db_engine: Engine,
@@ -14,8 +14,8 @@ def db_session_factory(cache_db_engine: Engine,
             class_=Session,
             binds={
                 ControlActionDBModel: cache_db_engine,
-                TempGraph: cache_db_engine,
-                Keychain: cache_db_engine,
+                TempGraphDBModel: cache_db_engine,
+                UpdateDatetimeDBRecord: cache_db_engine,
                 Setting: settings_db_engine
             }
         ),
@@ -25,8 +25,8 @@ def db_session_factory(cache_db_engine: Engine,
 def cache_database(cache_db_engine: Engine) -> None:
     with cache_db_engine.begin() as conn:
         ControlActionDBModel.metadata.create_all(conn)
-        TempGraph.metadata.create_all(conn)
-        Keychain.metadata.create_all(conn)
+        TempGraphDBModel.metadata.create_all(conn)
+        UpdateDatetimeDBRecord.metadata.create_all(conn)
 
 
 def settings_database(settings_db_engine: Engine) -> None:

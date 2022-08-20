@@ -32,5 +32,5 @@ class TempGraphLoaderWithCacheContainer(DeclarativeContainer):
         temp_graph_loader=temp_graph_loader,
         db_session_factory=db_session_provider,
         temp_graph_repository=temp_graph_cache_repository,
-        updater_keychain=temp_graph_updater_keychain
+        update_keychain=temp_graph_updater_keychain
     )

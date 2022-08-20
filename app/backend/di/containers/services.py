@@ -12,7 +12,7 @@ class Services(DeclarativeContainer):
     db_session_provider = Dependency()
     temp_requirements_provider = Dependency()
     control_action_repository = Dependency()
-    model_requirements = Dependency()
+    model_parameters = Dependency()
     control_action_predictor = Dependency()
     dynamic_settings_repository = Dependency()
 
@@ -27,7 +27,7 @@ class Services(DeclarativeContainer):
         db_session_provider=db_session_provider,
         temp_requirements_provider=temp_requirements_provider,
         control_action_repository=control_action_repository,
-        model_requirements=model_requirements,
+        model_parameters=model_parameters,
         control_action_predictor=control_action_predictor,
     )
     updater_pkg = Container(

@@ -20,8 +20,8 @@ class ControlActionReportService:
     def report(self,
                start_timestamp: datetime,
                end_timestamp: datetime,
-               circuit_type: str = circuit_types.HEATING,
-               response_timezone: tzinfo = timezone.utc
+               response_timezone: tzinfo = timezone.utc,
+               circuit_type: str = circuit_types.HEATING
                ) -> List[ControlActionAPIModel]:
         with self._db_session_provider():
             control_actions_df = \

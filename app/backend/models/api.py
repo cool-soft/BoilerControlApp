@@ -10,6 +10,6 @@ class ControlActionAPIModel(BaseModel):
     forward_temp: float
 
 
-class Setting(BaseModel):
+class SettingAPIModel(BaseModel):
     name: str
     value: Any

@@ -20,7 +20,7 @@ class ControlActionDBModel(AppDBBase):
     )
 
 
-class TempGraph(AppDBBase):
+class TempGraphDBModel(AppDBBase):
     __tablename__ = "temp_graph"
     record_id = Column(INTEGER, primary_key=True, autoincrement=True)
     circuit_type = Column(VARCHAR(32), nullable=False)
