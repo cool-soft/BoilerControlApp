@@ -34,7 +34,8 @@ class Services(DeclarativeContainer):
     updater_pkg = Container(
         UpdateContainer,
         config=config.updater,
-        control_actions_predictor=control_action_pkg.control_action_prediction_service,
+        control_action_predictor_service=control_action_pkg.control_action_prediction_service,
+        control_action_service=control_action_pkg.control_action_service,
         db_session_provider=db_session_provider,
         keychain_repository=keychain_repository
     )

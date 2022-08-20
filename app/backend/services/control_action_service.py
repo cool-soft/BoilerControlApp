@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, tzinfo
+from datetime import datetime, timezone, tzinfo, timedelta
 from typing import List
 
 from boiler.constants import column_names, circuit_types
@@ -12,7 +12,7 @@ class ControlActionService:
 
     def __init__(self,
                  db_session_provider: scoped_session,
-                 control_action_repository: ControlActionRepository,
+                 control_action_repository: ControlActionRepository
                  ) -> None:
         self._db_session_provider = db_session_provider
         self._control_action_repository = control_action_repository
@@ -43,3 +43,9 @@ class ControlActionService:
                     )
                 )
         return control_actions_list
+
+    def drop_old_control_action(self, circuit_type: str = circuit_types.HEATING) -> None:
+        with self._db_session_provider.begin() as session:
+            self._control_action_repository.drop_control_action_older_than(datetime.now(tz=timezone.utc), circuit_type)
+            session.commit()
+        self._db_session_provider.remove()

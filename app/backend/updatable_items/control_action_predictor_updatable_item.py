@@ -10,7 +10,7 @@ from backend.logging import logger
 from backend.services.control_action_prediction_service import ControlActionPredictionService
 
 
-class ControlActionUpdatableItem(AbstractSyncUpdatableItem):
+class ControlActionPredictorUpdatableItem(AbstractSyncUpdatableItem):
 
     def __init__(self, provider: Provider, retry_interval: timedelta = timedelta(minutes=5), **kwargs) -> None:
         super().__init__(**kwargs)
@@ -35,5 +35,5 @@ class ControlActionUpdatableItem(AbstractSyncUpdatableItem):
     def get_next_update_datetime(self) -> Union[datetime, None]:
         next_update_datetime = self._next_retry_datetime
         if next_update_datetime is None:
-            next_update_datetime = super(ControlActionUpdatableItem, self).get_next_update_datetime()
+            next_update_datetime = super(ControlActionPredictorUpdatableItem, self).get_next_update_datetime()
         return next_update_datetime

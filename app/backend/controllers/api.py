@@ -28,7 +28,7 @@ def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
         work_timezone: InputTimezone = Depends(),
         control_action_report_service: ControlActionService = Depends(
-            Provide[Services.control_action_pkg.control_action_report_service]
+            Provide[Services.control_action_pkg.control_action_service]
         )
 ):
     # noinspection SpellCheckingInspection

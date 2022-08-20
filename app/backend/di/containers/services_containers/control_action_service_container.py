@@ -33,7 +33,7 @@ class ControlActionServiceContainer(DeclarativeContainer):
         time_tick=Object(TIME_TICK),
         timedelta_predict_forward=Callable(timedelta, seconds=config.timedelta_predict_forward)
     )
-    control_action_report_service = Factory(
+    control_action_service = Factory(
         ControlActionService,
         db_session_provider=db_session_provider,
         control_action_repository=control_action_repository
