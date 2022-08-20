@@ -15,7 +15,7 @@ from backend.repositories.control_action_repository import ControlActionReposito
 class ControlActionPredictionService:
 
     def __init__(self,
-                 model_requirements: AbstractModelParameters,
+                 model_parameters: AbstractModelParameters,
                  temp_requirements_provider: TempRequirementsProvider,
                  control_action_predictor: AbstractControlActionPredictor,
                  db_session_factory: scoped_session,
@@ -24,7 +24,7 @@ class ControlActionPredictionService:
                  time_tick: pd.Timedelta,
                  timedelta_predict_forward: timedelta = timedelta(seconds=3600),
                  ) -> None:
-        self._model_requirements = model_requirements
+        self._model_parameters = model_parameters
         self._temp_requirements_provider = temp_requirements_provider
         self._control_action_predictor = control_action_predictor
         self._session_factory = db_session_factory
@@ -34,10 +34,14 @@ class ControlActionPredictionService:
         self._timedelta_predict_forward = timedelta_predict_forward
 
     def update_control_actions(self) -> None:
-        control_action_start_timestamp = pd.Timestamp.now(tz=tz.UTC)
-        control_action_start_timestamp = self._timestamp_round_algo.round_value(control_action_start_timestamp)
-        control_action_end_timestamp = control_action_start_timestamp + self._timedelta_predict_forward
+        control_action_df = self._calc_control_action_()
+        with self._session_factory() as session:
+            self._control_action_repository.add_control_action(control_action_df)
+            session.commit()
+        self._session_factory.remove()
 
+    def _calc_control_action_(self):
+        control_action_start_timestamp, control_action_end_timestamp = self._calc_control_action_start_end_timestamps()
         requirements_start_timestamp, requirements_end_timestamp = self._calc_temp_requirements_start_end_timestamp(
             control_action_start_timestamp,
             control_action_end_timestamp
@@ -45,28 +49,33 @@ class ControlActionPredictionService:
         temp_requirements_df = self._temp_requirements_provider.get_temp_requirements(
             requirements_start_timestamp, requirements_end_timestamp
         )
-
-        control_action_df = self._calc_control_action(
+        control_action_df = self._calc_control_action_on_temp_requirements(
             control_action_start_timestamp,
             control_action_end_timestamp,
             temp_requirements_df
         )
-        with self._session_factory() as session:
-            self._control_action_repository.add_control_action(control_action_df)
-            session.commit()
-        self._session_factory.remove()
+        return control_action_df
+
+    def _calc_control_action_start_end_timestamps(self):
+        control_action_start_timestamp = pd.Timestamp.now(tz=tz.UTC)
+        control_action_start_timestamp = self._timestamp_round_algo.round_value(control_action_start_timestamp)
+        control_action_end_timestamp = control_action_start_timestamp + self._timedelta_predict_forward
+        return control_action_start_timestamp, control_action_end_timestamp
 
     def _calc_temp_requirements_start_end_timestamp(self,
                                                     control_action_start_timestamp: pd.Timestamp,
                                                     control_action_end_timestamp: pd.Timestamp
                                                     ) -> Tuple[pd.Timestamp, pd.Timestamp]:
         temp_requirements_start_timestamp = \
-            control_action_start_timestamp + self._model_requirements.get_min_heating_system_lag()
+            control_action_start_timestamp + self._model_parameters.get_min_heating_system_lag()
         temp_requirements_end_timestamp = \
-            control_action_end_timestamp + self._model_requirements.get_max_heating_system_lag() + self._time_tick
+            control_action_end_timestamp + self._model_parameters.get_max_heating_system_lag() + self._time_tick
         return temp_requirements_start_timestamp, temp_requirements_end_timestamp
 
-    def _calc_control_action(self, control_action_start_timestamp, control_action_end_timestamp, temp_requirements_df):
+    def _calc_control_action_on_temp_requirements(self,
+                                                  control_action_start_timestamp,
+                                                  control_action_end_timestamp,
+                                                  temp_requirements_df) -> pd.DataFrame:
         control_actions_list = []
         control_action_timestamp = control_action_start_timestamp
         while control_action_timestamp <= control_action_end_timestamp:

@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from boiler.constants import column_names, circuit_types
 
-from backend.models.db import ControlAction
+from backend.models.db import ControlActionDBModel
 from backend.repositories.control_action_repository import ControlActionRepository
 
 
@@ -26,8 +26,8 @@ class TestControlActionRepository:
     def session_factory(self):
         engine = create_engine(self.db_url)
         with engine.begin() as conn:
-            ControlAction.metadata.drop_all(conn)
-            ControlAction.metadata.create_all(conn)
+            ControlActionDBModel.metadata.drop_all(conn)
+            ControlActionDBModel.metadata.create_all(conn)
         db_session_maker = sessionmaker(
             autocommit=False,
             bind=engine

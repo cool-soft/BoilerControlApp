@@ -8,8 +8,8 @@ from dateutil import tz
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from backend.models.api import ControlActionV3
-from backend.models.db import ControlAction
+from backend.models.api import ControlActionAPIModel
+from backend.models.db import ControlActionDBModel
 from backend.repositories.control_action_repository import ControlActionRepository
 from backend.services.control_action_report_service import ControlActionReportService
 
@@ -29,8 +29,8 @@ class TestControlActionRepository:
     def session_factory(self):
         engine = create_engine(self.db_url)
         with engine.begin() as conn:
-            ControlAction.metadata.drop_all(conn)
-            ControlAction.metadata.create_all(conn)
+            ControlActionDBModel.metadata.drop_all(conn)
+            ControlActionDBModel.metadata.create_all(conn)
         db_session_maker = sessionmaker(
             autocommit=False,
             bind=engine
@@ -61,13 +61,9 @@ class TestControlActionRepository:
 
     @pytest.fixture
     def report_service(self, repository, session_factory):
-        return ControlActionReportService(
-            db_session_factory=session_factory,
-            control_action_repository=repository,
-            timestamp_report_pattern_v1=self.v1_pattern
-        )
+        return ControlActionReportService(db_session_provider=session_factory, control_action_repository=repository)
 
-    def test_report_v1(self, control_action_df, repository, session_factory, report_service):
+    def test_report(self, control_action_df, repository, session_factory, report_service):
         with session_factory.begin() as session:
             repository.add_control_action(control_action_df)
             session.commit()
@@ -76,50 +72,10 @@ class TestControlActionRepository:
             control_action_df[column_names.CIRCUIT_TYPE] == circuit_types.HEATING
             ].copy()
 
-        report = report_service.report_v1(self.action_start_timestamp, self.action_end_timestamp)
+        report = report_service.report(self.action_start_timestamp, self.action_end_timestamp)
         assert isinstance(report, list)
         assert len(report) == len(control_action_df)
         for row in report:
-            assert isinstance(row, tuple)
-            action_datetime, forward_temp = row
-            assert isinstance(action_datetime, str)
-            assert isinstance(forward_temp, float)
-
-        session_factory.remove()
-
-    def test_report_v2(self, control_action_df, repository, session_factory, report_service):
-        with session_factory.begin() as session:
-            repository.add_control_action(control_action_df)
-            session.commit()
-
-        control_action_df = control_action_df[
-            control_action_df[column_names.CIRCUIT_TYPE] == circuit_types.HEATING
-            ].copy()
-
-        report = report_service.report_v2(self.action_start_timestamp, self.action_end_timestamp)
-        assert isinstance(report, list)
-        assert len(report) == len(control_action_df)
-        for row in report:
-            assert isinstance(row, tuple)
-            action_datetime, forward_temp = row
-            assert isinstance(action_datetime, datetime)
-            assert isinstance(forward_temp, float)
-
-        session_factory.remove()
-
-    def test_report_v3(self, control_action_df, repository, session_factory, report_service):
-        with session_factory.begin() as session:
-            repository.add_control_action(control_action_df)
-            session.commit()
-
-        control_action_df = control_action_df[
-            control_action_df[column_names.CIRCUIT_TYPE] == circuit_types.HEATING
-            ].copy()
-
-        report = report_service.report_v3(self.action_start_timestamp, self.action_end_timestamp)
-        assert isinstance(report, list)
-        assert len(report) == len(control_action_df)
-        for row in report:
-            assert isinstance(row, ControlActionV3)
+            assert isinstance(row, ControlActionAPIModel)
 
         session_factory.remove()

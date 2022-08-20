@@ -14,7 +14,7 @@ from backend.controllers.dependencies import \
     get_min_boiler_temp
 from backend.di.containers.services import Services
 from backend.logging import logger
-from backend.models.api import ControlActionV3, SettingV3
+from backend.models.api import ControlActionAPIModel, Setting
 from backend.services.control_action_report_service import ControlActionReportService
 from backend.services.settings_service import SettingsService
 
@@ -22,7 +22,7 @@ api_router = APIRouter(prefix="/api/v3")
 
 
 # noinspection PyTypeChecker
-@api_router.get("/predictedBoilerTemp", response_model=List[ControlActionV3])
+@api_router.get("/predictedBoilerTemp", response_model=List[ControlActionAPIModel])
 @inject
 def get_predicted_boiler_temp(
         datetime_range: InputDatetimeRange = Depends(),
@@ -61,7 +61,7 @@ def get_predicted_boiler_temp(
                  f"from {datetime_range.start_datetime} to {datetime_range.end_datetime} "
                  f"with weather_data_timezone {work_timezone.name}")
 
-    control_action_list = control_action_report_service.report_v3(
+    control_action_list = control_action_report_service.report(
         datetime_range.start_datetime,
         datetime_range.end_datetime,
         work_timezone.timezone
@@ -70,7 +70,7 @@ def get_predicted_boiler_temp(
 
 
 # noinspection PyTypeChecker
-@api_router.get("/settings", response_model=List[SettingV3])
+@api_router.get("/settings", response_model=List[Setting])
 @inject
 def get_settings(
         settings_service: SettingsService = Depends(
@@ -96,7 +96,7 @@ def put_apartment_house_min_temp_coefficient(
     settings_service.set_setting(config_names.APARTMENT_HOUSE_MIN_TEMP_COEFFICIENT, coefficient)
 
 
-@api_router.get("/settings/apartmentHouseMinTempCoefficient", response_model=SettingV3)
+@api_router.get("/settings/apartmentHouseMinTempCoefficient", response_model=Setting)
 @inject
 def get_apartment_house_min_temp_coefficient(
         settings_service: SettingsService = Depends(
@@ -122,7 +122,7 @@ def put_max_boiler_temp(
     settings_service.set_setting(config_names.MAX_BOILER_TEMP, temp)
 
 
-@api_router.get("/settings/maxBoilerTemp", response_model=SettingV3)
+@api_router.get("/settings/maxBoilerTemp", response_model=Setting)
 @inject
 def get_max_boiler_temp(
         settings_service: SettingsService = Depends(
@@ -148,7 +148,7 @@ def put_min_boiler_temp(
     settings_service.set_setting(config_names.MIN_BOILER_TEMP, temp)
 
 
-@api_router.get("/settings/minBoilerTemp", response_model=SettingV3)
+@api_router.get("/settings/minBoilerTemp", response_model=Setting)
 @inject
 async def get_min_boiler_temp(
         settings_service: SettingsService = Depends(
@@ -174,7 +174,7 @@ def put_model_error_size(
     settings_service.set_setting(config_names.MODEL_ERROR_SIZE, value)
 
 
-@api_router.get("/settings/modelErrorSize", response_model=SettingV3)
+@api_router.get("/settings/modelErrorSize", response_model=Setting)
 @inject
 def get_model_error_size(
         settings_service: SettingsService = Depends(

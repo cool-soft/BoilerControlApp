@@ -8,7 +8,7 @@ from sqlalchemy import select, delete
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql.elements import and_
 
-from backend.models.db import ControlAction
+from backend.models.db import ControlActionDBModel
 
 
 class ControlActionRepository:
@@ -22,14 +22,14 @@ class ControlActionRepository:
                            circuit_type: str
                            ) -> pd.DataFrame:
         session = self._db_session_provider()
-        statement = select(ControlAction).filter(
+        statement = select(ControlActionDBModel).filter(
             and_(
-                ControlAction.timestamp >= start_timestamp.astimezone(tz.UTC),
-                ControlAction.timestamp < end_timestamp.astimezone(tz.UTC),
-                ControlAction.circuit_type == circuit_type
+                ControlActionDBModel.timestamp >= start_timestamp.astimezone(tz.UTC),
+                ControlActionDBModel.timestamp < end_timestamp.astimezone(tz.UTC),
+                ControlActionDBModel.circuit_type == circuit_type
             )
-        ).order_by(ControlAction.timestamp)
-        control_action_iterator: Iterator[ControlAction] = session.execute(statement).scalars()
+        ).order_by(ControlActionDBModel.timestamp)
+        control_action_iterator: Iterator[ControlActionDBModel] = session.execute(statement).scalars()
         control_action_list = []
         for record in control_action_iterator:
             control_action_list.append({
@@ -50,7 +50,7 @@ class ControlActionRepository:
             self._drop_by_circuit_type_and_timestamp(circuit_type, circuit_data_timestamps)
 
         for _, row in control_action_df.iterrows():
-            new_record = ControlAction(
+            new_record = ControlActionDBModel(
                 timestamp=row[column_names.TIMESTAMP].tz_convert(tz.UTC),
                 circuit_type=row[column_names.CIRCUIT_TYPE],
                 forward_temp=row[column_names.FORWARD_TEMP]
@@ -65,19 +65,19 @@ class ControlActionRepository:
         circuit_data_timestamps = circuit_data_timestamps.copy()
         circuit_data_timestamps = circuit_data_timestamps.dt.tz_convert(tz.UTC)
         circuit_data_timestamps = circuit_data_timestamps.dt.to_pydatetime()
-        statement = delete(ControlAction).where(
+        statement = delete(ControlActionDBModel).where(
             and_(
-                ControlAction.timestamp.in_(circuit_data_timestamps),
-                ControlAction.circuit_type == circuit_type
+                ControlActionDBModel.timestamp.in_(circuit_data_timestamps),
+                ControlActionDBModel.circuit_type == circuit_type
             ))
         session.execute(statement)
 
     def drop_control_action_older_than(self, timestamp: datetime, circuit_type: str) -> None:
         session = self._db_session_provider()
-        statement = delete(ControlAction).where(
+        statement = delete(ControlActionDBModel).where(
             and_(
-                ControlAction.timestamp < timestamp,
-                ControlAction.circuit_type == circuit_type
+                ControlActionDBModel.timestamp < timestamp,
+                ControlActionDBModel.circuit_type == circuit_type
             )
         )
         session.execute(statement)

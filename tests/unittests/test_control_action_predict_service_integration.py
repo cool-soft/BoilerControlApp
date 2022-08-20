@@ -21,7 +21,7 @@ from dateutil import tz
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
-from backend.models.db import ControlAction
+from backend.models.db import ControlActionDBModel
 from backend.providers.temp_requirements_provider import TempRequirementsProvider
 from backend.providers.weather_forecast_provider import WeatherForecastProvider
 from backend.repositories.control_action_repository import ControlActionRepository
@@ -124,8 +124,8 @@ class TestControlActionServiceIntegration:
     def session_factory(self):
         engine = create_engine(self.db_url)
         with engine.begin() as conn:
-            ControlAction.metadata.drop_all(conn)
-            ControlAction.metadata.create_all(conn)
+            ControlActionDBModel.metadata.drop_all(conn)
+            ControlActionDBModel.metadata.create_all(conn)
         db_session_maker = sessionmaker(
             autocommit=False,
             bind=engine

@@ -5,12 +5,12 @@ from updater.updater_service.sync_updater_service import SyncUpdaterService
 
 from backend.di.containers.application import Application
 from backend.logging import logger
-from backend.controllers import api_v1, api_v2, api_v3, dependencies
+from backend.controllers import api, dependencies
 
 
 def wire(application_container):
-    application_container.services.wire(modules=(api_v1, api_v2, api_v3))
-    application_container.core.wire(modules=(api_v1, api_v2, api_v3, dependencies))
+    application_container.services.wire(modules=(api,))
+    application_container.core.wire(modules=(api, dependencies))
 
 
 def main(cmd_args):

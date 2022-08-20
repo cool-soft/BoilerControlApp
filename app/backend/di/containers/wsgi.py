@@ -4,7 +4,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Configuration, Object, Resource, Singleton, Factory
 
 from backend.di.resources.fastapi_app import fastapi_app
-from backend.controllers import api_v1, api_v2, api_v3
+from backend.controllers import api_v1, api_v2, api
 
 
 class WSGI(DeclarativeContainer):

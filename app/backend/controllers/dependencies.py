@@ -2,13 +2,12 @@ from datetime import datetime
 from typing import Optional
 
 import pandas as pd
+from boiler.constants import time_tick
 from dateutil.tz import gettz
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends, HTTPException
 from starlette import status
 
-from boiler.constants import time_tick
-from boiler.data_processing.timestamp_parsing_algorithm import SimpleTimestampParsingAlgorithm
 from backend.di.containers.core import Core
 
 
@@ -32,44 +31,6 @@ class InputTimezone:
 
         self.timezone = timezone
         self.name = timezone_name
-
-
-# Deprecated. Удалить вместе со старой версией API (v1).
-class InputDatesRange:
-
-    @inject
-    def __init__(
-            self,
-            start_date: Optional[str] = None,
-            end_date: Optional[str] = None,
-            work_timezone: InputTimezone = Depends(),
-            datetime_processing_params=Depends(Provide[Core.config.datetime_processing])
-    ):
-        request_datetime_patterns = datetime_processing_params.get("request_patterns")
-        timestamp_parse_algorithm = SimpleTimestampParsingAlgorithm(
-            request_datetime_patterns,
-            work_timezone.timezone
-        )
-        if start_date is None:
-            start_date = pd.Timestamp.now(tz=work_timezone.timezone)
-        else:
-            # noinspection PyTypeChecker
-            start_date = pd.Timestamp(timestamp_parse_algorithm.parse_datetime(start_date))
-
-        if end_date is None:
-            end_date = start_date + time_tick.TIME_TICK
-        else:
-            # noinspection PyTypeChecker
-            end_date = pd.Timestamp(timestamp_parse_algorithm.parse_datetime(end_date))
-
-        if start_date >= end_date:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="start_date must be less than end_date"
-            )
-
-        self.start_date: pd.Timestamp = start_date
-        self.end_date: pd.Timestamp = end_date
 
 
 class InputDatetimeRange:
