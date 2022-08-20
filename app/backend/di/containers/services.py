@@ -15,6 +15,7 @@ class Services(DeclarativeContainer):
     model_parameters = Dependency()
     control_action_predictor = Dependency()
     dynamic_settings_repository = Dependency()
+    keychain_repository = Dependency()
 
     dynamic_settings_pkg = Container(
         DynamicSettingsServiceContainer,
@@ -34,4 +35,6 @@ class Services(DeclarativeContainer):
         UpdateContainer,
         config=config.updater,
         control_actions_predictor=control_action_pkg.control_action_prediction_service,
+        db_session_provider=db_session_provider,
+        keychain_repository=keychain_repository
     )
