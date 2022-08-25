@@ -23,8 +23,8 @@ class ControlActionPredictorUpdatableItem(AbstractSyncUpdatableItem):
 
     def _run_update(self) -> None:
         logger.debug("Run update")
-        service: ControlActionPredictionService = self._provider()
         try:
+            service: ControlActionPredictionService = self._provider()
             service.update_control_actions()
         except RequestException:
             traceback.print_exc()
